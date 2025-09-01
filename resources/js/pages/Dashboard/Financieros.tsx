@@ -1,5 +1,19 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { DollarSign, CreditCard, TrendingDown, TrendingUp, User, LogOut, ChevronDown, Settings } from 'lucide-react';
+import { 
+    DollarSign, 
+    CreditCard, 
+    TrendingDown, 
+    TrendingUp, 
+    User, 
+    LogOut, 
+    ChevronDown,
+    FileText,
+    Wallet,
+    PiggyBank,
+    AlertTriangle,
+    Calculator,
+    BookOpen
+} from 'lucide-react';
 import LocationSelector from '@/components/LocationSelector';
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
@@ -175,51 +189,11 @@ export default function Financieros() {
             </div>
 
             <div className="max-w-7xl mx-auto p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <DollarSign className="w-8 h-8 text-green-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Ingresos del Mes</p>
-                                <p className="text-2xl font-bold text-gray-900">$2.4M</p>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <CreditCard className="w-8 h-8 text-blue-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Gastos del Mes</p>
-                                <p className="text-2xl font-bold text-gray-900">$1.8M</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <TrendingUp className="w-8 h-8 text-purple-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Margen de Utilidad</p>
-                                <p className="text-2xl font-bold text-gray-900">25%</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <TrendingDown className="w-8 h-8 text-orange-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Cuentas por Cobrar</p>
-                                <p className="text-2xl font-bold text-gray-900">$650K</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold text-gray-900">Bienvenido a MÓDULOS Financieros - {selectedLocation === 'cali' ? 'Cali' : 'Cartago'}</h2>
+                {/* Financial Management Modules */}
+                <div className="mb-8">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-gray-900">Subgerencia Financiera</h2>
                         <button 
                             onClick={handleLocationChange}
                             className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors text-sm"
@@ -227,20 +201,100 @@ export default function Financieros() {
                             Cambiar Ubicación
                         </button>
                     </div>
-                    <p className="text-gray-600">
-                        Panel financiero especializado para la sede {selectedLocation === 'cali' ? 'Cali' : 'Cartago'}. 
-                        Controle y analice los indicadores financieros específicos de esta ubicación.
-                    </p>
-                    <div className="mt-4 p-4 bg-orange-50 rounded-lg">
-                        <p className="text-sm text-orange-800">
-                            <strong>Módulos financieros para {selectedLocation === 'cali' ? 'Cali' : 'Cartago'}:</strong> 
-                            {selectedLocation === 'cali' 
-                                ? ' Centro de costos principal, Presupuesto consolidado, Tesorería central, Contabilidad general'
-                                : ' Centro de costos regional, Presupuesto local, Caja menor, Contabilidad auxiliar'
-                            }
-                        </p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+                        {/* Facturación */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <FileText className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Facturación</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión y control de facturación de servicios médicos</p>
+                            <button 
+                                onClick={() => router.get('/financieros/facturacion')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Cartera */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <Wallet className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Cartera</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Administración de cuentas por cobrar y seguimiento</p>
+                            <button 
+                                onClick={() => router.get('/financieros/cartera')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Recaudo */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <PiggyBank className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Recaudo</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Control de ingresos y recaudos hospitalarios</p>
+                            <button 
+                                onClick={() => router.get('/financieros/recaudo')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Glosas */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <AlertTriangle className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Glosas</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión de glosas y objeciones de facturación</p>
+                            <button 
+                                onClick={() => router.get('/financieros/glosas')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Presupuesto */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <Calculator className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Presupuesto</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Planificación y control presupuestario institucional</p>
+                            <button 
+                                onClick={() => router.get('/financieros/presupuesto')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Contabilidad */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <BookOpen className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Contabilidad</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Registro contable y estados financieros</p>
+                            <button 
+                                onClick={() => router.get('/financieros/contabilidad')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );

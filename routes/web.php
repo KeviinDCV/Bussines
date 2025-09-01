@@ -68,6 +68,47 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/asistenciales/medicina-fisica', function () {
         return Inertia::render('Asistenciales/MedicinaFisica');
     })->name('asistenciales.medicina-fisica');
+    
+    Route::get('/asistenciales/mortalidad', function () {
+        return Inertia::render('Asistenciales/Mortalidad');
+    })->name('asistenciales.mortalidad');
+    
+    Route::get('/asistenciales/epidemiologia', function () {
+        return Inertia::render('Asistenciales/Epidemiologia');
+    })->name('asistenciales.epidemiologia');
+    
+    Route::get('/asistenciales/banco-sangre', function () {
+        return Inertia::render('Asistenciales/BancoSangre');
+    })->name('asistenciales.banco-sangre');
+    
+    Route::get('/asistenciales/extension-hospitalaria', function () {
+        return Inertia::render('Asistenciales/ExtensionHospitalaria');
+    })->name('asistenciales.extension-hospitalaria');
+
+    // Financieros module routes
+    Route::get('/financieros/facturacion', function () {
+        return Inertia::render('Financieros/Facturacion');
+    })->name('financieros.facturacion');
+    
+    Route::get('/financieros/cartera', function () {
+        return Inertia::render('Financieros/Cartera');
+    })->name('financieros.cartera');
+    
+    Route::get('/financieros/recaudo', function () {
+        return Inertia::render('Financieros/Recaudo');
+    })->name('financieros.recaudo');
+    
+    Route::get('/financieros/glosas', function () {
+        return Inertia::render('Financieros/Glosas');
+    })->name('financieros.glosas');
+    
+    Route::get('/financieros/presupuesto', function () {
+        return Inertia::render('Financieros/Presupuesto');
+    })->name('financieros.presupuesto');
+    
+    Route::get('/financieros/contabilidad', function () {
+        return Inertia::render('Financieros/Contabilidad');
+    })->name('financieros.contabilidad');
 
     // Profile routes - only for administrators
     Route::middleware('role:Administrador')->group(function () {
