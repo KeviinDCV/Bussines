@@ -36,6 +36,39 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/dashboard/general', [DashboardController::class, 'general'])->name('dashboard.general');
     Route::get('/plan-desarrollo', [DashboardController::class, 'planDesarrollo'])->name('dashboard.plan-desarrollo');
 
+    // Asistenciales module routes
+    Route::get('/asistenciales/urgencias', function () {
+        return Inertia::render('Asistenciales/Urgencias');
+    })->name('asistenciales.urgencias');
+    
+    Route::get('/asistenciales/ambulatorio', function () {
+        return Inertia::render('Asistenciales/Ambulatorio');
+    })->name('asistenciales.ambulatorio');
+    
+    Route::get('/asistenciales/hospitalizacion', function () {
+        return Inertia::render('Asistenciales/Hospitalizacion');
+    })->name('asistenciales.hospitalizacion');
+    
+    Route::get('/asistenciales/cirugia', function () {
+        return Inertia::render('Asistenciales/Cirugia');
+    })->name('asistenciales.cirugia');
+    
+    Route::get('/asistenciales/imagenes', function () {
+        return Inertia::render('Asistenciales/Imagenes');
+    })->name('asistenciales.imagenes');
+    
+    Route::get('/asistenciales/laboratorio', function () {
+        return Inertia::render('Asistenciales/Laboratorio');
+    })->name('asistenciales.laboratorio');
+    
+    Route::get('/asistenciales/ginecologia', function () {
+        return Inertia::render('Asistenciales/Ginecologia');
+    })->name('asistenciales.ginecologia');
+    
+    Route::get('/asistenciales/medicina-fisica', function () {
+        return Inertia::render('Asistenciales/MedicinaFisica');
+    })->name('asistenciales.medicina-fisica');
+
     // Profile routes - only for administrators
     Route::middleware('role:Administrador')->group(function () {
         Route::patch('/profile/email', [ProfileController::class, 'updateEmail'])->name('profile.update-email');

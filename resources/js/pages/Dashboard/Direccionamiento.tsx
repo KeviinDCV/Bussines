@@ -205,11 +205,8 @@ export default function Direccionamiento() {
                                 key={module.id}
                                 className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col"
                             >
-                                <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center mb-4">
                                     <IconComponent className="w-10 h-10 text-[#2a3d85]" />
-                                    <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                        DIRECCIONAMIENTO
-                                    </span>
                                 </div>
                                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{module.title}</h3>
                                 <p className="text-sm text-gray-600 mb-4 flex-grow">{module.description}</p>

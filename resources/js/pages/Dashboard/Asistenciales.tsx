@@ -228,123 +228,123 @@ export default function Asistenciales() {
                         </button>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
                         {/* Gestión integral de Urgencias */}
                         <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <AlertTriangle className="w-10 h-10 text-[#2a3d85]" />
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
-                                </span>
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Urgencias</h3>
                             <p className="text-sm text-gray-600 mb-4 flex-grow">Monitoreo y gestión de servicios de urgencias médicas</p>
-                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                            <button 
+                                onClick={() => router.get('/asistenciales/urgencias')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
                                 Acceder al Módulo
                             </button>
                         </div>
 
                         {/* Gestión integral de Ambulatorio */}
                         <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <Stethoscope className="w-10 h-10 text-[#2a3d85]" />
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
-                                </span>
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Ambulatorio</h3>
                             <p className="text-sm text-gray-600 mb-4 flex-grow">Control de consultas externas y atención ambulatoria</p>
-                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                            <button 
+                                onClick={() => router.get('/asistenciales/ambulatorio')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
                                 Acceder al Módulo
                             </button>
                         </div>
 
                         {/* Gestión integral de Hospitalización */}
                         <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <Building2 className="w-10 h-10 text-[#2a3d85]" />
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
-                                </span>
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Hospitalización</h3>
                             <p className="text-sm text-gray-600 mb-4 flex-grow">Administración de pacientes hospitalizados</p>
-                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                            <button 
+                                onClick={() => router.get('/asistenciales/hospitalizacion')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
                                 Acceder al Módulo
                             </button>
                         </div>
 
                         {/* Gestión integral de Cirugía */}
                         <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <Scissors className="w-10 h-10 text-[#2a3d85]" />
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
-                                </span>
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Cirugía</h3>
                             <p className="text-sm text-gray-600 mb-4 flex-grow">Control de quirófanos y procedimientos quirúrgicos</p>
-                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                            <button 
+                                onClick={() => router.get('/asistenciales/cirugia')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
                                 Acceder al Módulo
                             </button>
                         </div>
 
                         {/* Gestión integral de Imágenes */}
                         <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <Camera className="w-10 h-10 text-[#2a3d85]" />
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
-                                </span>
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Imágenes</h3>
                             <p className="text-sm text-gray-600 mb-4 flex-grow">Administración de estudios radiológicos e imágenes</p>
-                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                            <button 
+                                onClick={() => router.get('/asistenciales/imagenes')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
                                 Acceder al Módulo
                             </button>
                         </div>
 
                         {/* Gestión integral de Laboratorio */}
                         <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <TestTube className="w-10 h-10 text-[#2a3d85]" />
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
-                                </span>
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Laboratorio</h3>
                             <p className="text-sm text-gray-600 mb-4 flex-grow">Control de análisis clínicos y pruebas de laboratorio</p>
-                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                            <button 
+                                onClick={() => router.get('/asistenciales/laboratorio')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
                                 Acceder al Módulo
                             </button>
                         </div>
 
                         {/* Gestión integral de Ginecología y Obstetricia */}
                         <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <Baby className="w-10 h-10 text-[#2a3d85]" />
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
-                                </span>
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Ginecología y Obstetricia</h3>
                             <p className="text-sm text-gray-600 mb-4 flex-grow">Atención especializada en salud femenina y materna</p>
-                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                            <button 
+                                onClick={() => router.get('/asistenciales/ginecologia')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
                                 Acceder al Módulo
                             </button>
                         </div>
 
                         {/* Gestión integral de Medicina Física */}
                         <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <Dumbbell className="w-10 h-10 text-[#2a3d85]" />
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
-                                </span>
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Medicina Física</h3>
                             <p className="text-sm text-gray-600 mb-4 flex-grow">Rehabilitación y terapia física especializada</p>
-                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                            <button 
+                                onClick={() => router.get('/asistenciales/medicina-fisica')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
                                 Acceder al Módulo
                             </button>
                         </div>
