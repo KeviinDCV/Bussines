@@ -190,10 +190,17 @@ export default function Login({ errors }: LoginProps) {
                 </div>
             </div>
             
-            {/* Branding Footer */}
-            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+            {/* Bottom Left - Innovation */}
+            <div className="absolute bottom-6 left-6">
                 <p className="text-sm text-gray-500 font-medium">
-                    Innovación y desarrollo
+                    Innovación y Desarrollo
+                </p>
+            </div>
+            
+            {/* Bottom Right - Quality Management */}
+            <div className="absolute bottom-6 right-6">
+                <p className="text-sm text-gray-500 font-medium">
+                    Gestión de Calidad y Mejoramiento
                 </p>
             </div>
         </div>

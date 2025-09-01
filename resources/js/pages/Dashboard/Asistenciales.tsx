@@ -1,5 +1,26 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Users, Activity, Calendar, FileText, User, LogOut, ChevronDown, Settings, Heart, Stethoscope, Building2, Scissors, Camera, TestTube, Baby, Dumbbell, AlertTriangle } from 'lucide-react';
+import { 
+    AlertTriangle, 
+    Stethoscope, 
+    Building2, 
+    Scissors, 
+    Camera, 
+    TestTube, 
+    Baby, 
+    Dumbbell,
+    Activity,
+    Calendar,
+    FileText,
+    Users,
+    User,
+    LogOut,
+    ChevronDown,
+    MapPin,
+    Heart,
+    TrendingUp,
+    Droplets,
+    Building
+} from 'lucide-react';
 import LocationSelector from '@/components/LocationSelector';
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
@@ -174,47 +195,6 @@ export default function Asistenciales() {
             </div>
 
             <div className="max-w-7xl mx-auto p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <Activity className="w-8 h-8 text-blue-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Pacientes Activos</p>
-                                <p className="text-2xl font-bold text-gray-900">245</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <Calendar className="w-8 h-8 text-green-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Citas Hoy</p>
-                                <p className="text-2xl font-bold text-gray-900">32</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <FileText className="w-8 h-8 text-purple-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Reportes Pendientes</p>
-                                <p className="text-2xl font-bold text-gray-900">8</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <Users className="w-8 h-8 text-orange-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Personal en Turno</p>
-                                <p className="text-2xl font-bold text-gray-900">18</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Healthcare Management Modules */}
                 <div className="mb-8">
@@ -343,6 +323,66 @@ export default function Asistenciales() {
                             <p className="text-sm text-gray-600 mb-4 flex-grow">Rehabilitación y terapia física especializada</p>
                             <button 
                                 onClick={() => router.get('/asistenciales/medicina-fisica')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Mortalidad */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <Heart className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Mortalidad</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Análisis y seguimiento de indicadores de mortalidad</p>
+                            <button 
+                                onClick={() => router.get('/asistenciales/mortalidad')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Epidemiología */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <TrendingUp className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Epidemiología</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Vigilancia epidemiológica y control de enfermedades</p>
+                            <button 
+                                onClick={() => router.get('/asistenciales/epidemiologia')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Banco de Sangre */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <Droplets className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Banco de Sangre</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión de donaciones y transfusiones sanguíneas</p>
+                            <button 
+                                onClick={() => router.get('/asistenciales/banco-sangre')}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Extensión Hospitalaria */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center mb-4">
+                                <Building className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Extensión Hospitalaria</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Programas de extensión y servicios comunitarios</p>
+                            <button 
+                                onClick={() => router.get('/asistenciales/extension-hospitalaria')}
                                 className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
                             >
                                 Acceder al Módulo

@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Baby, User, LogOut, ChevronDown } from 'lucide-react';
+import { Baby, ArrowLeft, User, LogOut, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Ginecologia() {
@@ -23,6 +23,12 @@ export default function Ginecologia() {
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
+                            <button
+                                onClick={handleBackToDashboard}
+                                className="mr-4 p-2 hover:bg-white/10 rounded-lg transition-colors"
+                            >
+                                <ArrowLeft className="w-6 h-6" />
+                            </button>
                             <Baby className="w-8 h-8 mr-3" />
                             <div>
                                 <h1 className="text-2xl font-bold">Gestión integral de Ginecología y Obstetricia</h1>
@@ -30,13 +36,6 @@ export default function Ginecologia() {
                             </div>
                         </div>
                         <div className="flex items-center space-x-4">
-                            <button
-                                onClick={handleBackToDashboard}
-                                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-sm"
-                            >
-                                Volver al Dashboard
-                            </button>
-                            
                             <div className="text-right">
                                 <p className="text-sm font-medium">Hospital Universitario del Valle</p>
                                 <p className="text-xs opacity-90">"Evaristo Garcia" E.S.E</p>
@@ -79,11 +78,11 @@ export default function Ginecologia() {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto p-6">
-                <div className="bg-white rounded-lg shadow p-6">
+            <main className="max-w-7xl mx-auto p-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Módulo en Desarrollo</h2>
                     <div className="text-center py-12">
                         <Baby className="w-16 h-16 text-[#2a3d85] mx-auto mb-4" />
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Módulo en Desarrollo</h2>
                         <p className="text-gray-600">
                             El módulo de Gestión integral de Ginecología y Obstetricia está siendo desarrollado.
                             <br />
@@ -91,7 +90,7 @@ export default function Ginecologia() {
                         </p>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }
