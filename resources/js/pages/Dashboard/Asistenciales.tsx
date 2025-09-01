@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Users, Activity, Calendar, FileText, User, LogOut, ChevronDown, Settings } from 'lucide-react';
+import { Users, Activity, Calendar, FileText, User, LogOut, ChevronDown, Settings, Heart, Stethoscope, Building2, Scissors, Camera, TestTube, Baby, Dumbbell, AlertTriangle } from 'lucide-react';
 import LocationSelector from '@/components/LocationSelector';
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
@@ -123,8 +123,7 @@ export default function Asistenciales() {
                         <div className="flex items-center">
                             <Users className="w-8 h-8 mr-3" />
                             <div>
-                                <h1 className="text-2xl font-bold">MÓDULOS Asistenciales - {selectedLocation === 'cali' ? 'Cali' : 'Cartago'}</h1>
-                                <p className="opacity-90">Personal médico y de enfermería - Sede {selectedLocation === 'cali' ? 'Cali' : 'Cartago'}</p>
+                                <h1 className="text-2xl font-bold">Asistenciales - {selectedLocation === 'cali' ? 'Cali' : 'Cartago'}</h1>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4">
@@ -217,9 +216,10 @@ export default function Asistenciales() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold text-gray-900">Bienvenido a MÓDULOS Asistenciales - {selectedLocation === 'cali' ? 'Cali' : 'Cartago'}</h2>
+                {/* Healthcare Management Modules */}
+                <div className="mb-8">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-gray-900">Subgerencia de Servicios de Salud</h2>
                         <button 
                             onClick={handleLocationChange}
                             className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors text-sm"
@@ -227,20 +227,130 @@ export default function Asistenciales() {
                             Cambiar Ubicación
                         </button>
                     </div>
-                    <p className="text-gray-600">
-                        Panel de control para personal asistencial de la sede {selectedLocation === 'cali' ? 'Cali' : 'Cartago'}. 
-                        Acceda a herramientas y reportes específicos de esta ubicación.
-                    </p>
-                    <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                        <p className="text-sm text-blue-800">
-                            <strong>Módulos disponibles para {selectedLocation === 'cali' ? 'Cali' : 'Cartago'}:</strong> 
-                            {selectedLocation === 'cali' 
-                                ? ' Servicios especializados, UCI, Cirugía, Emergencias, Laboratorio central'
-                                : ' Medicina general, Consulta externa, Urgencias básicas, Laboratorio regional'
-                            }
-                        </p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+                        {/* Gestión integral de Urgencias */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <AlertTriangle className="w-10 h-10 text-[#2a3d85]" />
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Urgencias</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Monitoreo y gestión de servicios de urgencias médicas</p>
+                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Gestión integral de Ambulatorio */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <Stethoscope className="w-10 h-10 text-[#2a3d85]" />
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Ambulatorio</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Control de consultas externas y atención ambulatoria</p>
+                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Gestión integral de Hospitalización */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <Building2 className="w-10 h-10 text-[#2a3d85]" />
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Hospitalización</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Administración de pacientes hospitalizados</p>
+                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Gestión integral de Cirugía */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <Scissors className="w-10 h-10 text-[#2a3d85]" />
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Cirugía</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Control de quirófanos y procedimientos quirúrgicos</p>
+                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Gestión integral de Imágenes */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <Camera className="w-10 h-10 text-[#2a3d85]" />
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Imágenes</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Administración de estudios radiológicos e imágenes</p>
+                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Gestión integral de Laboratorio */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <TestTube className="w-10 h-10 text-[#2a3d85]" />
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Laboratorio</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Control de análisis clínicos y pruebas de laboratorio</p>
+                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Gestión integral de Ginecología y Obstetricia */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <Baby className="w-10 h-10 text-[#2a3d85]" />
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Ginecología y Obstetricia</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Atención especializada en salud femenina y materna</p>
+                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                                Acceder al Módulo
+                            </button>
+                        </div>
+
+                        {/* Gestión integral de Medicina Física */}
+                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <Dumbbell className="w-10 h-10 text-[#2a3d85]" />
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {selectedLocation === 'cali' ? 'CALI' : 'CARTAGO'}
+                                </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión integral de Medicina Física</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">Rehabilitación y terapia física especializada</p>
+                            <button className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto">
+                                Acceder al Módulo
+                            </button>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );

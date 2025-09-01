@@ -5,21 +5,26 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\PreventBackHistory;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Redirect root to login
+// Redirect root to login (solo para usuarios no autenticados)
 Route::get('/', function () {
     return redirect()->route('login');
+})->middleware('guest');
+
+// Authentication routes - solo accesibles por usuarios no autenticados
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
-// Authentication routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Logout route - accesible solo por usuarios autenticados
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth.strict');
 
-// Protected routes with role-based access
-Route::middleware(['auth'])->group(function () {
+// Protected routes with role-based access - TODAS las rutas protegidas
+Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Dashboard routes for different roles
