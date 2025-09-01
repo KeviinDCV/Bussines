@@ -36,11 +36,24 @@ export default function Administrador() {
         });
 
         if (newEmail) {
-            Swal.fire({
-                title: '¡Email actualizado!',
-                text: `Tu nuevo email es: ${newEmail}`,
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
+            router.patch('/profile/email', { email: newEmail }, {
+                onSuccess: () => {
+                    Swal.fire({
+                        title: '¡Email actualizado!',
+                        text: `Tu nuevo email es: ${newEmail}`,
+                        icon: 'success',
+                        confirmButtonColor: '#2a3d85'
+                    });
+                },
+                onError: (errors) => {
+                    const errorMessage = Object.values(errors).flat().join('\n');
+                    Swal.fire({
+                        title: 'Error',
+                        text: errorMessage || 'No se pudo actualizar el email',
+                        icon: 'error',
+                        confirmButtonColor: '#2a3d85'
+                    });
+                }
             });
         }
     };
@@ -83,11 +96,28 @@ export default function Administrador() {
         });
 
         if (formValues) {
-            Swal.fire({
-                title: '¡Contraseña actualizada!',
-                text: 'Tu contraseña ha sido cambiada exitosamente',
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
+            router.patch('/profile/password', { 
+                current_password: formValues.currentPassword,
+                password: formValues.newPassword,
+                password_confirmation: formValues.newPassword
+            }, {
+                onSuccess: () => {
+                    Swal.fire({
+                        title: '¡Contraseña actualizada!',
+                        text: 'Tu contraseña ha sido cambiada exitosamente',
+                        icon: 'success',
+                        confirmButtonColor: '#2a3d85'
+                    });
+                },
+                onError: (errors) => {
+                    const errorMessage = Object.values(errors).flat().join('\n');
+                    Swal.fire({
+                        title: 'Error',
+                        text: errorMessage || 'No se pudo actualizar la contraseña',
+                        icon: 'error',
+                        confirmButtonColor: '#2a3d85'
+                    });
+                }
             });
         }
     };

@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,43 +20,28 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Protected routes with role-based access
 Route::middleware(['auth'])->group(function () {
-    // General dashboard (fallback)
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard/General');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Dashboard routes for different roles
+    Route::get('/dashboard/asistenciales', [DashboardController::class, 'asistenciales'])->name('dashboard.asistenciales');
+    Route::get('/dashboard/administrativos', [DashboardController::class, 'administrativos'])->name('dashboard.administrativos');
+    Route::get('/dashboard/direccionamiento', [DashboardController::class, 'direccionamiento'])->name('dashboard.direccionamiento');
+    Route::get('/dashboard/financieros', [DashboardController::class, 'financieros'])->name('dashboard.financieros');
+    Route::get('/dashboard/administrador', [DashboardController::class, 'administrador'])->name('dashboard.administrador');
+    Route::get('/dashboard/general', [DashboardController::class, 'general'])->name('dashboard.general');
+    Route::get('/plan-desarrollo', [DashboardController::class, 'planDesarrollo'])->name('dashboard.plan-desarrollo');
 
-    // Role-specific dashboards with proper middleware
-    Route::get('/dashboard/asistenciales', function () {
-        return Inertia::render('Dashboard/Asistenciales');
-    })->middleware('role:Asistenciales')->name('dashboard.asistenciales');
-
-    Route::get('/dashboard/administrativos', function () {
-        return Inertia::render('Dashboard/Administrativos');
-    })->middleware('role:Administrativos')->name('dashboard.administrativos');
-
-    Route::get('/dashboard/direccionamiento', function () {
-        return Inertia::render('Dashboard/Direccionamiento');
-    })->middleware('role:Direccionamiento')->name('dashboard.direccionamiento');
-
-    Route::get('/dashboard/financieros', function () {
-        return Inertia::render('Dashboard/Financieros');
-    })->middleware('role:Financieros')->name('dashboard.financieros');
-
-    Route::get('/dashboard/administrador', function () {
-        return Inertia::render('Dashboard/Administrador');
-    })->middleware('role:Administrador')->name('dashboard.administrador');
-
-    // Admin routes - only for Administrador role
-    Route::middleware('role:Administrador')->prefix('admin')->name('admin.')->group(function () {
-        Route::resource('users', App\Http\Controllers\Admin\UserController::class);
-        Route::patch('/users/{user}/toggle-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])
-            ->name('users.toggle-status');
+    // Profile routes - only for administrators
+    Route::middleware('role:Administrador')->group(function () {
+        Route::patch('/profile/email', [ProfileController::class, 'updateEmail'])->name('profile.update-email');
+        Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
     });
 
-    // Plan de Desarrollo module - only for Direccionamiento role
-    Route::get('/plan-desarrollo', function () {
-        return Inertia::render('Dashboard/PlanDesarrollo');
-    })->middleware('role:Direccionamiento')->name('plan-desarrollo');
+    // Admin routes - only accessible by administrators
+    Route::middleware('role:Administrador')->group(function () {
+        Route::resource('admin/users', UserController::class);
+        Route::patch('admin/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+    });
 });
 
 require __DIR__.'/settings.php';

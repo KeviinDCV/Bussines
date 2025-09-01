@@ -134,35 +134,7 @@ export default function Administrativos() {
                                         </div>
                                         
                                         <div className="py-1">
-                                            <button 
-                                                onClick={() => setShowSettings(!showSettings)}
-                                                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center justify-between transition-colors"
-                                            >
-                                                <div className="flex items-center space-x-2">
-                                                    <Settings className="w-4 h-4" />
-                                                    <span>Ajustes</span>
-                                                </div>
-                                                <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${showSettings ? 'rotate-180' : ''}`} />
-                                            </button>
-                                            
-                                            <div className={`transition-all duration-200 overflow-hidden ${
-                                                showSettings ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'
-                                            }`}>
-                                                <button 
-                                                    onClick={handleChangeEmail}
-                                                    className="w-full text-left px-8 py-2 text-sm text-gray-600 hover:bg-gray-50 flex items-center space-x-2 transition-colors"
-                                                >
-                                                    <User className="w-3 h-3" />
-                                                    <span>Cambiar Email</span>
-                                                </button>
-                                                <button 
-                                                    onClick={handleChangePassword}
-                                                    className="w-full text-left px-8 py-2 text-sm text-gray-600 hover:bg-gray-50 flex items-center space-x-2 transition-colors"
-                                                >
-                                                    <Settings className="w-3 h-3" />
-                                                    <span>Cambiar Contraseña</span>
-                                                </button>
-                                            </div>
+                                            {/* Settings only visible for Administrator role */}
                                         </div>
                                         
                                         <button 
