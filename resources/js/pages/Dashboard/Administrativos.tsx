@@ -17,6 +17,7 @@ export default function Administrativos() {
     const { props } = usePage();
     const user = (props as any).auth?.user;
     const userPermissions = (props as any).userPermissions || [];
+    const isGerencia = user?.role === 'Gerencia';
 
     const handleLogout = () => {
         router.post('/logout');
@@ -106,6 +107,8 @@ export default function Administrativos() {
             pageTitle="Administrativos"
             pageDescription="Subgerencia Administrativa y Financiera"
             icon={Building}
+            showBackButton={isGerencia}
+            backUrl="/dashboard/gerencia"
         >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {/* Talento Humano */}

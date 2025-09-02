@@ -1,8 +1,11 @@
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
 import { TrendingUp, Target, BarChart3, PieChart, FileText } from 'lucide-react';
 
 export default function Direccionamiento() {
+    const { props } = usePage();
+    const user = (props as any).auth?.user;
+    const isGerencia = user?.role === 'Gerencia';
 
     const modules = [
         {
@@ -21,6 +24,8 @@ export default function Direccionamiento() {
             pageTitle="Direccionamiento"
             pageDescription="Planeación Estratégica y Direccionamiento"
             icon={TrendingUp}
+            showBackButton={isGerencia}
+            backUrl="/dashboard/gerencia"
         >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {modules.map((module) => {

@@ -13,6 +13,8 @@ import {
 export default function Financieros() {
     const { props } = usePage();
     const userPermissions = (props as any).userPermissions || [];
+    const user = (props as any).auth?.user;
+    const isGerencia = user?.role === 'Gerencia';
 
     const modules = [
         {
@@ -65,6 +67,8 @@ export default function Financieros() {
             pageTitle="Financieros"
             pageDescription="Subgerencia Financiera"
             icon={DollarSign}
+            showBackButton={isGerencia}
+            backUrl="/dashboard/gerencia"
         >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {modules.map((module) => {
