@@ -14,27 +14,6 @@ export default function Administrador() {
             description: 'Administrar usuarios y permisos del sistema',
             icon: Users,
             route: '/admin/users'
-        },
-        {
-            id: 2,
-            title: 'Configuración del Sistema',
-            description: 'Configuración general de la aplicación',
-            icon: Settings,
-            route: '/admin/settings'
-        },
-        {
-            id: 3,
-            title: 'Base de Datos',
-            description: 'Administración y mantenimiento de la BD',
-            icon: Database,
-            route: '/admin/database'
-        },
-        {
-            id: 4,
-            title: 'Seguridad',
-            description: 'Configuración de seguridad y auditoría',
-            icon: Shield,
-            route: '/admin/security'
         }
     ];
 
@@ -45,7 +24,7 @@ export default function Administrador() {
             pageDescription="Panel de Administración"
             icon={Shield}
         >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {adminModules.map((module) => {
                     const IconComponent = module.icon;
                     

@@ -12,38 +12,6 @@ export default function Direccionamiento() {
             icon: FileText,
             color: 'bg-[#2a3d85]',
             hoverColor: 'hover:bg-[#1e2d5f]'
-        },
-        {
-            id: 2,
-            title: 'Módulo 2',
-            description: 'Funcionalidad en desarrollo',
-            icon: Target,
-            color: 'bg-[#2a3d85]',
-            hoverColor: 'hover:bg-[#1e2d5f]'
-        },
-        {
-            id: 3,
-            title: 'Módulo 3',
-            description: 'Funcionalidad en desarrollo',
-            icon: BarChart3,
-            color: 'bg-[#2a3d85]',
-            hoverColor: 'hover:bg-[#1e2d5f]'
-        },
-        {
-            id: 4,
-            title: 'Módulo 4',
-            description: 'Funcionalidad en desarrollo',
-            icon: PieChart,
-            color: 'bg-[#2a3d85]',
-            hoverColor: 'hover:bg-[#1e2d5f]'
-        },
-        {
-            id: 5,
-            title: 'Módulo 5',
-            description: 'Funcionalidad en desarrollo',
-            icon: TrendingUp,
-            color: 'bg-[#2a3d85]',
-            hoverColor: 'hover:bg-[#1e2d5f]'
         }
     ];
 

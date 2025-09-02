@@ -150,12 +150,12 @@ export default function AppLayout({
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             {showBackButton && (
-                                <Link href={backUrl} className="mr-4">
-                                    <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
-                                        <ArrowLeft className="w-4 h-4 mr-2" />
-                                        Volver
-                                    </Button>
-                                </Link>
+                                <button
+                                    onClick={() => window.location.href = backUrl}
+                                    className="mr-4 p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                >
+                                    <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                                </button>
                             )}
                             <IconComponent className="w-8 h-8 mr-3" />
                             <div>
