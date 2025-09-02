@@ -1,311 +1,178 @@
-import { Head, router, usePage } from '@inertiajs/react';
-import { Award, FileText, Users, TrendingUp, User, LogOut, ChevronDown, Settings, Shield, BarChart3, Search, Lightbulb, Heart, RefreshCw, Stethoscope, Headphones } from 'lucide-react';
-import { useState } from 'react';
-import Swal from 'sweetalert2';
-
+import { router, usePage } from '@inertiajs/react';
+import AppLayout from '@/components/layout/AppLayout';
+import { 
+    Shield, 
+    FileText, 
+    Settings, 
+    BarChart3, 
+    Search, 
+    TrendingUp, 
+    Heart, 
+    RefreshCw, 
+    Stethoscope, 
+    Headphones,
+    Award
+} from 'lucide-react';
 export default function Calidad() {
-    const [showUserMenu, setShowUserMenu] = useState(false);
-    const [showSettings, setShowSettings] = useState(false);
-    const { props } = usePage();
-    const user = (props as any).auth?.user;
-
-    const handleLogout = () => {
-        router.post('/logout');
-    };
-
-    const handleChangeEmail = async () => {
-        const { value: newEmail } = await Swal.fire({
-            title: 'Cambiar Email',
-            input: 'email',
-            inputLabel: 'Nuevo correo electrónico',
-            inputValue: user?.email || '',
-            inputPlaceholder: 'usuario@huv.com',
-            showCancelButton: true,
-            confirmButtonText: 'Actualizar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'Debes ingresar un email válido';
-                }
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                    return 'El formato del email no es válido';
-                }
-            }
-        });
-
-        if (newEmail) {
-            Swal.fire({
-                title: '¡Email actualizado!',
-                text: `Tu nuevo email es: ${newEmail}`,
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
-            });
-        }
-    };
-
-    const handleChangePassword = async () => {
-        const { value: formValues } = await Swal.fire({
-            title: 'Cambiar Contraseña',
-            html: `
-                <input id="current-password" type="password" class="swal2-input" placeholder="Contraseña actual">
-                <input id="new-password" type="password" class="swal2-input" placeholder="Nueva contraseña">
-                <input id="confirm-password" type="password" class="swal2-input" placeholder="Confirmar nueva contraseña">
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Actualizar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
-            focusConfirm: false,
-            preConfirm: () => {
-                const currentPassword = (document.getElementById('current-password') as HTMLInputElement)?.value;
-                const newPassword = (document.getElementById('new-password') as HTMLInputElement)?.value;
-                const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement)?.value;
-                
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    Swal.showValidationMessage('Todos los campos son obligatorios');
-                    return false;
-                }
-                
-                if (newPassword.length < 6) {
-                    Swal.showValidationMessage('La nueva contraseña debe tener al menos 6 caracteres');
-                    return false;
-                }
-                
-                if (newPassword !== confirmPassword) {
-                    Swal.showValidationMessage('Las contraseñas no coinciden');
-                    return false;
-                }
-                
-                return { currentPassword, newPassword };
-            }
-        });
-
-        if (formValues) {
-            Swal.fire({
-                title: '¡Contraseña actualizada!',
-                text: 'Tu contraseña ha sido cambiada exitosamente',
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
-            });
-        }
-    };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Head title="Dashboard Calidad - Business Intelligence HUV" />
-            
-            <div className="bg-[#2a3d85] text-white p-4 sm:p-6">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                        <div className="flex items-center">
-                            <Award className="w-6 h-6 sm:w-8 sm:h-8 mr-3" />
-                            <div>
-                                <h1 className="text-lg sm:text-2xl font-bold">MÓDULOS Calidad</h1>
-                                <p className="text-xs sm:text-sm opacity-90 hidden sm:block">Sistema de Gestión de Calidad</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-between sm:justify-end space-x-4">
-                            <div className="text-right hidden sm:block">
-                                <p className="text-sm font-medium">Hospital Universitario del Valle</p>
-                                <p className="text-xs opacity-90">"Evaristo Garcia" E.S.E</p>
-                            </div>
-                            
-                            {/* User Menu */}
-                            <div className="relative">
-                                <button
-                                    onClick={() => setShowUserMenu(!showUserMenu)}
-                                    className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2 transition-colors"
-                                >
-                                    <User className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    <span className="text-sm">{user?.name || ''}</span>
-                                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
-                                </button>
-                                
-                                <div className={`absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 transition-all duration-200 origin-top-right ${
-                                    showUserMenu 
-                                        ? 'opacity-100 scale-100 translate-y-0' 
-                                        : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-                                }`}>
-                                    <div className="py-2">
-                                        <div className="px-4 py-2 border-b border-gray-100">
-                                            <p className="text-sm font-medium text-gray-900">{user?.name || ''}</p>
-                                            <p className="text-xs text-gray-500">{user?.email || 'email@huv.com'}</p>
-                                        </div>
-                                        
-                                        <button 
-                                            onClick={handleLogout}
-                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors mt-2"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            <span>Cerrar Sesión</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <AppLayout
+            title="Dashboard Calidad - Business Intelligence HUV"
+            pageTitle="Calidad"
+            pageDescription="Gestión de Calidad y Mejoramiento Continuo"
+            icon={Award}
+        >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {/* PAMEC */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
                     </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">PAMEC</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Programa de Auditoría para el Mejoramiento de la Calidad</p>
+                    <button 
+                        onClick={() => router.get('/calidad/pamec')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
+                </div>
+
+                {/* Documentos */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Documentos</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión documental y control de versiones</p>
+                    <button 
+                        onClick={() => router.get('/calidad/documentos')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
+                </div>
+
+                {/* Habilitación */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <Settings className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Habilitación</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Procesos de habilitación y acreditación</p>
+                    <button 
+                        onClick={() => router.get('/calidad/habilitacion')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
+                </div>
+
+                {/* Indicadores */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <BarChart3 className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Indicadores</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Métricas e indicadores de calidad</p>
+                    <button 
+                        onClick={() => router.get('/calidad/indicadores')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
+                </div>
+
+                {/* Auditoría */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <Search className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Auditoría</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Auditorías internas y externas</p>
+                    <button 
+                        onClick={() => router.get('/calidad/auditoria')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
+                </div>
+
+                {/* Mejoramiento */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Mejoramiento</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Planes de mejoramiento continuo</p>
+                    <button 
+                        onClick={() => router.get('/calidad/mejoramiento')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
+                </div>
+
+                {/* Humanización */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Humanización</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Programa de humanización en salud</p>
+                    <button 
+                        onClick={() => router.get('/calidad/humanizacion')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
+                </div>
+
+                {/* Referenciaciones */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <RefreshCw className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Referenciaciones</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Sistema de referencias y contrarreferencias</p>
+                    <button 
+                        onClick={() => router.get('/calidad/referenciaciones')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
+                </div>
+
+                {/* Tecnovigilancia */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <Stethoscope className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Tecnovigilancia</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Vigilancia de dispositivos médicos</p>
+                    <button 
+                        onClick={() => router.get('/calidad/tecnovigilancia')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
+                </div>
+
+                {/* Centro de Escucha */}
+                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <Headphones className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Centro de Escucha</h3>
+                    <p className="text-sm text-gray-600 mb-4 flex-grow">Atención y seguimiento a usuarios</p>
+                    <button 
+                        onClick={() => router.get('/calidad/centro-escucha')}
+                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                    >
+                        Acceder al Módulo
+                    </button>
                 </div>
             </div>
-
-            <div className="max-w-7xl mx-auto p-4 sm:p-6">
-                {/* Quality Modules */}
-                <div className="mb-8">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Gestión de Calidad</h2>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-stretch">
-                        {/* PAMEC */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">PAMEC</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Programa de Auditoría para el Mejoramiento de la Calidad</p>
-                            <button 
-                                onClick={() => router.get('/calidad/pamec')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Documentos */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Documentos</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión documental y control de versiones</p>
-                            <button 
-                                onClick={() => router.get('/calidad/documentos')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Habilitación */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Settings className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Habilitación</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Procesos de habilitación y acreditación</p>
-                            <button 
-                                onClick={() => router.get('/calidad/habilitacion')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Indicadores */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <BarChart3 className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Indicadores</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Métricas e indicadores de calidad</p>
-                            <button 
-                                onClick={() => router.get('/calidad/indicadores')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Auditoría */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Search className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Auditoría</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Auditorías internas y externas</p>
-                            <button 
-                                onClick={() => router.get('/calidad/auditoria')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Mejoramiento */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Mejoramiento</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Planes de mejoramiento continuo</p>
-                            <button 
-                                onClick={() => router.get('/calidad/mejoramiento')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Humanización */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Humanización</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Programa de humanización en salud</p>
-                            <button 
-                                onClick={() => router.get('/calidad/humanizacion')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Referenciaciones */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <RefreshCw className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Referenciaciones</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Sistema de referencias y contrarreferencias</p>
-                            <button 
-                                onClick={() => router.get('/calidad/referenciaciones')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Tecnovigilancia */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Stethoscope className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Tecnovigilancia</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Vigilancia de dispositivos médicos</p>
-                            <button 
-                                onClick={() => router.get('/calidad/tecnovigilancia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Centro de Escucha */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Headphones className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Centro de Escucha</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Atención y seguimiento a usuarios</p>
-                            <button 
-                                onClick={() => router.get('/calidad/centro-escucha')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </AppLayout>
     );
 }

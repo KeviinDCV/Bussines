@@ -1,187 +1,34 @@
-import { Head, router, usePage } from '@inertiajs/react';
-import { FileText, ArrowLeft, Settings, User, LogOut, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
-import Swal from 'sweetalert2';
+import { router, usePage } from '@inertiajs/react';
+import AppLayout from '@/components/layout/AppLayout';
+import { FileText } from 'lucide-react';
 
 export default function PlanDesarrollo() {
-    const [showUserMenu, setShowUserMenu] = useState(false);
-    const [showSettings, setShowSettings] = useState(false);
     const { props } = usePage();
-    const user = (props as any).auth?.user;
-
-    const handleLogout = () => {
-        router.post('/logout');
-    };
-
-    const handleChangeEmail = async () => {
-        const { value: newEmail } = await Swal.fire({
-            title: 'Cambiar Email',
-            input: 'email',
-            inputLabel: 'Nuevo correo electrónico',
-            inputValue: user?.email || '',
-            inputPlaceholder: 'usuario@huv.com',
-            showCancelButton: true,
-            confirmButtonText: 'Actualizar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'Debes ingresar un email válido';
-                }
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                    return 'El formato del email no es válido';
-                }
-            }
-        });
-
-        if (newEmail) {
-            Swal.fire({
-                title: '¡Email actualizado!',
-                text: `Tu nuevo email es: ${newEmail}`,
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
-            });
-        }
-    };
-
-    const handleChangePassword = async () => {
-        const { value: formValues } = await Swal.fire({
-            title: 'Cambiar Contraseña',
-            html: `
-                <input id="current-password" type="password" class="swal2-input" placeholder="Contraseña actual">
-                <input id="new-password" type="password" class="swal2-input" placeholder="Nueva contraseña">
-                <input id="confirm-password" type="password" class="swal2-input" placeholder="Confirmar nueva contraseña">
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Actualizar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
-            focusConfirm: false,
-            preConfirm: () => {
-                const currentPassword = (document.getElementById('current-password') as HTMLInputElement)?.value;
-                const newPassword = (document.getElementById('new-password') as HTMLInputElement)?.value;
-                const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement)?.value;
-                
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    Swal.showValidationMessage('Todos los campos son obligatorios');
-                    return false;
-                }
-                
-                if (newPassword.length < 6) {
-                    Swal.showValidationMessage('La nueva contraseña debe tener al menos 6 caracteres');
-                    return false;
-                }
-                
-                if (newPassword !== confirmPassword) {
-                    Swal.showValidationMessage('Las contraseñas no coinciden');
-                    return false;
-                }
-                
-                return { currentPassword, newPassword };
-            }
-        });
-
-        if (formValues) {
-            Swal.fire({
-                title: '¡Contraseña actualizada!',
-                text: 'Tu contraseña ha sido cambiada exitosamente',
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
-            });
-        }
-    };
-
-    const handleBackToDashboard = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const fromGerencia = urlParams.get('from') === 'gerencia';
-        
-        if (fromGerencia) {
-            router.get('/dashboard/direccionamiento-gerencia');
-        } else {
-            router.get('/dashboard/direccionamiento');
-        }
-    };
+    const userPermissions = (props as any).userPermissions || [];
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Head title="Plan de Desarrollo - Business Intelligence HUV" />
-            
-            <div className="bg-[#2a3d85] text-white p-6">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <button
-                                onClick={handleBackToDashboard}
-                                className="mr-4 p-2 hover:bg-white/10 rounded-lg transition-colors"
-                            >
-                                <ArrowLeft className="w-6 h-6" />
-                            </button>
-                            <FileText className="w-8 h-8 mr-3" />
-                            <div>
-                                <h1 className="text-2xl font-bold">Plan de Desarrollo</h1>
-                                <p className="opacity-90">Gestión y seguimiento del plan estratégico institucional</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            <div className="text-right">
-                                <p className="text-sm font-medium">Hospital Universitario del Valle</p>
-                                <p className="text-xs opacity-90">"Evaristo Garcia" E.S.E</p>
-                            </div>
-                            
-                            {/* User Menu */}
-                            <div className="relative">
-                                <button
-                                    onClick={() => setShowUserMenu(!showUserMenu)}
-                                    className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2 transition-colors"
-                                >
-                                    <User className="w-5 h-5" />
-                                    <span className="text-sm">{user?.name || ''}</span>
-                                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
-                                </button>
-                                
-                                <div className={`absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 transition-all duration-200 origin-top-right ${
-                                    showUserMenu 
-                                        ? 'opacity-100 scale-100 translate-y-0' 
-                                        : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-                                }`}>
-                                    <div className="py-2">
-                                        <div className="px-4 py-2 border-b border-gray-100">
-                                            <p className="text-sm font-medium text-gray-900">{user?.name || ''}</p>
-                                            <p className="text-xs text-gray-500">{user?.email || 'email@huv.com'}</p>
-                                        </div>
-                                        
-                                        <div className="py-1">
-                                            {/* Settings only visible for Administrator role */}
-                                        </div>
-                                        
-                                        <button 
-                                            onClick={handleLogout}
-                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors mt-2"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            <span>Cerrar Sesión</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <AppLayout
+            title="Plan de Desarrollo - Business Intelligence HUV"
+            pageTitle="Plan de Desarrollo"
+            pageDescription="Planificación Estratégica Institucional"
+            icon={FileText}
+        >
+            <div className="bg-white rounded-lg shadow-lg p-8">
+                <div className="text-center py-12">
+                    <FileText className="w-16 h-16 text-[#2a3d85] mx-auto mb-4" />
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Plan de Desarrollo Institucional</h2>
+                    <p className="text-gray-600 mb-8">
+                        Módulo en desarrollo para la gestión del plan de desarrollo estratégico del Hospital Universitario del Valle.
+                    </p>
+                    
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-2xl mx-auto">
+                        <h3 className="text-lg font-semibold text-blue-900 mb-2">Próximamente</h3>
+                        <p className="text-blue-700">
+                            Este módulo incluirá herramientas para la planificación estratégica, seguimiento de objetivos institucionales y gestión de proyectos de desarrollo.
+                        </p>
                     </div>
                 </div>
             </div>
-
-            <main className="max-w-7xl mx-auto p-6">
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Indicadores Estratégicos</h2>
-                    <iframe 
-                        title="Plan de Desarrollo" 
-                        width="100%" 
-                        height="600" 
-                        src="https://app.powerbi.com/view?r=eyJrIjoiNDQxZTA3NjYtYjc4ZS00YjFiLWFlOGItM2M5MjY3MTBjZGIyIiwidCI6ImNmNGFhYjEzLWQwMDQtNDcwOC04MDFjLTQ0YmJiYWUxNmI0MyIsImMiOjR9" 
-                        frameBorder="0" 
-                        allowFullScreen={true}
-                    />
-                </div>
-            </main>
-        </div>
+        </AppLayout>
     );
 }

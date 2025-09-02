@@ -1,230 +1,116 @@
-import { Head, router, usePage } from '@inertiajs/react';
-import { Award, FileText, Settings, BarChart3, Search, TrendingUp, Heart, RefreshCw, Stethoscope, Headphones, Shield, User, LogOut, ChevronDown, ArrowLeft } from 'lucide-react';
-import { useState } from 'react';
+import { router, usePage } from '@inertiajs/react';
+import AppLayout from '@/components/layout/AppLayout';
+import { Award, FileText, Settings, BarChart3, Search, TrendingUp, Heart, RefreshCw, Stethoscope, Headphones, Shield } from 'lucide-react';
 
 export default function CalidadGerencia() {
-    const [showUserMenu, setShowUserMenu] = useState(false);
     const { props } = usePage();
-    const user = (props as any).auth?.user;
+    const userPermissions = (props as any).userPermissions || [];
 
-    const handleBackToGerencia = () => {
-        router.get('/dashboard/gerencia');
-    };
-
-    const handleLogout = () => {
-        router.post('/logout');
-    };
+    const modules = [
+        {
+            id: 1,
+            title: 'PAMEC',
+            description: 'Programa de Auditoría para el Mejoramiento de la Calidad',
+            icon: Shield,
+            route: '/calidad/pamec'
+        },
+        {
+            id: 2,
+            title: 'Documentos',
+            description: 'Gestión documental y control de versiones',
+            icon: FileText,
+            route: '/calidad/documentos'
+        },
+        {
+            id: 3,
+            title: 'Habilitación',
+            description: 'Procesos de habilitación y acreditación',
+            icon: Settings,
+            route: '/calidad/habilitacion'
+        },
+        {
+            id: 4,
+            title: 'Indicadores',
+            description: 'Métricas e indicadores de calidad',
+            icon: BarChart3,
+            route: '/calidad/indicadores'
+        },
+        {
+            id: 5,
+            title: 'Auditoría',
+            description: 'Auditorías internas y externas',
+            icon: Search,
+            route: '/calidad/auditoria'
+        },
+        {
+            id: 6,
+            title: 'Mejoramiento',
+            description: 'Planes de mejoramiento continuo',
+            icon: TrendingUp,
+            route: '/calidad/mejoramiento'
+        },
+        {
+            id: 7,
+            title: 'Humanización',
+            description: 'Programa de humanización en salud',
+            icon: Heart,
+            route: '/calidad/humanizacion'
+        },
+        {
+            id: 8,
+            title: 'Referenciaciones',
+            description: 'Sistema de referencias y contrarreferencias',
+            icon: RefreshCw,
+            route: '/calidad/referenciaciones'
+        },
+        {
+            id: 9,
+            title: 'Tecnovigilancia',
+            description: 'Vigilancia de dispositivos médicos',
+            icon: Stethoscope,
+            route: '/calidad/tecnovigilancia'
+        },
+        {
+            id: 10,
+            title: 'Centro de Escucha',
+            description: 'Atención y seguimiento a usuarios',
+            icon: Headphones,
+            route: '/calidad/centro-escucha'
+        }
+    ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Head title="Módulo Calidad - Gerencia - Business Intelligence HUV" />
-            
-            <div className="bg-[#2a3d85] text-white p-4 sm:p-6">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                        <div className="flex items-center">
-                            <button
-                                onClick={handleBackToGerencia}
-                                className="mr-3 p-2 hover:bg-white/10 rounded-lg transition-colors"
-                                title="Volver a Gerencia"
+        <AppLayout
+            title="Gerencia - Calidad - Business Intelligence HUV"
+            pageTitle="Calidad - Gerencia"
+            pageDescription="Subgerencia de Calidad - Vista Gerencial"
+            icon={Award}
+            showBackButton={true}
+            backUrl="/dashboard/gerencia"
+        >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {modules.map((module) => {
+                    const IconComponent = module.icon;
+                    return (
+                        <div
+                            key={module.id}
+                            className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col"
+                        >
+                            <div className="flex items-center mb-4">
+                                <IconComponent className="w-10 h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">{module.title}</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">{module.description}</p>
+                            <button 
+                                onClick={() => router.get(module.route)}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
                             >
-                                <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                                Ver Módulo
                             </button>
-                            <Award className="w-6 h-6 sm:w-8 sm:h-8 mr-3" />
-                            <div>
-                                <h1 className="text-lg sm:text-2xl font-bold">Gerencia - Calidad</h1>
-                                <p className="text-xs sm:text-sm opacity-90 hidden sm:block">Sistema de Gestión de Calidad</p>
-                            </div>
                         </div>
-                        <div className="flex items-center justify-between sm:justify-end space-x-4">
-                            <div className="text-right hidden sm:block">
-                                <p className="text-sm font-medium">Hospital Universitario del Valle</p>
-                                <p className="text-xs opacity-90">"Evaristo Garcia" E.S.E</p>
-                            </div>
-                            
-                            <div className="relative">
-                                <button
-                                    onClick={() => setShowUserMenu(!showUserMenu)}
-                                    className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2 transition-colors"
-                                >
-                                    <User className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    <span className="text-sm">{user?.name || ''}</span>
-                                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
-                                </button>
-                                
-                                <div className={`absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 transition-all duration-200 origin-top-right ${
-                                    showUserMenu 
-                                        ? 'opacity-100 scale-100 translate-y-0' 
-                                        : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-                                }`}>
-                                    <div className="py-2">
-                                        <div className="px-4 py-2 border-b border-gray-100">
-                                            <p className="text-sm font-medium text-gray-900">{user?.name || ''}</p>
-                                            <p className="text-xs text-gray-500">{user?.email || 'email@huv.com'}</p>
-                                        </div>
-                                        
-                                        <button 
-                                            onClick={handleLogout}
-                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors mt-2"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            <span>Cerrar Sesión</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    );
+                })}
             </div>
-
-            <div className="max-w-7xl mx-auto p-4 sm:p-6">
-                <div className="mb-8">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Gestión de Calidad</h2>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">PAMEC</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Programa de Auditoría para el Mejoramiento de la Calidad</p>
-                            <button 
-                                onClick={() => router.get('/calidad/pamec?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Documentos</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión documental y control de versiones</p>
-                            <button 
-                                onClick={() => router.get('/calidad/documentos?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Settings className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Habilitación</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Procesos de habilitación y acreditación</p>
-                            <button 
-                                onClick={() => router.get('/calidad/habilitacion?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <BarChart3 className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Indicadores</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Métricas e indicadores de calidad</p>
-                            <button 
-                                onClick={() => router.get('/calidad/indicadores?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Search className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Auditoría</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Auditorías internas y externas</p>
-                            <button 
-                                onClick={() => router.get('/calidad/auditoria?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Mejoramiento</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Planes de mejoramiento continuo</p>
-                            <button 
-                                onClick={() => router.get('/calidad/mejoramiento?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Humanización</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Programa de humanización en salud</p>
-                            <button 
-                                onClick={() => router.get('/calidad/humanizacion?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <RefreshCw className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Referenciaciones</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Sistema de referencias y contrarreferencias</p>
-                            <button 
-                                onClick={() => router.get('/calidad/referenciaciones?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Stethoscope className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Tecnovigilancia</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Vigilancia de dispositivos médicos</p>
-                            <button 
-                                onClick={() => router.get('/calidad/tecnovigilancia?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Headphones className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Centro de Escucha</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Atención y seguimiento a usuarios</p>
-                            <button 
-                                onClick={() => router.get('/calidad/centro-escucha?from=gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </AppLayout>
     );
 }

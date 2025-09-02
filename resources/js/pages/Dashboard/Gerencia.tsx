@@ -1,235 +1,86 @@
-import { Head, router, usePage } from '@inertiajs/react';
-import { Crown, Building2, TrendingUp, DollarSign, Settings, Stethoscope, Award, User, LogOut, ChevronDown, Users } from 'lucide-react';
-import { useState } from 'react';
-import Swal from 'sweetalert2';
+import { router, usePage } from '@inertiajs/react';
+import AppLayout from '@/components/layout/AppLayout';
+import { Crown, Building2, TrendingUp, DollarSign, Stethoscope, Award, Users } from 'lucide-react';
 
 export default function Gerencia() {
-    const [showUserMenu, setShowUserMenu] = useState(false);
     const { props } = usePage();
-    const user = (props as any).auth?.user;
+    const userPermissions = (props as any).userPermissions || [];
 
-    const handleLogout = () => {
-        router.post('/logout');
-    };
-
-    const handleChangeEmail = async () => {
-        const { value: newEmail } = await Swal.fire({
-            title: 'Cambiar Email',
-            input: 'email',
-            inputLabel: 'Nuevo correo electrónico',
-            inputValue: user?.email || '',
-            inputPlaceholder: 'usuario@huv.com',
-            showCancelButton: true,
-            confirmButtonText: 'Actualizar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'Debes ingresar un email válido';
-                }
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                    return 'El formato del email no es válido';
-                }
-            }
-        });
-
-        if (newEmail) {
-            Swal.fire({
-                title: '¡Email actualizado!',
-                text: `Tu nuevo email es: ${newEmail}`,
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
-            });
+    const dashboards = [
+        {
+            id: 1,
+            title: 'Asistenciales',
+            description: 'Subgerencia de Servicios de Salud',
+            icon: Stethoscope,
+            route: '/dashboard/asistenciales-gerencia'
+        },
+        {
+            id: 2,
+            title: 'Administrativos',
+            description: 'Subgerencia Administrativa',
+            icon: Building2,
+            route: '/dashboard/administrativos-gerencia'
+        },
+        {
+            id: 3,
+            title: 'Calidad',
+            description: 'Subgerencia de Calidad',
+            icon: Award,
+            route: '/dashboard/calidad-gerencia'
+        },
+        {
+            id: 4,
+            title: 'Direccionamiento',
+            description: 'Direccionamiento Estratégico',
+            icon: TrendingUp,
+            route: '/dashboard/direccionamiento-gerencia'
+        },
+        {
+            id: 5,
+            title: 'Financieros',
+            description: 'Subgerencia Financiera',
+            icon: DollarSign,
+            route: '/dashboard/financieros-gerencia'
+        },
+        {
+            id: 6,
+            title: 'Administrador',
+            description: 'Panel de Administración',
+            icon: Users,
+            route: '/dashboard/administrador'
         }
-    };
-
-    const handleChangePassword = async () => {
-        const { value: formValues } = await Swal.fire({
-            title: 'Cambiar Contraseña',
-            html: `
-                <input id="current-password" type="password" class="swal2-input" placeholder="Contraseña actual">
-                <input id="new-password" type="password" class="swal2-input" placeholder="Nueva contraseña">
-                <input id="confirm-password" type="password" class="swal2-input" placeholder="Confirmar nueva contraseña">
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Actualizar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
-            focusConfirm: false,
-            preConfirm: () => {
-                const currentPassword = (document.getElementById('current-password') as HTMLInputElement)?.value;
-                const newPassword = (document.getElementById('new-password') as HTMLInputElement)?.value;
-                const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement)?.value;
-                
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    Swal.showValidationMessage('Todos los campos son obligatorios');
-                    return false;
-                }
-                
-                if (newPassword.length < 6) {
-                    Swal.showValidationMessage('La nueva contraseña debe tener al menos 6 caracteres');
-                    return false;
-                }
-                
-                if (newPassword !== confirmPassword) {
-                    Swal.showValidationMessage('Las contraseñas no coinciden');
-                    return false;
-                }
-                
-                return { currentPassword, newPassword };
-            }
-        });
-
-        if (formValues) {
-            Swal.fire({
-                title: '¡Contraseña actualizada!',
-                text: 'Tu contraseña ha sido cambiada exitosamente',
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
-            });
-        }
-    };
+    ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Head title="Dashboard Gerencia - Business Intelligence HUV" />
-            
-            <div className="bg-[#2a3d85] text-white p-6">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <Crown className="w-8 h-8 mr-3" />
-                            <div>
-                                <h1 className="text-2xl font-bold">GERENCIA GENERAL</h1>
+        <AppLayout
+            title="Dashboard Gerencia - Business Intelligence HUV"
+            pageTitle="Gerencia"
+            pageDescription="Panel de Control Gerencial"
+            icon={Crown}
+        >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {dashboards.map((dashboard) => {
+                    const IconComponent = dashboard.icon;
+                    return (
+                        <div
+                            key={dashboard.id}
+                            className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col"
+                        >
+                            <div className="flex items-center mb-4">
+                                <IconComponent className="w-10 h-10 text-[#2a3d85]" />
                             </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">{dashboard.title}</h3>
+                            <p className="text-sm text-gray-600 mb-4 flex-grow">{dashboard.description}</p>
+                            <button 
+                                onClick={() => router.get(dashboard.route)}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                            >
+                                Ver Dashboard
+                            </button>
                         </div>
-                        <div className="flex items-center space-x-4">
-                            <div className="text-right">
-                                <p className="text-sm font-medium">Hospital Universitario del Valle</p>
-                                <p className="text-xs opacity-90">"Evaristo Garcia" E.S.E</p>
-                            </div>
-                            
-                            {/* User Menu */}
-                            <div className="relative">
-                                <button
-                                    onClick={() => setShowUserMenu(!showUserMenu)}
-                                    className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2 transition-colors"
-                                >
-                                    <User className="w-5 h-5" />
-                                    <span className="text-sm">{user?.name || ''}</span>
-                                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
-                                </button>
-                                
-                                <div className={`absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 transition-all duration-200 origin-top-right ${
-                                    showUserMenu 
-                                        ? 'opacity-100 scale-100 translate-y-0' 
-                                        : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-                                }`}>
-                                    <div className="py-2">
-                                        <div className="px-4 py-2 border-b border-gray-100">
-                                            <p className="text-sm font-medium text-gray-900">{user?.name || ''}</p>
-                                            <p className="text-xs text-gray-500">{user?.email || 'email@huv.com'}</p>
-                                        </div>
-                                        
-                                        <button 
-                                            onClick={handleLogout}
-                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors mt-2"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            <span>Cerrar Sesión</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    );
+                })}
             </div>
-
-            <div className="max-w-7xl mx-auto p-6">
-                {/* Management Role Access */}
-                <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Acceso por Roles</h2>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-                        {/* Asistenciales */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Stethoscope className="w-10 h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Asistenciales</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión de servicios asistenciales y UCI</p>
-                            <button 
-                                onClick={() => router.get('/dashboard/asistenciales-gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Administrativos */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Building2 className="w-10 h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Administrativos</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión administrativa y recursos humanos</p>
-                            <button 
-                                onClick={() => router.get('/dashboard/administrativos-gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Direccionamiento */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <TrendingUp className="w-10 h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Direccionamiento</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Direccionamiento estratégico y planeación</p>
-                            <button 
-                                onClick={() => router.get('/dashboard/direccionamiento-gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Financieros */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <DollarSign className="w-10 h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Financieros</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión financiera y contable</p>
-                            <button 
-                                onClick={() => router.get('/dashboard/financieros-gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-
-                        {/* Calidad */}
-                        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                            <div className="flex items-center mb-4">
-                                <Award className="w-10 h-10 text-[#2a3d85]" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Calidad</h3>
-                            <p className="text-sm text-gray-600 mb-4 flex-grow">Sistema de gestión de calidad (Solo Dashboard)</p>
-                            <button 
-                                onClick={() => router.get('/dashboard/calidad-gerencia')}
-                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                            >
-                                Acceder al Módulo
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+        </AppLayout>
     );
 }
