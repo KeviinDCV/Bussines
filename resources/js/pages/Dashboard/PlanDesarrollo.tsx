@@ -12,6 +12,8 @@ export default function PlanDesarrollo() {
             pageTitle="Plan de Desarrollo"
             pageDescription="Planificación Estratégica Institucional"
             icon={FileText}
+            showBackButton={true}
+            backUrl="/dashboard/direccionamiento"
         >
             <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                 <div className="w-full h-full">

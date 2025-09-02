@@ -1,6 +1,6 @@
 import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
-import { Crown, Building2, TrendingUp, DollarSign, Stethoscope, Award, Users } from 'lucide-react';
+import { Crown, Building2, TrendingUp, DollarSign, Stethoscope, Award } from 'lucide-react';
 
 export default function Gerencia() {
     const { props } = usePage();
@@ -42,13 +42,6 @@ export default function Gerencia() {
             icon: DollarSign,
             route: '/dashboard/financieros-gerencia'
         },
-        {
-            id: 6,
-            title: 'Administrador',
-            description: 'Panel de Administración',
-            icon: Users,
-            route: '/dashboard/administrador'
-        }
     ];
 
     return (
