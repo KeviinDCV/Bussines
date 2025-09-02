@@ -130,6 +130,14 @@ export default function Administrador() {
             icon: Users,
             color: 'bg-[#2a3d85]',
             hoverColor: 'hover:bg-[#1e2d5f]'
+        },
+        {
+            id: 3,
+            title: 'Configuración',
+            description: 'Configuración general del sistema',
+            icon: Settings,
+            color: 'bg-[#2a3d85]',
+            hoverColor: 'hover:bg-[#1e2d5f]'
         }
     ];
 
@@ -143,7 +151,7 @@ export default function Administrador() {
                         <div className="flex items-center">
                             <Shield className="w-8 h-8 mr-3" />
                             <div>
-                                <h1 className="text-2xl font-bold">MÓDULOS Administrador</h1>
+                                <h1 className="text-2xl font-bold">Administrador</h1>
                                 <p className="opacity-90">Administración del sistema</p>
                             </div>
                         </div>
@@ -223,31 +231,29 @@ export default function Administrador() {
             </div>
 
             <div className="max-w-7xl mx-auto p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
                     {modules.map((module) => {
                         const IconComponent = module.icon;
                         return (
                             <div
                                 key={module.id}
-                                className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
+                                className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col"
                             >
-                                <div className={`${module.color} ${module.hoverColor} transition-colors duration-300 p-6 rounded-t-lg`}>
-                                    <IconComponent className="w-12 h-12 text-white mb-4" />
-                                    <h3 className="text-xl font-bold text-white">{module.title}</h3>
+                                <div className="flex items-center mb-4">
+                                    <IconComponent className="w-10 h-10 text-[#2a3d85]" />
                                 </div>
-                                <div className="p-6">
-                                    <p className="text-gray-600 mb-4">{module.description}</p>
-                                    <button 
-                                        onClick={() => {
-                                            if (module.id === 1) {
-                                                router.get('/admin/users');
-                                            }
-                                        }}
-                                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-                                    >
-                                        {module.id === 1 ? 'Acceder al Módulo' : 'Próximamente'}
-                                    </button>
-                                </div>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">{module.title}</h3>
+                                <p className="text-sm text-gray-600 mb-4 flex-grow">{module.description}</p>
+                                <button 
+                                    onClick={() => {
+                                        if (module.id === 1) {
+                                            router.get('/admin/users');
+                                        }
+                                    }}
+                                    className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
+                                >
+                                    {module.id === 1 ? 'Acceder' : 'Próximamente'}
+                                </button>
                             </div>
                         );
                     })}

@@ -1,94 +1,14 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Building2, Users, TrendingUp, DollarSign, User, LogOut, ChevronDown, Settings } from 'lucide-react';
+import { Home, User, LogOut, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import Swal from 'sweetalert2';
 
 export default function General() {
     const [showUserMenu, setShowUserMenu] = useState(false);
-    const [showSettings, setShowSettings] = useState(false);
     const { props } = usePage();
     const user = (props as any).auth?.user;
 
     const handleLogout = () => {
         router.post('/logout');
-    };
-
-    const handleChangeEmail = async () => {
-        const { value: newEmail } = await Swal.fire({
-            title: 'Cambiar Email',
-            input: 'email',
-            inputLabel: 'Nuevo correo electrónico',
-            inputValue: user?.email || '',
-            inputPlaceholder: 'usuario@huv.com',
-            showCancelButton: true,
-            confirmButtonText: 'Actualizar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'Debes ingresar un email válido';
-                }
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                    return 'El formato del email no es válido';
-                }
-            }
-        });
-
-        if (newEmail) {
-            Swal.fire({
-                title: '¡Email actualizado!',
-                text: `Tu nuevo email es: ${newEmail}`,
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
-            });
-        }
-    };
-
-    const handleChangePassword = async () => {
-        const { value: formValues } = await Swal.fire({
-            title: 'Cambiar Contraseña',
-            html: `
-                <input id="current-password" type="password" class="swal2-input" placeholder="Contraseña actual">
-                <input id="new-password" type="password" class="swal2-input" placeholder="Nueva contraseña">
-                <input id="confirm-password" type="password" class="swal2-input" placeholder="Confirmar nueva contraseña">
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Actualizar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
-            focusConfirm: false,
-            preConfirm: () => {
-                const currentPassword = (document.getElementById('current-password') as HTMLInputElement)?.value;
-                const newPassword = (document.getElementById('new-password') as HTMLInputElement)?.value;
-                const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement)?.value;
-                
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    Swal.showValidationMessage('Todos los campos son obligatorios');
-                    return false;
-                }
-                
-                if (newPassword.length < 6) {
-                    Swal.showValidationMessage('La nueva contraseña debe tener al menos 6 caracteres');
-                    return false;
-                }
-                
-                if (newPassword !== confirmPassword) {
-                    Swal.showValidationMessage('Las contraseñas no coinciden');
-                    return false;
-                }
-                
-                return { currentPassword, newPassword };
-            }
-        });
-
-        if (formValues) {
-            Swal.fire({
-                title: '¡Contraseña actualizada!',
-                text: 'Tu contraseña ha sido cambiada exitosamente',
-                icon: 'success',
-                confirmButtonColor: '#2a3d85'
-            });
-        }
     };
 
     return (
@@ -99,10 +19,10 @@ export default function General() {
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                            <Building2 className="w-8 h-8 mr-3" />
+                            <Home className="w-8 h-8 mr-3" />
                             <div>
                                 <h1 className="text-2xl font-bold">Dashboard General</h1>
-                                <p className="opacity-90">Panel de control general del sistema</p>
+                                <p className="opacity-90">Sistema de Inteligencia de Negocios</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4">
@@ -111,7 +31,6 @@ export default function General() {
                                 <p className="text-xs opacity-90">"Evaristo Garcia" E.S.E</p>
                             </div>
                             
-                            {/* User Menu */}
                             <div className="relative">
                                 <button
                                     onClick={() => setShowUserMenu(!showUserMenu)}
@@ -122,30 +41,24 @@ export default function General() {
                                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
                                 </button>
                                 
-                                <div className={`absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 transition-all duration-200 origin-top-right ${
-                                    showUserMenu 
-                                        ? 'opacity-100 scale-100 translate-y-0' 
-                                        : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-                                }`}>
-                                    <div className="py-2">
-                                        <div className="px-4 py-2 border-b border-gray-100">
-                                            <p className="text-sm font-medium text-gray-900">{user?.name || ''}</p>
-                                            <p className="text-xs text-gray-500">{user?.email || 'email@huv.com'}</p>
+                                {showUserMenu && (
+                                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                        <div className="py-2">
+                                            <div className="px-4 py-2 border-b border-gray-100">
+                                                <p className="text-sm font-medium text-gray-900">{user?.name || ''}</p>
+                                                <p className="text-xs text-gray-500">{user?.email || 'email@huv.com'}</p>
+                                            </div>
+                                            
+                                            <button 
+                                                onClick={handleLogout}
+                                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors mt-2"
+                                            >
+                                                <LogOut className="w-4 h-4" />
+                                                <span>Cerrar Sesión</span>
+                                            </button>
                                         </div>
-                                        
-                                        <div className="py-1">
-                                            {/* Settings only visible for Administrator role */}
-                                        </div>
-                                        
-                                        <button 
-                                            onClick={handleLogout}
-                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors mt-2"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            <span>Cerrar Sesión</span>
-                                        </button>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -153,37 +66,15 @@ export default function General() {
             </div>
 
             <div className="max-w-7xl mx-auto p-6">
-                <div className="bg-white rounded-lg shadow p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Bienvenido a Business Intelligence HUV</h2>
-                    <p className="text-gray-600 mb-6">
-                        Sistema de Inteligencia de Negocios para el Hospital Universitario del Valle.
-                        Por favor, contacte al administrador para asignar su rol específico.
-                    </p>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="p-4 border-2 border-blue-200 rounded-lg bg-blue-50">
-                            <Users className="w-6 h-6 text-blue-600 mb-2" />
-                            <h3 className="font-semibold text-gray-800">Asistenciales</h3>
-                            <p className="text-sm text-gray-600">Personal médico y enfermería</p>
-                        </div>
-                        
-                        <div className="p-4 border-2 border-green-200 rounded-lg bg-green-50">
-                            <Building2 className="w-6 h-6 text-green-600 mb-2" />
-                            <h3 className="font-semibold text-gray-800">Administrativos</h3>
-                            <p className="text-sm text-gray-600">Gestión administrativa</p>
-                        </div>
-                        
-                        <div className="p-4 border-2 border-purple-200 rounded-lg bg-purple-50">
-                            <TrendingUp className="w-6 h-6 text-purple-600 mb-2" />
-                            <h3 className="font-semibold text-gray-800">Direccionamiento</h3>
-                            <p className="text-sm text-gray-600">Dirección estratégica</p>
-                        </div>
-                        
-                        <div className="p-4 border-2 border-orange-200 rounded-lg bg-orange-50">
-                            <DollarSign className="w-6 h-6 text-orange-600 mb-2" />
-                            <h3 className="font-semibold text-gray-800">Financieros</h3>
-                            <p className="text-sm text-gray-600">Gestión financiera</p>
-                        </div>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Bienvenido al Sistema</h2>
+                    <div className="text-center py-12">
+                        <Home className="w-16 h-16 text-[#2a3d85] mx-auto mb-4" />
+                        <p className="text-gray-600">
+                            Sistema de Inteligencia de Negocios del Hospital Universitario del Valle.
+                            <br />
+                            Selecciona tu rol específico para acceder a los módulos correspondientes.
+                        </p>
                     </div>
                 </div>
             </div>

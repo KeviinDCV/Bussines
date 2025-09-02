@@ -12,7 +12,12 @@ export default function Urgencias() {
     };
 
     const handleBackToDashboard = () => {
-        router.get('/dashboard/asistenciales');
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('from') === 'gerencia') {
+            router.get('/dashboard/asistenciales-gerencia');
+        } else {
+            router.get('/dashboard/asistenciales');
+        }
     };
 
     return (
@@ -41,7 +46,6 @@ export default function Urgencias() {
                                 <p className="text-xs opacity-90">"Evaristo Garcia" E.S.E</p>
                             </div>
                             
-                            {/* User Menu */}
                             <div className="relative">
                                 <button
                                     onClick={() => setShowUserMenu(!showUserMenu)}
@@ -52,26 +56,24 @@ export default function Urgencias() {
                                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
                                 </button>
                                 
-                                <div className={`absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 transition-all duration-200 origin-top-right ${
-                                    showUserMenu 
-                                        ? 'opacity-100 scale-100 translate-y-0' 
-                                        : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-                                }`}>
-                                    <div className="py-2">
-                                        <div className="px-4 py-2 border-b border-gray-100">
-                                            <p className="text-sm font-medium text-gray-900">{user?.name || ''}</p>
-                                            <p className="text-xs text-gray-500">{user?.email || 'email@huv.com'}</p>
+                                {showUserMenu && (
+                                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                        <div className="py-2">
+                                            <div className="px-4 py-2 border-b border-gray-100">
+                                                <p className="text-sm font-medium text-gray-900">{user?.name || ''}</p>
+                                                <p className="text-xs text-gray-500">{user?.email || 'email@huv.com'}</p>
+                                            </div>
+                                            
+                                            <button 
+                                                onClick={handleLogout}
+                                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors mt-2"
+                                            >
+                                                <LogOut className="w-4 h-4" />
+                                                <span>Cerrar Sesión</span>
+                                            </button>
                                         </div>
-                                        
-                                        <button 
-                                            onClick={handleLogout}
-                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors mt-2"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            <span>Cerrar Sesión</span>
-                                        </button>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
+
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\PreventBackHistory;
@@ -33,7 +35,15 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/dashboard/direccionamiento', [DashboardController::class, 'direccionamiento'])->name('dashboard.direccionamiento');
     Route::get('/dashboard/financieros', [DashboardController::class, 'financieros'])->name('dashboard.financieros');
     Route::get('/dashboard/administrador', [DashboardController::class, 'administrador'])->name('dashboard.administrador');
+    Route::get('/dashboard/calidad', [DashboardController::class, 'calidad'])->name('dashboard.calidad');
+    Route::get('/dashboard/gerencia', [DashboardController::class, 'gerencia'])->name('dashboard.gerencia');
     Route::get('/dashboard/general', [DashboardController::class, 'general'])->name('dashboard.general');
+    Route::get('/dashboard/asistenciales-gerencia', [DashboardController::class, 'asistencialesGerencia'])->name('dashboard.asistenciales-gerencia');
+    Route::get('/dashboard/administrativos-gerencia', [DashboardController::class, 'administrativosGerencia'])->name('dashboard.administrativos-gerencia');
+    Route::get('/dashboard/financieros-gerencia', [DashboardController::class, 'financierosGerencia'])->name('dashboard.financieros-gerencia');
+    Route::get('/dashboard/direccionamiento-gerencia', [DashboardController::class, 'direccionamientoGerencia'])->name('dashboard.direccionamiento-gerencia');
+    Route::get('/dashboard/administrador-gerencia', [DashboardController::class, 'administradorGerencia'])->name('dashboard.administrador-gerencia');
+    Route::get('/dashboard/calidad-gerencia', [DashboardController::class, 'calidadGerencia'])->name('dashboard.calidad-gerencia');
     Route::get('/plan-desarrollo', [DashboardController::class, 'planDesarrollo'])->name('dashboard.plan-desarrollo');
 
     // Asistenciales module routes
@@ -84,6 +94,18 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/asistenciales/extension-hospitalaria', function () {
         return Inertia::render('Asistenciales/ExtensionHospitalaria');
     })->name('asistenciales.extension-hospitalaria');
+    
+    Route::get('/asistenciales/uci-adultos', function () {
+        return Inertia::render('Asistenciales/UciAdultos');
+    })->name('asistenciales.uci-adultos');
+    
+    Route::get('/asistenciales/uci-pediatrico', function () {
+        return Inertia::render('Asistenciales/UciPediatrico');
+    })->name('asistenciales.uci-pediatrico');
+    
+    Route::get('/asistenciales/uci-neonatal', function () {
+        return Inertia::render('Asistenciales/UciNeonatal');
+    })->name('asistenciales.uci-neonatal');
 
     // Financieros module routes
     Route::get('/financieros/facturacion', function () {
@@ -110,6 +132,68 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
         return Inertia::render('Financieros/Contabilidad');
     })->name('financieros.contabilidad');
 
+    // Administrativos module routes
+    Route::get('/administrativos/talento-humano', function () {
+        return Inertia::render('Administrativos/TalentoHumano');
+    })->name('administrativos.talento-humano');
+    
+    Route::get('/administrativos/ciau', function () {
+        return Inertia::render('Administrativos/Ciau');
+    })->name('administrativos.ciau');
+    
+    Route::get('/administrativos/sistemas-informacion', function () {
+        return Inertia::render('Administrativos/SistemasInformacion');
+    })->name('administrativos.sistemas-informacion');
+    
+    Route::get('/administrativos/gestion-tecnica-logistica', function () {
+        return Inertia::render('Administrativos/GestionTecnicaLogistica');
+    })->name('administrativos.gestion-tecnica-logistica');
+    
+    Route::get('/administrativos/farmacia', function () {
+        return Inertia::render('Administrativos/Farmacia');
+    })->name('administrativos.farmacia');
+
+    // Calidad module routes
+    Route::get('/calidad/pamec', function () {
+        return Inertia::render('Calidad/Pamec');
+    })->name('calidad.pamec');
+    
+    Route::get('/calidad/documentos', function () {
+        return Inertia::render('Calidad/Documentos');
+    })->name('calidad.documentos');
+    
+    Route::get('/calidad/habilitacion', function () {
+        return Inertia::render('Calidad/Habilitacion');
+    })->name('calidad.habilitacion');
+    
+    Route::get('/calidad/indicadores', function () {
+        return Inertia::render('Calidad/Indicadores');
+    })->name('calidad.indicadores');
+    
+    Route::get('/calidad/auditoria', function () {
+        return Inertia::render('Calidad/Auditoria');
+    })->name('calidad.auditoria');
+    
+    Route::get('/calidad/mejoramiento', function () {
+        return Inertia::render('Calidad/Mejoramiento');
+    })->name('calidad.mejoramiento');
+    
+    Route::get('/calidad/humanizacion', function () {
+        return Inertia::render('Calidad/Humanizacion');
+    })->name('calidad.humanizacion');
+    
+    Route::get('/calidad/referenciaciones', function () {
+        return Inertia::render('Calidad/Referenciaciones');
+    })->name('calidad.referenciaciones');
+    
+    Route::get('/calidad/tecnovigilancia', function () {
+        return Inertia::render('Calidad/Tecnovigilancia');
+    })->name('calidad.tecnovigilancia');
+    
+    Route::get('/calidad/centro-escucha', function () {
+        return Inertia::render('Calidad/CentroEscucha');
+    })->name('calidad.centro-escucha');
+
     // Profile routes - only for administrators
     Route::middleware('role:Administrador')->group(function () {
         Route::patch('/profile/email', [ProfileController::class, 'updateEmail'])->name('profile.update-email');
@@ -120,6 +204,8 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::middleware('role:Administrador')->group(function () {
         Route::resource('admin/users', UserController::class);
         Route::patch('admin/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+
+        Route::resource('admin/roles', RoleController::class)->except(['index', 'show', 'create', 'edit']);
     });
 });
 

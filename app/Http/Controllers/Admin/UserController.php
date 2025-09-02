@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -39,12 +41,20 @@ class UserController extends Controller
             $query->where('is_active', $isActive);
         }
 
-        $users = $query->orderBy('created_at', 'desc')->paginate(10);
+        $users = $query->select(['id', 'name', 'email', 'role', 'is_active', 'created_at', 'module_permissions'])
+                      ->orderBy('created_at', 'desc')
+                      ->paginate(10);
 
+        $activeRoles = Role::where('active', true)->orderBy('display_name')->get();
+        
+        $modules = \App\Models\Module::with('role')->where('active', true)->orderBy('role_id')->orderBy('display_name')->get();
+        
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
             'filters' => $request->only(['search', 'role', 'status']),
-            'roles' => ['Asistenciales', 'Administrativos', 'Direccionamiento', 'Financieros', 'Administrador']
+            'roles' => $activeRoles->pluck('display_name')->toArray(),
+            'rolesData' => $activeRoles,
+            'modules' => $modules
         ]);
     }
 
@@ -53,8 +63,10 @@ class UserController extends Controller
      */
     public function create(): Response
     {
+        $roles = Role::where('active', true)->orderBy('display_name')->get();
+        
         return Inertia::render('Admin/Users/Create', [
-            'roles' => ['Asistenciales', 'Administrativos', 'Direccionamiento', 'Financieros', 'Administrador']
+            'roles' => $roles->pluck('display_name')->toArray()
         ]);
     }
 
@@ -67,8 +79,9 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => ['required', Rule::in(['Asistenciales', 'Administrativos', 'Direccionamiento', 'Financieros', 'Administrador'])],
-            'is_active' => 'boolean'
+            'role' => ['required', Rule::in(Role::where('active', true)->pluck('display_name')->toArray())],
+            'is_active' => 'boolean',
+            'module_permissions' => 'array'
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -76,7 +89,7 @@ class UserController extends Controller
 
         User::create($validated);
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('users.index')
             ->with('success', 'Usuario creado exitosamente.');
     }
 
@@ -95,9 +108,11 @@ class UserController extends Controller
      */
     public function edit(User $user): Response
     {
+        $roles = Role::where('active', true)->orderBy('display_name')->get();
+        
         return Inertia::render('Admin/Users/Edit', [
             'user' => $user,
-            'roles' => ['Asistenciales', 'Administrativos', 'Direccionamiento', 'Financieros', 'Administrador']
+            'roles' => $roles->pluck('display_name')->toArray()
         ]);
     }
 
@@ -110,8 +125,9 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => ['required', Rule::in(['Asistenciales', 'Administrativos', 'Direccionamiento', 'Financieros', 'Administrador'])],
-            'is_active' => 'boolean'
+            'role' => ['required', Rule::in(Role::where('active', true)->pluck('display_name')->toArray())],
+            'is_active' => 'boolean',
+            'module_permissions' => 'array'
         ]);
 
         if (!empty($validated['password'])) {
@@ -120,11 +136,11 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
-        $validated['is_active'] = $validated['is_active'] ?? false;
+        $validated['is_active'] = $validated['is_active'] ?? $user->is_active;
 
         $user->update($validated);
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('users.index')
             ->with('success', 'Usuario actualizado exitosamente.');
     }
 
@@ -135,13 +151,13 @@ class UserController extends Controller
     {
         // Prevent deletion of current user
         if ($user->id === auth()->id()) {
-            return redirect()->route('admin.users.index')
+            return redirect()->route('users.index')
                 ->with('error', 'No puedes eliminar tu propia cuenta.');
         }
 
         $user->delete();
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('users.index')
             ->with('success', 'Usuario eliminado exitosamente.');
     }
 
@@ -152,7 +168,7 @@ class UserController extends Controller
     {
         // Prevent deactivating current user
         if ($user->id === auth()->id()) {
-            return redirect()->route('admin.users.index')
+            return redirect()->route('users.index')
                 ->with('error', 'No puedes desactivar tu propia cuenta.');
         }
 
@@ -160,7 +176,7 @@ class UserController extends Controller
 
         $status = $user->is_active ? 'activado' : 'desactivado';
         
-        return redirect()->route('admin.users.index')
+        return redirect()->route('users.index')
             ->with('success', "Usuario {$status} exitosamente.");
     }
 }

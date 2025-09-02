@@ -80,7 +80,7 @@ export default function Login({ errors }: LoginProps) {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <Head title="Business Intelligence HUV - Login" />
             <style dangerouslySetInnerHTML={{
                 __html: `
@@ -96,17 +96,17 @@ export default function Login({ errors }: LoginProps) {
                 `
             }} />
             
-            <div className="w-full max-w-md mx-auto">
+            <div className="w-full max-w-sm sm:max-w-md mx-auto">
                 {/* Centered Login Form */}
-                <div className="bg-white rounded-2xl shadow-xl p-8">
-                    <div className="text-center mb-8">
-                        <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4 shadow-lg">
-                            <img src="/images/logo.png" alt="HUV Logo" className="w-16 h-16 object-contain" />
+                <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+                    <div className="text-center mb-6 sm:mb-8">
+                        <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-full mb-3 sm:mb-4 shadow-lg">
+                            <img src="/images/logo.png" alt="HUV Logo" className="w-12 h-12 sm:w-16 sm:h-16 object-contain" />
                         </div>
-                        <h1 className="text-3xl font-bold text-[#2a3d85] mb-2">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-[#2a3d85] mb-2">
                             Business Intelligence HUV
                         </h1>
-                        <p className="text-gray-600">
+                        <p className="text-sm sm:text-base text-gray-600 px-2">
                             Hospital Universitario del Valle "Evaristo Garcia" E.S.E
                         </p>
                     </div>
@@ -122,7 +122,7 @@ export default function Login({ errors }: LoginProps) {
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 placeholder="usuario@huv.com"
-                                className="h-12 border-gray-300 focus:border-[#2a3d85] focus:ring-[#2a3d85] text-gray-900 bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a3d85]/20 selection:bg-[#2a3d85] selection:text-white"
+                                className="h-10 sm:h-12 border-gray-300 focus:border-[#2a3d85] focus:ring-[#2a3d85] text-gray-900 bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a3d85]/20 selection:bg-[#2a3d85] selection:text-white text-sm sm:text-base"
                                 style={{
                                     WebkitBoxShadow: '0 0 0 1000px white inset !important',
                                     WebkitTextFillColor: '#111827 !important',
@@ -144,7 +144,7 @@ export default function Login({ errors }: LoginProps) {
                                     value={data.password}
                                     onChange={(e) => setData('password', e.target.value)}
                                     placeholder="••••••••"
-                                    className="h-12 border-gray-300 focus:border-[#2a3d85] focus:ring-[#2a3d85] pr-12 text-gray-900 bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a3d85]/20 selection:bg-[#2a3d85] selection:text-white"
+                                    className="h-10 sm:h-12 border-gray-300 focus:border-[#2a3d85] focus:ring-[#2a3d85] pr-10 sm:pr-12 text-gray-900 bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a3d85]/20 selection:bg-[#2a3d85] selection:text-white text-sm sm:text-base"
                                     style={{
                                         WebkitBoxShadow: '0 0 0 1000px white inset !important',
                                         WebkitTextFillColor: '#111827 !important',
@@ -155,12 +155,12 @@ export default function Login({ errors }: LoginProps) {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                                    className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                                 >
                                     {showPassword ? (
-                                        <EyeOff className="w-5 h-5" />
+                                        <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                                     ) : (
-                                        <Eye className="w-5 h-5" />
+                                        <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                                     )}
                                 </button>
                             </div>
@@ -169,7 +169,7 @@ export default function Login({ errors }: LoginProps) {
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="w-full h-12 bg-[#2a3d85] hover:bg-[#1e2d5f] text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#2a3d85]/20"
+                            className="w-full h-10 sm:h-12 bg-[#2a3d85] hover:bg-[#1e2d5f] text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#2a3d85]/20 text-sm sm:text-base"
                         >
                             {processing ? (
                                 <>
@@ -182,8 +182,8 @@ export default function Login({ errors }: LoginProps) {
                         </Button>
                     </form>
 
-                    <div className="mt-8 pt-6 border-t border-gray-200">
-                        <p className="text-sm text-gray-500 text-center">
+                    <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200">
+                        <p className="text-xs sm:text-sm text-gray-500 text-center px-2">
                             ¿Problemas para acceder? Contacte al administrador del sistema
                         </p>
                     </div>
@@ -191,15 +191,15 @@ export default function Login({ errors }: LoginProps) {
             </div>
             
             {/* Bottom Left - Innovation */}
-            <div className="absolute bottom-6 left-6">
-                <p className="text-sm text-gray-500 font-medium">
+            <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 hidden sm:block">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">
                     Innovación y Desarrollo
                 </p>
             </div>
             
             {/* Bottom Right - Quality Management */}
-            <div className="absolute bottom-6 right-6">
-                <p className="text-sm text-gray-500 font-medium">
+            <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 hidden sm:block">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">
                     Gestión de Calidad y Mejoramiento
                 </p>
             </div>

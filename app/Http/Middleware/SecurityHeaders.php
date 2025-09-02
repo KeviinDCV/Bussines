@@ -29,24 +29,24 @@ class SecurityHeaders
         if ($isDevelopment) {
             // CSP más permisiva para desarrollo con Vite
             $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://192.168.2.202:5173 ws://192.168.2.202:5173; " .
-                   "style-src 'self' 'unsafe-inline' https://fonts.bunny.net; " .
-                   "img-src 'self' data: blob:; " .
-                   "font-src 'self' https://fonts.bunny.net; " .
-                   "connect-src 'self' http://192.168.2.202:5173 ws://192.168.2.202:5173; " .
-                   "frame-src 'self' https://app.powerbi.com https://*.powerbi.com; " .
+                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://192.168.2.202:5173 ws://192.168.2.202:5173 https://*.google.com https://*.gstatic.com; " .
+                   "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .
+                   "img-src 'self' data: blob: https://*.google.com https://*.gstatic.com; " .
+                   "font-src 'self' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .
+                   "connect-src 'self' http://192.168.2.202:5173 ws://192.168.2.202:5173 https://*.google.com https://*.googleapis.com; " .
+                   "frame-src 'self' https://app.powerbi.com https://*.powerbi.com https://lookerstudio.google.com https://*.google.com; " .
                    "frame-ancestors 'none'; " .
                    "base-uri 'self'; " .
                    "form-action 'self'";
         } else {
             // CSP estricta para producción
             $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline'; " .
-                   "style-src 'self' 'unsafe-inline' https://fonts.bunny.net; " .
-                   "img-src 'self' data: blob:; " .
-                   "font-src 'self' https://fonts.bunny.net; " .
-                   "connect-src 'self'; " .
-                   "frame-src 'self' https://app.powerbi.com https://*.powerbi.com; " .
+                   "script-src 'self' 'unsafe-inline' https://*.google.com https://*.gstatic.com; " .
+                   "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .
+                   "img-src 'self' data: blob: https://*.google.com https://*.gstatic.com; " .
+                   "font-src 'self' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .
+                   "connect-src 'self' https://*.google.com https://*.googleapis.com; " .
+                   "frame-src 'self' https://app.powerbi.com https://*.powerbi.com https://lookerstudio.google.com https://*.google.com; " .
                    "frame-ancestors 'none'; " .
                    "base-uri 'self'; " .
                    "form-action 'self'";

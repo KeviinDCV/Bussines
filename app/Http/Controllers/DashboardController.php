@@ -26,6 +26,10 @@ class DashboardController extends Controller
                 return redirect()->route('dashboard.financieros');
             case 'Administrador':
                 return redirect()->route('dashboard.administrador');
+            case 'Calidad':
+                return redirect()->route('dashboard.calidad');
+            case 'Gerencia':
+                return redirect()->route('dashboard.gerencia');
             default:
                 return redirect()->route('dashboard.general');
         }
@@ -36,7 +40,10 @@ class DashboardController extends Controller
      */
     public function asistenciales()
     {
-        return Inertia::render('Dashboard/Asistenciales');
+        $user = auth()->user();
+        return Inertia::render('Dashboard/Asistenciales', [
+            'userPermissions' => $user->module_permissions ?? []
+        ]);
     }
 
     /**
@@ -44,7 +51,10 @@ class DashboardController extends Controller
      */
     public function administrativos()
     {
-        return Inertia::render('Dashboard/Administrativos');
+        $user = auth()->user();
+        return Inertia::render('Dashboard/Administrativos', [
+            'userPermissions' => $user->module_permissions ?? []
+        ]);
     }
 
     /**
@@ -60,7 +70,10 @@ class DashboardController extends Controller
      */
     public function financieros()
     {
-        return Inertia::render('Dashboard/Financieros');
+        $user = auth()->user();
+        return Inertia::render('Dashboard/Financieros', [
+            'userPermissions' => $user->module_permissions ?? []
+        ]);
     }
 
     /**
@@ -80,10 +93,77 @@ class DashboardController extends Controller
     }
 
     /**
+     * Display the Calidad dashboard.
+     */
+    public function calidad()
+    {
+        $user = auth()->user();
+        return Inertia::render('Dashboard/Calidad', [
+            'userPermissions' => $user->module_permissions ?? []
+        ]);
+    }
+
+    /**
+     * Display the Gerencia dashboard.
+     */
+    public function gerencia()
+    {
+        return Inertia::render('Dashboard/Gerencia');
+    }
+
+    /**
      * Display the Plan de Desarrollo page.
      */
     public function planDesarrollo()
     {
         return Inertia::render('Dashboard/PlanDesarrollo');
+    }
+
+    /**
+     * Display the Asistenciales module for Gerencia role.
+     */
+    public function asistencialesGerencia()
+    {
+        return Inertia::render('Dashboard/AsistencialesGerencia');
+    }
+
+    /**
+     * Display the Administrativos module for Gerencia role.
+     */
+    public function administrativosGerencia()
+    {
+        return Inertia::render('Dashboard/AdministrativosGerencia');
+    }
+
+    /**
+     * Display the Financieros module for Gerencia role.
+     */
+    public function financierosGerencia()
+    {
+        return Inertia::render('Dashboard/FinancierosGerencia');
+    }
+
+    /**
+     * Display the Direccionamiento module for Gerencia role.
+     */
+    public function direccionamientoGerencia()
+    {
+        return Inertia::render('Dashboard/DireccionamientoGerencia');
+    }
+
+    /**
+     * Display the Administrador module for Gerencia role.
+     */
+    public function administradorGerencia()
+    {
+        return Inertia::render('Dashboard/AdministradorGerencia');
+    }
+
+    /**
+     * Display the Calidad module for Gerencia role.
+     */
+    public function calidadGerencia()
+    {
+        return Inertia::render('Dashboard/CalidadGerencia');
     }
 }

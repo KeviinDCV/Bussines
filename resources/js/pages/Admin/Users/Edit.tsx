@@ -15,6 +15,7 @@ interface User {
     role: string;
     is_active: boolean;
     created_at: string;
+    module_permissions?: string[];
 }
 
 interface Props {
@@ -29,6 +30,7 @@ interface UserFormData {
     password_confirmation: string;
     role: string;
     is_active: boolean;
+    module_permissions: string[];
 }
 
 export default function EditUser({ user, roles }: Props) {
@@ -42,7 +44,28 @@ export default function EditUser({ user, roles }: Props) {
         password_confirmation: '',
         role: user.role,
         is_active: user.is_active,
+        module_permissions: user.module_permissions || [],
     });
+
+    const handleRoleChange = (newRole: string) => {
+        setData('role', newRole);
+        setData('module_permissions', []);
+    };
+
+    const handleModulePermissionChange = (moduleKey: string, checked: boolean) => {
+        const currentPermissions = [...data.module_permissions];
+        if (checked) {
+            if (!currentPermissions.includes(moduleKey)) {
+                currentPermissions.push(moduleKey);
+            }
+        } else {
+            const index = currentPermissions.indexOf(moduleKey);
+            if (index > -1) {
+                currentPermissions.splice(index, 1);
+            }
+        }
+        setData('module_permissions', currentPermissions);
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -221,7 +244,7 @@ export default function EditUser({ user, roles }: Props) {
                                     <Label htmlFor="role" className="text-gray-700 font-medium">
                                         Rol del Usuario *
                                     </Label>
-                                    <Select value={data.role} onValueChange={(value) => setData('role', value)}>
+                                    <Select value={data.role} onValueChange={handleRoleChange}>
                                         <SelectTrigger className={`h-12 ${errors.role ? 'border-red-500' : 'border-gray-300'}`}>
                                             <SelectValue placeholder="Seleccionar rol" />
                                         </SelectTrigger>
@@ -253,6 +276,8 @@ export default function EditUser({ user, roles }: Props) {
                                 </div>
                             </div>
                         </div>
+
+
 
                         {/* Información del Usuario */}
                         <div className="bg-gray-50 p-4 rounded-lg">

@@ -92,7 +92,14 @@ export default function PlanDesarrollo() {
     };
 
     const handleBackToDashboard = () => {
-        router.get('/dashboard/direccionamiento');
+        const urlParams = new URLSearchParams(window.location.search);
+        const fromGerencia = urlParams.get('from') === 'gerencia';
+        
+        if (fromGerencia) {
+            router.get('/dashboard/direccionamiento-gerencia');
+        } else {
+            router.get('/dashboard/direccionamiento');
+        }
     };
 
     return (

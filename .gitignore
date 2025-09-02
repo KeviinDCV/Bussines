@@ -25,3 +25,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+
+# Ignore kluster.ai Verify Code rules
+.github/instructions/kluster-code-verify.instructions.md

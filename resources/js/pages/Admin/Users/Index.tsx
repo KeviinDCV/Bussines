@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { 
     Users, 
@@ -10,12 +10,15 @@ import {
     UserCheck, 
     UserX,
     Filter,
-    ArrowLeft
+    Shield
 } from 'lucide-react';
+import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Pagination } from '@/components/ui/pagination';
+
 import { showSuccess, showError, showConfirm } from '@/utils/sweetAlert';
 import Swal from 'sweetalert2';
 
@@ -26,6 +29,7 @@ interface User {
     role: string;
     is_active: boolean;
     created_at: string;
+    module_permissions?: string[];
 }
 
 interface PaginatedUsers {
@@ -41,6 +45,27 @@ interface PaginatedUsers {
     }>;
 }
 
+interface Role {
+    id: number;
+    name: string;
+    display_name: string;
+    description?: string;
+    active: boolean;
+    created_at: string;
+}
+
+interface Module {
+    id: number;
+    name: string;
+    display_name: string;
+    description?: string;
+    icon?: string;
+    route?: string;
+    role_id: number;
+    active: boolean;
+    order: number;
+}
+
 interface Props {
     users: PaginatedUsers;
     filters: {
@@ -49,12 +74,18 @@ interface Props {
         status?: string;
     };
     roles: string[];
+    rolesData: Role[];
+    modules: Module[];
 }
 
-export default function UsersIndex({ users, filters, roles }: Props) {
+export default function UsersIndex({ users, filters, roles, rolesData, modules }: Props) {
     const [search, setSearch] = useState(filters.search || '');
     const [selectedRole, setSelectedRole] = useState(filters.role || 'all');
     const [selectedStatus, setSelectedStatus] = useState(filters.status || 'all');
+    const [activeTab, setActiveTab] = useState<'users' | 'roles'>('users');
+    const [roleSearch, setRoleSearch] = useState('');
+    const [roleStatusFilter, setRoleStatusFilter] = useState('all');
+    const [filteredRoles, setFilteredRoles] = useState(rolesData);
 
     // Real-time search with debounce
     useEffect(() => {
@@ -63,6 +94,8 @@ export default function UsersIndex({ users, filters, roles }: Props) {
                 search: search || undefined,
                 role: selectedRole === 'all' ? undefined : selectedRole,
                 status: selectedStatus === 'all' ? undefined : selectedStatus,
+                // Always reset to page 1 when filters change
+                page: 1,
             }, {
                 preserveState: true,
                 replace: true,
@@ -72,11 +105,33 @@ export default function UsersIndex({ users, filters, roles }: Props) {
         return () => clearTimeout(timeoutId);
     }, [search, selectedRole, selectedStatus]);
 
+    // Filter roles based on search and status
+    useEffect(() => {
+        let filtered = rolesData;
+        
+        if (roleSearch) {
+            filtered = filtered.filter(role => 
+                role.display_name.toLowerCase().includes(roleSearch.toLowerCase()) ||
+                role.name.toLowerCase().includes(roleSearch.toLowerCase()) ||
+                (role.description && role.description.toLowerCase().includes(roleSearch.toLowerCase()))
+            );
+        }
+        
+        if (roleStatusFilter !== 'all') {
+            const isActive = roleStatusFilter === 'active';
+            filtered = filtered.filter(role => role.active === isActive);
+        }
+        
+        setFilteredRoles(filtered);
+    }, [roleSearch, roleStatusFilter, rolesData]);
+
     const handleSearch = () => {
         router.get('/admin/users', {
             search: search || undefined,
             role: selectedRole === 'all' ? undefined : selectedRole,
             status: selectedStatus === 'all' ? undefined : selectedStatus,
+            // Reset to page 1 when manually searching
+            page: 1,
         }, {
             preserveState: true,
             replace: true,
@@ -87,7 +142,10 @@ export default function UsersIndex({ users, filters, roles }: Props) {
         setSearch('');
         setSelectedRole('all');
         setSelectedStatus('all');
-        router.get('/admin/users', {}, {
+        router.get('/admin/users', {
+            // Reset to page 1 when clearing filters
+            page: 1,
+        }, {
             preserveState: true,
             replace: true,
         });
@@ -177,10 +235,16 @@ export default function UsersIndex({ users, filters, roles }: Props) {
     };
 
     const handleEditUser = async (user: User) => {
+        // Get modules from database
+        const allModules = modules ? modules.map(module => module.display_name) : [];
+
+        // Get current user modules (assuming they're available in user object)
+        const currentModules = (user as any).module_permissions || [];
+
         const { value: formValues } = await Swal.fire({
             title: 'Editar Usuario',
             html: `
-                <div class="space-y-4">
+                <div class="space-y-4 text-left">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
                         <input id="swal-edit-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" value="${user.name}">
@@ -199,19 +263,88 @@ export default function UsersIndex({ users, filters, roles }: Props) {
                             ${roles.map(role => `<option value="${role}" ${role === user.role ? 'selected' : ''}>${role}</option>`).join('')}
                         </select>
                     </div>
+                    <div id="edit-modules-section">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Módulos disponibles</label>
+                        <input type="text" id="edit-module-search" placeholder="Buscar módulos..." class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent text-sm">
+                        <div id="edit-modules-list" class="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 space-y-1">
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Selecciona los módulos a los que tendrá acceso (todos los módulos disponibles)</p>
+                    </div>
                 </div>
             `,
+            didOpen: () => {
+                const roleSelect = document.getElementById('swal-edit-role');
+                const modulesSection = document.getElementById('edit-modules-section');
+                const modulesList = document.getElementById('edit-modules-list');
+                const searchInput = document.getElementById('edit-module-search');
+                
+                const allModules = ['Ambulatorio', 'Banco de Sangre', 'Cirugía', 'Epidemiología', 'Extensión Hospitalaria', 'Ginecología', 'Hospitalización', 'Imágenes', 'Laboratorio', 'Medicina Física', 'Mortalidad', 'UCI Adultos', 'UCI Neonatal', 'UCI Pediátrico', 'Urgencias', 'CIAU', 'Farmacia', 'Gestión Técnica y Logística', 'Sistemas de Información', 'Talento Humano', 'Plan de Desarrollo', 'Cartera', 'Contabilidad', 'Facturación', 'Glosas', 'Presupuesto', 'Recaudo', 'PAMEC', 'Documentos', 'Habilitación', 'Indicadores', 'Auditoría', 'Mejoramiento', 'Humanización', 'Referenciaciones', 'Tecnovigilancia', 'Centro de Escucha', 'Gestión de Usuarios'];
+                
+                const renderEditModules = (modulesList) => {
+                    // Group modules by role
+                    const modulesByRole = {};
+                    modules?.forEach(module => {
+                        const roleName = module.role?.display_name || 'Sin Rol';
+                        if (!modulesByRole[roleName]) {
+                            modulesByRole[roleName] = [];
+                        }
+                        if (modulesList.includes(module.display_name)) {
+                            modulesByRole[roleName].push(module.display_name);
+                        }
+                    });
+                    
+                    let html = '';
+                    Object.keys(modulesByRole).sort().forEach(roleName => {
+                        if (modulesByRole[roleName].length > 0) {
+                            html += `<div class="mb-4">`;
+                            html += `<h4 class="font-medium text-gray-700 mb-2 text-sm">${roleName}</h4>`;
+                            html += `<div class="pl-4 space-y-1">`;
+                            modulesByRole[roleName].forEach(module => {
+                                const isChecked = currentModules.includes(module) ? 'checked' : '';
+                                html += `<label class="flex items-center space-x-2 text-sm">
+                                    <input type="checkbox" name="edit-modules" value="${module}" ${isChecked} class="rounded border-gray-300 text-[#2a3d85] focus:ring-[#2a3d85]">
+                                    <span>${module}</span>
+                                </label>`;
+                            });
+                            html += `</div></div>`;
+                        }
+                    });
+                    
+                    return html;
+                };
+                
+                const updateEditModules = () => {
+                    modulesSection.style.display = 'block';
+                    modulesList.innerHTML = renderEditModules(allModules);
+                };
+                
+                const filterEditModules = () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const filteredModules = allModules.filter(module => 
+                        module.toLowerCase().includes(searchTerm)
+                    );
+                    modulesList.innerHTML = renderEditModules(filteredModules);
+                };
+                
+                roleSelect.addEventListener('change', updateEditModules);
+                searchInput.addEventListener('input', filterEditModules);
+                updateEditModules(); // Initialize on open
+            },
             focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'Actualizar Usuario',
             cancelButtonText: 'Cancelar',
             confirmButtonColor: '#2a3d85',
-            width: '500px',
+            width: '600px',
             preConfirm: () => {
                 const name = (document.getElementById('swal-edit-name') as HTMLInputElement).value;
                 const email = (document.getElementById('swal-edit-email') as HTMLInputElement).value;
                 const password = (document.getElementById('swal-edit-password') as HTMLInputElement).value;
                 const role = (document.getElementById('swal-edit-role') as HTMLSelectElement).value;
+                
+                // Get selected modules
+                const moduleCheckboxes = document.querySelectorAll('input[name="edit-modules"]:checked');
+                const selectedModules = Array.from(moduleCheckboxes).map((cb: any) => cb.value);
                 
                 if (!name || !email || !role) {
                     Swal.showValidationMessage('Nombre, email y rol son obligatorios');
@@ -228,7 +361,7 @@ export default function UsersIndex({ users, filters, roles }: Props) {
                     return false;
                 }
                 
-                return { name, email, password: password || undefined, role };
+                return { name, email, password: password || undefined, role, module_permissions: selectedModules };
             }
         });
 
@@ -245,11 +378,65 @@ export default function UsersIndex({ users, filters, roles }: Props) {
         }
     };
 
+    const handleCreateRole = async () => {
+        const { value: formValues } = await Swal.fire({
+            title: 'Crear Nuevo Rol',
+            html: `
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre interno</label>
+                        <input id="role-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: nuevo_rol">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre para mostrar</label>
+                        <input id="role-display-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: Nuevo Rol">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                        <textarea id="role-description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Descripción del rol (opcional)" rows="3"></textarea>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Crear Rol',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#2a3d85',
+            width: '500px',
+            preConfirm: () => {
+                const name = (document.getElementById('role-name') as HTMLInputElement).value;
+                const display_name = (document.getElementById('role-display-name') as HTMLInputElement).value;
+                const description = (document.getElementById('role-description') as HTMLTextAreaElement).value;
+                
+                if (!name || !display_name) {
+                    Swal.showValidationMessage('Nombre interno y nombre para mostrar son obligatorios');
+                    return false;
+                }
+                
+                return { name, display_name, description };
+            }
+        });
+
+        if (formValues) {
+            router.post('/admin/roles', formValues, {
+                onSuccess: () => {
+                    showSuccess('Rol creado', 'El rol ha sido creado exitosamente.');
+                },
+                onError: (errors) => {
+                    const errorMessage = Object.values(errors).flat().join('\n');
+                    showError('Error al crear rol', errorMessage);
+                }
+            });
+        }
+    };
+
     const handleCreateUser = async () => {
+        // Get modules from database
+        const allModules = modules ? modules.map(module => module.display_name) : [];
+
         const { value: formValues } = await Swal.fire({
             title: 'Crear Nuevo Usuario',
             html: `
-                <div class="space-y-4">
+                <div class="space-y-4 text-left">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
                         <input id="swal-input1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Nombre completo">
@@ -273,20 +460,107 @@ export default function UsersIndex({ users, filters, roles }: Props) {
                             ${roles.map(role => `<option value="${role}">${role}</option>`).join('')}
                         </select>
                     </div>
+                    <div id="modules-section" style="display: none;">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Módulos disponibles</label>
+                        <input type="text" id="module-search" placeholder="Buscar módulos..." class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent text-sm">
+                        <div id="modules-list" class="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 space-y-1">
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Selecciona los módulos a los que tendrá acceso (todos los módulos disponibles)</p>
+                    </div>
                 </div>
             `,
+            didOpen: () => {
+                const roleSelect = document.getElementById('swal-input4');
+                const modulesSection = document.getElementById('modules-section');
+                const modulesList = document.getElementById('modules-list');
+                const searchInput = document.getElementById('module-search');
+                
+                const allModules = modules ? modules.map(module => module.display_name) : [];
+                
+                const renderModules = (modulesList, selectedRole) => {
+                    const defaultModules = modules ? modules.filter(m => m.role?.display_name === selectedRole).map(m => m.display_name) : [];
+                    
+                    // Group modules by role
+                    const modulesByRole = {};
+                    modules?.forEach(module => {
+                        const roleName = module.role?.display_name || 'Sin Rol';
+                        if (!modulesByRole[roleName]) {
+                            modulesByRole[roleName] = [];
+                        }
+                        if (modulesList.includes(module.display_name)) {
+                            modulesByRole[roleName].push(module.display_name);
+                        }
+                    });
+                    
+                    let html = '';
+                    Object.keys(modulesByRole).sort().forEach(roleName => {
+                        if (modulesByRole[roleName].length > 0) {
+                            html += `<div class="mb-4">`;
+                            html += `<h4 class="font-medium text-gray-700 mb-2 text-sm">${roleName}</h4>`;
+                            html += `<div class="pl-4 space-y-1">`;
+                            modulesByRole[roleName].forEach(module => {
+                                const isDefault = defaultModules.includes(module);
+                                html += `<label class="flex items-center space-x-2 text-sm">
+                                    <input type="checkbox" name="modules" value="${module}" ${isDefault ? 'checked' : ''} class="rounded border-gray-300 text-[#2a3d85] focus:ring-[#2a3d85]">
+                                    <span>${module}</span>
+                                </label>`;
+                            });
+                            html += `</div></div>`;
+                        }
+                    });
+                    
+                    return html;
+                };
+                
+                const updateModules = () => {
+                    const role = roleSelect.value;
+                    if (role) {
+                        modulesSection.style.display = 'block';
+                        modulesList.innerHTML = renderModules(allModules, role);
+                        
+                        // Auto-check default modules for role
+                        const defaultModules = modules ? modules.filter(m => m.role?.display_name === role).map(m => m.display_name) : [];
+                        setTimeout(() => {
+                            defaultModules.forEach(moduleName => {
+                                const checkbox = document.querySelector(`input[name="modules"][value="${moduleName}"]`);
+                                if (checkbox) checkbox.checked = true;
+                            });
+                        }, 10);
+                    } else {
+                        modulesSection.style.display = 'none';
+                    }
+                };
+                
+                const filterModules = () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const role = roleSelect.value;
+                    const filteredModules = allModules.filter(module => 
+                        module.toLowerCase().includes(searchTerm)
+                    );
+                    if (role) {
+                        modulesList.innerHTML = renderModules(filteredModules, role);
+                    }
+                };
+                
+                roleSelect.addEventListener('change', updateModules);
+                searchInput.addEventListener('input', filterModules);
+            },
             focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'Crear Usuario',
             cancelButtonText: 'Cancelar',
             confirmButtonColor: '#2a3d85',
-            width: '500px',
+            width: '600px',
             preConfirm: () => {
                 const name = (document.getElementById('swal-input1') as HTMLInputElement).value;
                 const email = (document.getElementById('swal-input2') as HTMLInputElement).value;
                 const password = (document.getElementById('swal-input3') as HTMLInputElement).value;
                 const passwordConfirmation = (document.getElementById('swal-input5') as HTMLInputElement).value;
                 const role = (document.getElementById('swal-input4') as HTMLSelectElement).value;
+                
+                // Get selected modules
+                const moduleCheckboxes = document.querySelectorAll('input[name="modules"]:checked');
+                const selectedModules = Array.from(moduleCheckboxes).map((cb: any) => cb.value);
                 
                 if (!name || !email || !password || !passwordConfirmation || !role) {
                     Swal.showValidationMessage('Todos los campos son obligatorios');
@@ -308,7 +582,7 @@ export default function UsersIndex({ users, filters, roles }: Props) {
                     return false;
                 }
                 
-                return { name, email, password, password_confirmation: passwordConfirmation, role };
+                return { name, email, password, password_confirmation: passwordConfirmation, role, module_permissions: selectedModules };
             }
         });
 
@@ -336,37 +610,135 @@ export default function UsersIndex({ users, filters, roles }: Props) {
         return colors[role as keyof typeof colors] || 'bg-gray-100 text-gray-800';
     };
 
-    return (
-        <div className="min-h-screen bg-gray-50">
-            <Head title="Gestión de Usuarios - Business Intelligence HUV" />
-            
-            {/* Header */}
-            <div className="bg-[#2a3d85] text-white p-6">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <Link href="/dashboard/administrador" className="mr-4">
-                                <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
-                                    <ArrowLeft className="w-4 h-4 mr-2" />
-                                    Volver
-                                </Button>
-                            </Link>
-                            <Users className="w-8 h-8 mr-3" />
-                            <div>
-                                <h1 className="text-2xl font-bold">Gestión de Usuarios</h1>
-                                <p className="opacity-90">Administrar usuarios del sistema</p>
-                            </div>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-sm font-medium">Hospital Universitario del Valle</p>
-                            <p className="text-xs opacity-90">"Evaristo Garcia" E.S.E</p>
-                        </div>
+    const handleClearRoleFilters = () => {
+        setRoleSearch('');
+        setRoleStatusFilter('all');
+    };
+
+    const handleEditRole = async (role: Role) => {
+        const { value: formValues } = await Swal.fire({
+            title: 'Editar Rol',
+            html: `
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre interno</label>
+                        <input id="role-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" value="${role.name}">
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre para mostrar</label>
+                        <input id="role-display-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" value="${role.display_name}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                        <textarea id="role-description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" rows="3">${role.description || ''}</textarea>
+                    </div>
+                    <div>
+                        <label class="flex items-center">
+                            <input id="role-active" type="checkbox" ${role.active ? 'checked' : ''} class="mr-2">
+                            Activo
+                        </label>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Actualizar Rol',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#2a3d85',
+            width: '500px',
+            preConfirm: () => {
+                const name = (document.getElementById('role-name') as HTMLInputElement).value;
+                const display_name = (document.getElementById('role-display-name') as HTMLInputElement).value;
+                const description = (document.getElementById('role-description') as HTMLTextAreaElement).value;
+                const active = (document.getElementById('role-active') as HTMLInputElement).checked;
+                
+                if (!name || !display_name) {
+                    Swal.showValidationMessage('Nombre interno y nombre para mostrar son obligatorios');
+                    return false;
+                }
+                
+                return { name, display_name, description, active };
+            }
+        });
+
+        if (formValues) {
+            router.put(`/admin/roles/${role.id}`, formValues, {
+                onSuccess: () => {
+                    showSuccess('Rol actualizado', 'El rol ha sido actualizado exitosamente.');
+                },
+                onError: (errors) => {
+                    const errorMessage = Object.values(errors).flat().join('\n');
+                    showError('Error al actualizar rol', errorMessage);
+                }
+            });
+        }
+    };
+
+    const handleDeleteRole = async (role: Role) => {
+        const result = await Swal.fire({
+            icon: 'warning',
+            title: '¿Eliminar rol?',
+            text: `¿Estás seguro de que deseas eliminar el rol "${role.display_name}"? Esta acción no se puede deshacer.`,
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280'
+        });
+
+        if (result.isConfirmed) {
+            router.delete(`/admin/roles/${role.id}`, {
+                onSuccess: () => {
+                    showSuccess('Rol eliminado', 'El rol ha sido eliminado exitosamente.');
+                },
+                onError: () => {
+                    showError('Error', 'No se pudo eliminar el rol.');
+                }
+            });
+        }
+    };
+
+    return (
+        <AppLayout
+            title="Gestión de Usuarios - Business Intelligence HUV"
+            pageTitle="Gestión de Usuarios"
+            pageDescription="Administrar usuarios del sistema"
+            icon={Users}
+            showBackButton={true}
+            backUrl="/dashboard/administrador"
+        >
+            {/* Tabs */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+                <div className="border-b border-gray-200">
+                    <nav className="-mb-px flex space-x-8 px-6">
+                        <button
+                            onClick={() => setActiveTab('users')}
+                            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                activeTab === 'users'
+                                    ? 'border-[#2a3d85] text-[#2a3d85]'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            }`}
+                        >
+                            <Users className="w-4 h-4 inline mr-2" />
+                            Usuarios
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('roles')}
+                            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                activeTab === 'roles'
+                                    ? 'border-[#2a3d85] text-[#2a3d85]'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            }`}
+                        >
+                            <Shield className="w-4 h-4 inline mr-2" />
+                            Roles
+                        </button>
+                    </nav>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto p-6">
-                {/* Filters and Actions */}
+            {activeTab === 'users' && (
+                <>
+                    {/* Filters and Actions */}
                 <div className="bg-white rounded-lg shadow p-6 mb-6">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                         <div className="flex flex-col sm:flex-row gap-4">
@@ -512,51 +884,14 @@ export default function UsersIndex({ users, filters, roles }: Props) {
                     </div>
 
                     {/* Pagination */}
-                    {users.last_page > 1 && (
-                        <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-                            <div className="flex-1 flex justify-between sm:hidden">
-                                {users.links[0].url && (
-                                    <Link href={users.links[0].url || '#'} className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                        Anterior
-                                    </Link>
-                                )}
-                                {users.links[users.links.length - 1].url && (
-                                    <Link href={users.links[users.links.length - 1].url || '#'} className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                        Siguiente
-                                    </Link>
-                                )}
-                            </div>
-                            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-700">
-                                        Mostrando <span className="font-medium">{(users.current_page - 1) * users.per_page + 1}</span> a{' '}
-                                        <span className="font-medium">
-                                            {Math.min(users.current_page * users.per_page, users.total)}
-                                        </span>{' '}
-                                        de <span className="font-medium">{users.total}</span> resultados
-                                    </p>
-                                </div>
-                                <div>
-                                    <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                                        {users.links.map((link, index) => (
-                                            <Link
-                                                key={index}
-                                                href={link.url || '#'}
-                                                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                                                    link.active
-                                                        ? 'z-10 bg-[#2a3d85] border-[#2a3d85] text-white'
-                                                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                                                } ${index === 0 ? 'rounded-l-md' : ''} ${
-                                                    index === users.links.length - 1 ? 'rounded-r-md' : ''
-                                                }`}
-                                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                            />
-                                        ))}
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    <Pagination 
+                        data={users} 
+                        preserveFilters={{
+                            search: search || undefined,
+                            role: selectedRole === 'all' ? undefined : selectedRole,
+                            status: selectedStatus === 'all' ? undefined : selectedStatus,
+                        }}
+                    />
                 </div>
 
                 {users.data.length === 0 && (
@@ -577,7 +912,132 @@ export default function UsersIndex({ users, filters, roles }: Props) {
                         </Button>
                     </div>
                 )}
-            </div>
-        </div>
+                </>
+            )}
+
+            {activeTab === 'roles' && (
+                <>
+                    {/* Filters and Actions for Roles */}
+                    <div className="bg-white rounded-lg shadow p-6 mb-6">
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <div className="flex-1">
+                                    <Input
+                                        type="text"
+                                        placeholder="Buscar por nombre o descripción..."
+                                        value={roleSearch}
+                                        onChange={(e) => setRoleSearch(e.target.value)}
+                                        className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-[#2a3d85] focus:ring-2 focus:ring-[#2a3d85]/20 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                                    />
+                                </div>
+                                <Select value={roleStatusFilter} onValueChange={setRoleStatusFilter}>
+                                    <SelectTrigger className="w-full sm:w-48 px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-[#2a3d85] focus:ring-2 focus:ring-[#2a3d85]/20 transition-all duration-200 text-gray-700 font-medium">
+                                        <SelectValue placeholder="Filtrar por estado" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-lg border-2 border-gray-200 shadow-lg">
+                                        <SelectItem value="all" className="font-medium">Todos los estados</SelectItem>
+                                        <SelectItem value="active" className="font-medium">Activos</SelectItem>
+                                        <SelectItem value="inactive" className="font-medium">Inactivos</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="flex gap-3">
+                                <Button onClick={handleClearRoleFilters} className="bg-white border-2 border-[#2a3d85] text-[#2a3d85] hover:bg-[#2a3d85] hover:text-white font-medium px-6 py-2.5 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md">
+                                    <Filter className="w-4 h-4 mr-2" />
+                                    Limpiar
+                                </Button>
+                                <Button onClick={handleCreateRole} className="bg-[#2a3d85] hover:bg-[#1e2d5f] text-white font-medium px-6 py-2.5 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md">
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Nuevo Rol
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-gradient-to-r from-[#2a3d85] to-[#1e2d5f]">
+                                    <tr>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                            Rol
+                                        </th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                            Estado
+                                        </th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                            Fecha Creación
+                                        </th>
+                                        <th className="px-6 py-4 text-right text-xs font-semibold text-white uppercase tracking-wider">
+                                            Acciones
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {filteredRoles.map((role) => (
+                                        <tr key={role.id} className="hover:bg-blue-50 transition-colors duration-150">
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div>
+                                                    <div className="text-sm font-medium text-gray-900">{role.display_name}</div>
+                                                    <div className="text-sm text-gray-500">{role.name}</div>
+                                                    {role.description && (
+                                                        <div className="text-xs text-gray-400 mt-1">{role.description}</div>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <Badge className={role.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                                                    {role.active ? 'Activo' : 'Inactivo'}
+                                                </Badge>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {new Date(role.created_at).toLocaleDateString('es-ES')}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <div className="flex justify-end gap-1">
+                                                    <Button 
+                                                        size="sm" 
+                                                        onClick={() => handleEditRole(role)}
+                                                        className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition-all duration-200 hover:shadow-md"
+                                                    >
+                                                        <Edit className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button 
+                                                        size="sm" 
+                                                        onClick={() => handleDeleteRole(role)}
+                                                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-all duration-200 hover:shadow-md"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {filteredRoles.length === 0 && (
+                        <div className="bg-white rounded-lg shadow p-12 text-center">
+                            <Shield className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">No se encontraron roles</h3>
+                            <p className="text-gray-500 mb-4">
+                                {roleSearch || roleStatusFilter !== 'all'
+                                    ? 'Intenta ajustar los filtros de búsqueda.'
+                                    : 'Comienza creando tu primer rol.'}
+                            </p>
+                            <Button 
+                                onClick={handleCreateRole}
+                                className="bg-[#2a3d85] hover:bg-[#1e2d5f] text-white font-medium px-6 py-2.5 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
+                            >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Crear Rol
+                            </Button>
+                        </div>
+                    )}
+                </>
+            )}
+        </AppLayout>
     );
 }

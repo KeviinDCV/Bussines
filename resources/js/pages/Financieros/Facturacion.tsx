@@ -12,7 +12,12 @@ export default function Facturacion() {
     };
 
     const handleBackToDashboard = () => {
-        router.get('/dashboard/financieros');
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('from') === 'gerencia') {
+            router.get('/dashboard/financieros-gerencia');
+        } else {
+            router.get('/dashboard/financieros');
+        }
     };
 
     return (

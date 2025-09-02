@@ -12,7 +12,13 @@ export default function Hospitalizacion() {
     };
 
     const handleBackToDashboard = () => {
-        router.get('/dashboard/asistenciales');
+        // Detectar si viene desde Gerencia usando parámetro URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('from') === 'gerencia') {
+            router.get('/dashboard/asistenciales-gerencia');
+        } else {
+            router.get('/dashboard/asistenciales');
+        }
     };
 
     return (
