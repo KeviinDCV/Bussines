@@ -9,6 +9,7 @@ export default function Asistenciales() {
     const modules = getModulesByRole('asistenciales');
     const user = (props as any).auth?.user;
     const isGerencia = user?.role === 'Gerencia';
+    const isAdministrador = user?.role === 'Administrador';
 
     return (
         <AppLayout
@@ -16,8 +17,8 @@ export default function Asistenciales() {
             pageTitle="Asistenciales"
             pageDescription="Subgerencia de Servicios de Salud"
             icon={Stethoscope}
-            showBackButton={isGerencia}
-            backUrl="/dashboard/gerencia"
+            showBackButton={isGerencia || isAdministrador}
+            backUrl={isGerencia ? "/dashboard/gerencia" : "/dashboard/administrador"}
         >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {modules.map((module) => {

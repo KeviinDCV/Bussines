@@ -1,25 +1,21 @@
 import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
-import { DollarSign } from 'lucide-react';
+import { Stethoscope } from 'lucide-react';
 import { getModulesByRole } from '@/config/modules';
 
-export default function Financieros() {
+export default function AsistencialesAdministrador() {
     const { props } = usePage();
     const userPermissions = (props as any).userPermissions || [];
-    const user = (props as any).auth?.user;
-    const isGerencia = user?.role === 'Gerencia';
-    const isAdministrador = user?.role === 'Administrador';
-
-    const modules = getModulesByRole('financieros');
+    const modules = getModulesByRole('asistenciales');
 
     return (
         <AppLayout
-            title="Dashboard Financieros - Business Intelligence HUV"
-            pageTitle="Financieros"
-            pageDescription="Subgerencia Financiera"
-            icon={DollarSign}
-            showBackButton={isGerencia || isAdministrador}
-            backUrl={isGerencia ? "/dashboard/gerencia" : "/dashboard/administrador"}
+            title="Dashboard Asistenciales - Business Intelligence HUV"
+            pageTitle="Asistenciales (Administrador)"
+            pageDescription="Subgerencia de Servicios de Salud"
+            icon={Stethoscope}
+            showBackButton={true}
+            backUrl="/dashboard/administrador"
         >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {modules.map((module) => {
@@ -38,7 +34,7 @@ export default function Financieros() {
                                 onClick={() => router.get(module.route)}
                                 className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-xs sm:text-sm font-medium mt-auto"
                             >
-                                Próximamente
+                                Acceder al Módulo
                             </button>
                         </div>
                     );

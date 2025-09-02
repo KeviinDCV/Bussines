@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,9 +31,25 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        // Rate limiting
+        $key = 'login.' . $request->ip();
+        $maxAttempts = 5;
+        $decayMinutes = 2;
+
+        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+            $seconds = RateLimiter::availableIn($key);
+            $minutes = ceil($seconds / 60);
+            
+            return back()->withErrors([
+                'email' => "Demasiados intentos de login. Intenta nuevamente en {$minutes} minutos.",
+            ]);
+        }
+
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
+            RateLimiter::hit($key, $decayMinutes * 60);
+            
             return back()->withErrors([
                 'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
             ]);
@@ -43,6 +61,9 @@ class AuthController extends Controller
             ]);
         }
 
+        // Clear rate limiter on successful login
+        RateLimiter::clear($key);
+        
         Auth::login($user);
 
         // Redirect based on role

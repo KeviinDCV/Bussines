@@ -3,23 +3,19 @@ import AppLayout from '@/components/layout/AppLayout';
 import { DollarSign } from 'lucide-react';
 import { getModulesByRole } from '@/config/modules';
 
-export default function Financieros() {
+export default function FinancierosAdministrador() {
     const { props } = usePage();
     const userPermissions = (props as any).userPermissions || [];
-    const user = (props as any).auth?.user;
-    const isGerencia = user?.role === 'Gerencia';
-    const isAdministrador = user?.role === 'Administrador';
-
     const modules = getModulesByRole('financieros');
 
     return (
         <AppLayout
             title="Dashboard Financieros - Business Intelligence HUV"
-            pageTitle="Financieros"
+            pageTitle="Financieros (Administrador)"
             pageDescription="Subgerencia Financiera"
             icon={DollarSign}
-            showBackButton={isGerencia || isAdministrador}
-            backUrl={isGerencia ? "/dashboard/gerencia" : "/dashboard/administrador"}
+            showBackButton={true}
+            backUrl="/dashboard/administrador"
         >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {modules.map((module) => {
@@ -38,7 +34,7 @@ export default function Financieros() {
                                 onClick={() => router.get(module.route)}
                                 className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-xs sm:text-sm font-medium mt-auto"
                             >
-                                Próximamente
+                                Acceder al Módulo
                             </button>
                         </div>
                     );

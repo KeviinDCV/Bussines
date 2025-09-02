@@ -23,7 +23,12 @@ import {
     Calculator,
     BookOpen,
     DollarSign,
-    Target
+    Target,
+    BarChart3,
+    Search,
+    RefreshCw,
+    Headphones,
+    Settings
 } from 'lucide-react';
 
 export interface Module {
@@ -69,7 +74,19 @@ export const MODULES: Module[] = [
     { id: 'costos', title: 'Costos', description: 'Análisis y control de costos', icon: AlertTriangle, route: '/financieros/costos', role: 'financieros' },
     { id: 'facturacion', title: 'Facturación', description: 'Control de facturación y cartera', icon: FileText, route: '/financieros/facturacion', role: 'financieros' },
     { id: 'presupuesto', title: 'Presupuesto', description: 'Planificación y control presupuestario', icon: PiggyBank, route: '/financieros/presupuesto', role: 'financieros' },
-    { id: 'tesoreria', title: 'Tesorería', description: 'Gestión de flujo de caja y tesorería', icon: Wallet, route: '/financieros/tesoreria', role: 'financieros' }
+    { id: 'tesoreria', title: 'Tesorería', description: 'Gestión de flujo de caja y tesorería', icon: Wallet, route: '/financieros/tesoreria', role: 'financieros' },
+
+    // Calidad
+    { id: 'auditoria', title: 'Auditoría', description: 'Auditorías internas y externas', icon: Search, route: '/calidad/auditoria', role: 'calidad' },
+    { id: 'centro-escucha', title: 'Centro de Escucha', description: 'Atención y seguimiento a usuarios', icon: Headphones, route: '/calidad/centro-escucha', role: 'calidad' },
+    { id: 'documentos', title: 'Documentos', description: 'Gestión documental y control de versiones', icon: FileText, route: '/calidad/documentos', role: 'calidad' },
+    { id: 'habilitacion', title: 'Habilitación', description: 'Procesos de habilitación y acreditación', icon: Settings, route: '/calidad/habilitacion', role: 'calidad' },
+    { id: 'humanizacion', title: 'Humanización', description: 'Programa de humanización en salud', icon: Heart, route: '/calidad/humanizacion', role: 'calidad' },
+    { id: 'indicadores', title: 'Indicadores', description: 'Métricas e indicadores de calidad', icon: BarChart3, route: '/calidad/indicadores', role: 'calidad' },
+    { id: 'mejoramiento', title: 'Mejoramiento', description: 'Planes de mejoramiento continuo', icon: TrendingUp, route: '/calidad/mejoramiento', role: 'calidad' },
+    { id: 'pamec', title: 'PAMEC', description: 'Programa de Auditoría para el Mejoramiento de la Calidad', icon: Shield, route: '/calidad/pamec', role: 'calidad' },
+    { id: 'referenciaciones', title: 'Referenciaciones', description: 'Sistema de referencias y contrarreferencias', icon: RefreshCw, route: '/calidad/referenciaciones', role: 'calidad' },
+    { id: 'tecnovigilancia', title: 'Tecnovigilancia', description: 'Vigilancia de dispositivos médicos', icon: Stethoscope, route: '/calidad/tecnovigilancia', role: 'calidad' }
 ];
 
 export const getModulesByRole = (role: string): Module[] => {

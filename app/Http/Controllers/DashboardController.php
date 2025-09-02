@@ -166,4 +166,44 @@ class DashboardController extends Controller
     {
         return Inertia::render('Dashboard/CalidadGerencia');
     }
+
+    /**
+     * Display the Asistenciales module for Administrador role.
+     */
+    public function asistencialesAdministrador()
+    {
+        return Inertia::render('Dashboard/AsistencialesAdministrador');
+    }
+
+    /**
+     * Display the Administrativos module for Administrador role.
+     */
+    public function administrativosAdministrador()
+    {
+        return Inertia::render('Dashboard/AdministrativosAdministrador');
+    }
+
+    /**
+     * Display the Financieros module for Administrador role.
+     */
+    public function financierosAdministrador()
+    {
+        return Inertia::render('Dashboard/FinancierosAdministrador');
+    }
+
+    /**
+     * Display the Direccionamiento module for Administrador role.
+     */
+    public function direccionamientoAdministrador()
+    {
+        return Inertia::render('Dashboard/DireccionamientoAdministrador');
+    }
+
+    /**
+     * Display the Calidad module for Administrador role.
+     */
+    public function calidadAdministrador()
+    {
+        return Inertia::render('Dashboard/CalidadAdministrador');
+    }
 }

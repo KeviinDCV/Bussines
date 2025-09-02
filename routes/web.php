@@ -44,6 +44,11 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/dashboard/direccionamiento-gerencia', [DashboardController::class, 'direccionamientoGerencia'])->name('dashboard.direccionamiento-gerencia');
     Route::get('/dashboard/administrador-gerencia', [DashboardController::class, 'administradorGerencia'])->name('dashboard.administrador-gerencia');
     Route::get('/dashboard/calidad-gerencia', [DashboardController::class, 'calidadGerencia'])->name('dashboard.calidad-gerencia');
+    Route::get('/dashboard/asistenciales-administrador', [DashboardController::class, 'asistencialesAdministrador'])->name('dashboard.asistenciales-administrador');
+    Route::get('/dashboard/administrativos-administrador', [DashboardController::class, 'administrativosAdministrador'])->name('dashboard.administrativos-administrador');
+    Route::get('/dashboard/financieros-administrador', [DashboardController::class, 'financierosAdministrador'])->name('dashboard.financieros-administrador');
+    Route::get('/dashboard/direccionamiento-administrador', [DashboardController::class, 'direccionamientoAdministrador'])->name('dashboard.direccionamiento-administrador');
+    Route::get('/dashboard/calidad-administrador', [DashboardController::class, 'calidadAdministrador'])->name('dashboard.calidad-administrador');
     Route::get('/plan-desarrollo', [DashboardController::class, 'planDesarrollo'])->name('dashboard.plan-desarrollo');
 
     // Asistenciales module routes

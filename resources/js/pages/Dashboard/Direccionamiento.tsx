@@ -6,6 +6,7 @@ export default function Direccionamiento() {
     const { props } = usePage();
     const user = (props as any).auth?.user;
     const isGerencia = user?.role === 'Gerencia';
+    const isAdministrador = user?.role === 'Administrador';
 
     const modules = [
         {
@@ -24,8 +25,8 @@ export default function Direccionamiento() {
             pageTitle="Direccionamiento"
             pageDescription="Planeación Estratégica y Direccionamiento"
             icon={TrendingUp}
-            showBackButton={isGerencia}
-            backUrl="/dashboard/gerencia"
+            showBackButton={isGerencia || isAdministrador}
+            backUrl={isGerencia ? "/dashboard/gerencia" : "/dashboard/administrador"}
         >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {modules.map((module) => {

@@ -1,15 +1,9 @@
 import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
-import { 
-    Users, 
-    Shield, 
-    Monitor, 
-    Wrench, 
-    Pill,
-    Building
-} from 'lucide-react';
+import { Building } from 'lucide-react';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
+import { getModulesByRole } from '@/config/modules';
 
 export default function Administrativos() {
     const [showUserMenu, setShowUserMenu] = useState(false);
@@ -18,6 +12,7 @@ export default function Administrativos() {
     const user = (props as any).auth?.user;
     const userPermissions = (props as any).userPermissions || [];
     const isGerencia = user?.role === 'Gerencia';
+    const isAdministrador = user?.role === 'Administrador';
 
     const handleLogout = () => {
         router.post('/logout');
@@ -107,84 +102,31 @@ export default function Administrativos() {
             pageTitle="Administrativos"
             pageDescription="Subgerencia Administrativa y Financiera"
             icon={Building}
-            showBackButton={isGerencia}
-            backUrl="/dashboard/gerencia"
+            showBackButton={isGerencia || isAdministrador}
+            backUrl={isGerencia ? "/dashboard/gerencia" : "/dashboard/administrador"}
         >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {/* Talento Humano */}
-                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                    <div className="flex items-center mb-4">
-                        <Users className="w-10 h-10 text-[#2a3d85]" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Talento Humano</h3>
-                    <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión de recursos humanos y personal</p>
-                    <button 
-                        onClick={() => router.get('/administrativos/talento-humano')}
-                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                    >
-                        Acceder al Módulo
-                    </button>
-                </div>
-
-                {/* CIAU */}
-                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                    <div className="flex items-center mb-4">
-                        <Shield className="w-10 h-10 text-[#2a3d85]" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">CIAU</h3>
-                    <p className="text-sm text-gray-600 mb-4 flex-grow">Centro de Información y Atención al Usuario</p>
-                    <button 
-                        onClick={() => router.get('/administrativos/ciau')}
-                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                    >
-                        Acceder al Módulo
-                    </button>
-                </div>
-
-                {/* Sistemas de Información */}
-                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                    <div className="flex items-center mb-4">
-                        <Monitor className="w-10 h-10 text-[#2a3d85]" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Sistemas de Información</h3>
-                    <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión de tecnología y sistemas</p>
-                    <button 
-                        onClick={() => router.get('/administrativos/sistemas-informacion')}
-                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                    >
-                        Acceder al Módulo
-                    </button>
-                </div>
-
-                {/* Gestión Técnica y Logística */}
-                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                    <div className="flex items-center mb-4">
-                        <Wrench className="w-10 h-10 text-[#2a3d85]" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestión Técnica y Logística</h3>
-                    <p className="text-sm text-gray-600 mb-4 flex-grow">Mantenimiento y gestión logística</p>
-                    <button 
-                        onClick={() => router.get('/administrativos/gestion-tecnica-logistica')}
-                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                    >
-                        Acceder al Módulo
-                    </button>
-                </div>
-
-                {/* Farmacia */}
-                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col">
-                    <div className="flex items-center mb-4">
-                        <Pill className="w-10 h-10 text-[#2a3d85]" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Farmacia</h3>
-                    <p className="text-sm text-gray-600 mb-4 flex-grow">Gestión farmacéutica y medicamentos</p>
-                    <button 
-                        onClick={() => router.get('/administrativos/farmacia')}
-                        className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto"
-                    >
-                        Acceder al Módulo
-                    </button>
-                </div>
+                {getModulesByRole('administrativos').map((module) => {
+                    const IconComponent = module.icon;
+                    return (
+                        <div
+                            key={module.id}
+                            className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col"
+                        >
+                            <div className="flex items-center mb-3 sm:mb-4">
+                                <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
+                            </div>
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">{module.title}</h3>
+                            <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 flex-grow">{module.description}</p>
+                            <button 
+                                onClick={() => router.get(module.route)}
+                                className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-xs sm:text-sm font-medium mt-auto"
+                            >
+                                Acceder al Módulo
+                            </button>
+                        </div>
+                    );
+                })}
             </div>
         </AppLayout>
     );
