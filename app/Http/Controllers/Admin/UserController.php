@@ -87,8 +87,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'role' => ['required', Rule::in(Role::where('active', true)->pluck('display_name')->toArray())],
-            'is_active' => 'boolean',
-            'module_permissions' => 'array'
+            'is_active' => 'boolean'
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -132,10 +131,9 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'username' => ['nullable', 'string', 'max:255', 'regex:/^[a-zA-Z0-9._-]+$/', Rule::unique('users')->ignore($user->id)],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string|min:8',
             'role' => ['required', Rule::in(Role::where('active', true)->pluck('display_name')->toArray())],
-            'is_active' => 'boolean',
-            'module_permissions' => 'array'
+            'is_active' => 'boolean'
         ]);
 
         if (!empty($validated['password'])) {

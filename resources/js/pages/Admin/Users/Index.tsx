@@ -279,76 +279,11 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                         <select id="swal-edit-role" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
                             ${roles.map(role => `<option value="${role}" ${role === user.role ? 'selected' : ''}>${role}</option>`).join('')}
                         </select>
-                    </div>
-                    <div id="edit-modules-section">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Módulos disponibles</label>
-                        <input type="text" id="edit-module-search" placeholder="Buscar módulos..." class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent text-sm">
-                        <div id="edit-modules-list" class="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 space-y-1">
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">Selecciona los módulos a los que tendrá acceso (todos los módulos disponibles)</p>
+                        <p class="text-xs text-gray-500 mt-2">Los módulos se asignarán automáticamente según el rol seleccionado</p>
                     </div>
                 </div>
             `,
-            didOpen: () => {
-                const roleSelect = document.getElementById('swal-edit-role');
-                const modulesSection = document.getElementById('edit-modules-section');
-                const modulesList = document.getElementById('edit-modules-list');
-                const searchInput = document.getElementById('edit-module-search');
-                
-                const allModules = ['Ambulatorio', 'Banco de Sangre', 'Cirugía', 'Epidemiología', 'Extensión Hospitalaria', 'Ginecología', 'Hospitalización', 'Imágenes', 'Laboratorio', 'Medicina Física', 'Mortalidad', 'UCI Adultos', 'UCI Neonatal', 'UCI Pediátrico', 'Urgencias', 'CIAU', 'Farmacia', 'Gestión Técnica y Logística', 'Sistemas de Información', 'Talento Humano', 'Plan de Desarrollo', 'Cartera', 'Contabilidad', 'Facturación', 'Glosas', 'Presupuesto', 'Recaudo', 'PAMEC', 'Documentos', 'Habilitación', 'Indicadores', 'Auditoría', 'Mejoramiento', 'Humanización', 'Referenciaciones', 'Tecnovigilancia', 'Centro de Escucha', 'Gestión de Usuarios'];
-                
-                const renderEditModules = (modulesList: string[]) => {
-                    // Group modules by role
-                    const modulesByRole: Record<string, string[]> = {};
-                    modules?.forEach(module => {
-                        const roleName = module.role?.display_name || 'Sin Rol';
-                        if (!modulesByRole[roleName]) {
-                            modulesByRole[roleName] = [];
-                        }
-                        if (modulesList.includes(module.display_name)) {
-                            modulesByRole[roleName].push(module.display_name);
-                        }
-                    });
-                    
-                    let html = '';
-                    Object.keys(modulesByRole).sort().forEach(roleName => {
-                        if (modulesByRole[roleName].length > 0) {
-                            html += `<div class="mb-4">`;
-                            html += `<h4 class="font-medium text-gray-700 mb-2 text-sm">${roleName}</h4>`;
-                            html += `<div class="pl-4 space-y-1">`;
-                            modulesByRole[roleName].forEach(module => {
-                                const isChecked = currentModules.includes(module) ? 'checked' : '';
-                                html += `<label class="flex items-center space-x-2 text-sm">
-                                    <input type="checkbox" name="edit-modules" value="${module}" ${isChecked} class="rounded border-gray-300 text-[#2a3d85] focus:ring-[#2a3d85]">
-                                    <span>${module}</span>
-                                </label>`;
-                            });
-                            html += `</div></div>`;
-                        }
-                    });
-                    
-                    return html;
-                };
-                
-                const updateEditModules = () => {
-                    if (modulesSection) modulesSection.style.display = 'block';
-                    if (modulesList) modulesList.innerHTML = renderEditModules(allModules);
-                };
-                
-                const filterEditModules = () => {
-                    if (!searchInput) return;
-                    const searchTerm = (searchInput as HTMLInputElement).value.toLowerCase();
-                    const filteredModules = allModules.filter(module => 
-                        module.toLowerCase().includes(searchTerm)
-                    );
-                    if (modulesList) modulesList.innerHTML = renderEditModules(filteredModules);
-                };
-                
-                if (roleSelect) roleSelect.addEventListener('change', updateEditModules);
-                if (searchInput) searchInput.addEventListener('input', filterEditModules);
-                updateEditModules(); // Initialize on open
-            },
-            focusConfirm: false,
+                        focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'Actualizar Usuario',
             cancelButtonText: 'Cancelar',
@@ -360,10 +295,6 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                 const email = (document.getElementById('swal-edit-email') as HTMLInputElement).value;
                 const password = (document.getElementById('swal-edit-password') as HTMLInputElement).value;
                 const role = (document.getElementById('swal-edit-role') as HTMLSelectElement).value;
-                
-                // Get selected modules
-                const moduleCheckboxes = document.querySelectorAll('input[name="edit-modules"]:checked');
-                const selectedModules = Array.from(moduleCheckboxes).map((cb: any) => cb.value);
                 
                 if (!name || !email || !role) {
                     Swal.showValidationMessage('Nombre, email y rol son obligatorios');
@@ -385,7 +316,7 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                     return false;
                 }
                 
-                return { name, username: username || undefined, email, password: password || undefined, role, module_permissions: selectedModules };
+                return { name, username: username || undefined, email, password: password || undefined, role };
             }
         });
 
@@ -487,95 +418,11 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                             <option value="">Seleccionar rol</option>
                             ${roles.map(role => `<option value="${role}">${role}</option>`).join('')}
                         </select>
-                    </div>
-                    <div id="modules-section" style="display: none;">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Módulos disponibles</label>
-                        <input type="text" id="module-search" placeholder="Buscar módulos..." class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent text-sm">
-                        <div id="modules-list" class="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 space-y-1">
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">Selecciona los módulos a los que tendrá acceso (todos los módulos disponibles)</p>
+                        <p class="text-xs text-gray-500 mt-2">Los módulos se asignarán automáticamente según el rol seleccionado</p>
                     </div>
                 </div>
             `,
-            didOpen: () => {
-                const roleSelect = document.getElementById('swal-input4');
-                const modulesSection = document.getElementById('modules-section');
-                const modulesList = document.getElementById('modules-list');
-                const searchInput = document.getElementById('module-search');
-                
-                const allModules = modules ? modules.map(module => module.display_name) : [];
-                
-                const renderModules = (modulesList: string[], selectedRole: string) => {
-                    const defaultModules = modules ? modules.filter(m => m.role?.display_name === selectedRole).map(m => m.display_name) : [];
-                    
-                    // Group modules by role
-                    const modulesByRole: Record<string, string[]> = {};
-                    modules?.forEach(module => {
-                        const roleName = module.role?.display_name || 'Sin Rol';
-                        if (!modulesByRole[roleName]) {
-                            modulesByRole[roleName] = [];
-                        }
-                        if (modulesList.includes(module.display_name)) {
-                            modulesByRole[roleName].push(module.display_name);
-                        }
-                    });
-                    
-                    let html = '';
-                    Object.keys(modulesByRole).sort().forEach(roleName => {
-                        if (modulesByRole[roleName].length > 0) {
-                            html += `<div class="mb-4">`;
-                            html += `<h4 class="font-medium text-gray-700 mb-2 text-sm">${roleName}</h4>`;
-                            html += `<div class="pl-4 space-y-1">`;
-                            modulesByRole[roleName].forEach(module => {
-                                const isDefault = defaultModules.includes(module);
-                                html += `<label class="flex items-center space-x-2 text-sm">
-                                    <input type="checkbox" name="modules" value="${module}" ${isDefault ? 'checked' : ''} class="rounded border-gray-300 text-[#2a3d85] focus:ring-[#2a3d85]">
-                                    <span>${module}</span>
-                                </label>`;
-                            });
-                            html += `</div></div>`;
-                        }
-                    });
-                    
-                    return html;
-                };
-                
-                const updateModules = () => {
-                    if (!roleSelect) return;
-                    const role = (roleSelect as HTMLSelectElement).value;
-                    if (role) {
-                        if (modulesSection) modulesSection.style.display = 'block';
-                        if (modulesList) modulesList.innerHTML = renderModules(allModules, role);
-                        
-                        // Auto-check default modules for role
-                        const defaultModules = modules ? modules.filter(m => m.role?.display_name === role).map(m => m.display_name) : [];
-                        setTimeout(() => {
-                            defaultModules.forEach(moduleName => {
-                                const checkbox = document.querySelector(`input[name="modules"][value="${moduleName}"]`) as HTMLInputElement;
-                                if (checkbox) checkbox.checked = true;
-                            });
-                        }, 10);
-                    } else {
-                        if (modulesSection) modulesSection.style.display = 'none';
-                    }
-                };
-                
-                const filterModules = () => {
-                    if (!searchInput || !roleSelect) return;
-                    const searchTerm = (searchInput as HTMLInputElement).value.toLowerCase();
-                    const role = (roleSelect as HTMLSelectElement).value;
-                    const filteredModules = allModules.filter(module => 
-                        module.toLowerCase().includes(searchTerm)
-                    );
-                    if (role && modulesList) {
-                        modulesList.innerHTML = renderModules(filteredModules, role);
-                    }
-                };
-                
-                if (roleSelect) roleSelect.addEventListener('change', updateModules);
-                if (searchInput) searchInput.addEventListener('input', filterModules);
-            },
-            focusConfirm: false,
+                        focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'Crear Usuario',
             cancelButtonText: 'Cancelar',
@@ -588,10 +435,6 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                 const password = (document.getElementById('swal-input3') as HTMLInputElement).value;
                 const passwordConfirmation = (document.getElementById('swal-input5') as HTMLInputElement).value;
                 const role = (document.getElementById('swal-input4') as HTMLSelectElement).value;
-                
-                // Get selected modules
-                const moduleCheckboxes = document.querySelectorAll('input[name="modules"]:checked');
-                const selectedModules = Array.from(moduleCheckboxes).map((cb: any) => cb.value);
                 
                 if (!name || !email || !password || !passwordConfirmation || !role) {
                     Swal.showValidationMessage('Nombre, email, contraseña y rol son obligatorios');
@@ -618,7 +461,7 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                     return false;
                 }
                 
-                return { name, username: username || undefined, email, password, password_confirmation: passwordConfirmation, role, module_permissions: selectedModules };
+                return { name, username: username || undefined, email, password, password_confirmation: passwordConfirmation, role };
             }
         });
 
@@ -834,6 +677,9 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                                         Usuario
                                     </th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                        Username
+                                    </th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                         Rol
                                     </th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
@@ -858,6 +704,11 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                                                 <div className="text-sm text-gray-500">
                                                     {user.email}
                                                 </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-500">
+                                                {user.username || 'Sin username'}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">

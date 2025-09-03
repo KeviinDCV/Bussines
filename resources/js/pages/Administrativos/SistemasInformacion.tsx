@@ -1,8 +1,12 @@
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Monitor } from 'lucide-react';
+import { getModuleBackUrl } from '@/utils/navigation';
 
 export default function SistemasInformacion() {
+    const { props } = usePage();
+    const user = (props as any).auth?.user;
+
     return (
         <AppLayout
             title="Sistemas de Información - Business Intelligence HUV"
@@ -10,7 +14,7 @@ export default function SistemasInformacion() {
             pageDescription="Gestión de tecnología y sistemas informáticos"
             icon={Monitor}
             showBackButton={true}
-            backUrl="/dashboard/administrativos"
+            backUrl={getModuleBackUrl('administrativos', user)}
         >
             <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Módulo en Desarrollo</h2>

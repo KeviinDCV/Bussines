@@ -1,8 +1,12 @@
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Shield } from 'lucide-react';
+import { getModuleBackUrl } from '@/utils/navigation';
 
 export default function Pamec() {
+    const { props } = usePage();
+    const user = (props as any).auth?.user;
+
     return (
         <AppLayout
             title="PAMEC - Business Intelligence HUV"
@@ -10,7 +14,7 @@ export default function Pamec() {
             pageDescription="Programa de Auditoría para el Mejoramiento de la Calidad"
             icon={Shield}
             showBackButton={true}
-            backUrl="/dashboard/calidad"
+            backUrl={getModuleBackUrl('calidad', user)}
         >
             <div className="bg-white rounded-lg shadow-lg p-6">
                 <div className="mb-6">
