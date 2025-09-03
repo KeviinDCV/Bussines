@@ -124,6 +124,17 @@ export default function Login({ errors }: LoginProps) {
                     {/* Login Card */}
                     <div className="w-full max-w-sm mx-auto">
                         <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+                            {/* Logo del hospital dentro del card */}
+                            <div className="flex justify-center mb-4">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+                                    <img 
+                                        src="/images/logo.png" 
+                                        alt="Logo Hospital Universitario del Valle" 
+                                        className="max-w-full max-h-full object-contain"
+                                    />
+                                </div>
+                            </div>
+                            
                             <div className="text-center mb-6 sm:mb-8">
                                 <h1 className="text-2xl sm:text-3xl font-bold text-[#2a3d85] mb-2">
                                     Business Intelligence HUV
@@ -143,7 +154,7 @@ export default function Login({ errors }: LoginProps) {
                                         type="text"
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
-                                        placeholder="usuario@huv.com o nombre_usuario"
+                                        placeholder="usuario@huv.com o usuario"
                                         className="h-10 sm:h-12 border-gray-300 focus:border-[#2a3d85] focus:ring-[#2a3d85] text-gray-900 bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a3d85]/20 selection:bg-[#2a3d85] selection:text-white text-sm sm:text-base"
                                         style={{
                                             WebkitBoxShadow: '0 0 0 1000px white inset !important',
@@ -231,7 +242,7 @@ export default function Login({ errors }: LoginProps) {
                     <div className="flex flex-col items-center text-center space-y-4">
                         <div className="w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center">
                             <img 
-                                src="/images/logo.png" 
+                                src="/images/Imagen1.png" 
                                 alt="Logo Hospital Universitario del Valle" 
                                 className="max-w-full max-h-full object-contain"
                             />
@@ -265,6 +276,17 @@ export default function Login({ errors }: LoginProps) {
                     {/* Columna Centro - Login Card */}
                     <div className="w-full max-w-md mx-auto">
                         <div className="bg-white rounded-2xl shadow-xl p-8">
+                            {/* Logo del hospital dentro del card */}
+                            <div className="flex justify-center mb-6">
+                                <div className="w-20 h-20 xl:w-24 xl:h-24 flex items-center justify-center">
+                                    <img 
+                                        src="/images/logo.png" 
+                                        alt="Logo Hospital Universitario del Valle" 
+                                        className="max-w-full max-h-full object-contain"
+                                    />
+                                </div>
+                            </div>
+                            
                             <div className="text-center mb-8">
                                 <h1 className="text-3xl font-bold text-[#2a3d85] mb-2">
                                     Business Intelligence HUV
@@ -284,7 +306,7 @@ export default function Login({ errors }: LoginProps) {
                                         type="text"
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
-                                        placeholder="usuario@huv.com o nombre_usuario"
+                                        placeholder="usuario@huv.com o usuario"
                                         className="h-12 border-gray-300 focus:border-[#2a3d85] focus:ring-[#2a3d85] text-gray-900 bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a3d85]/20 selection:bg-[#2a3d85] selection:text-white"
                                         style={{
                                             WebkitBoxShadow: '0 0 0 1000px white inset !important',
@@ -372,7 +394,7 @@ export default function Login({ errors }: LoginProps) {
                     <div className="flex flex-col items-center text-center space-y-6">
                         <div className="w-40 h-40 xl:w-48 xl:h-48 flex items-center justify-center">
                             <img 
-                                src="/images/logo.png" 
+                                src="/images/Imagen1.png" 
                                 alt="Logo Hospital Universitario del Valle" 
                                 className="max-w-full max-h-full object-contain"
                             />
