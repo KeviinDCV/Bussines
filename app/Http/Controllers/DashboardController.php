@@ -244,7 +244,19 @@ class DashboardController extends Controller
      */
     public function asistencialesAdministrador()
     {
-        return Inertia::render('Dashboard/AsistencialesAdministrador');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Asistenciales')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/AsistencialesAdministrador', [
+            'modules' => $modules,
+            'canCreateModules' => true // Administrador puede crear/eliminar
+        ]);
     }
 
     /**
@@ -252,7 +264,19 @@ class DashboardController extends Controller
      */
     public function administrativosAdministrador()
     {
-        return Inertia::render('Dashboard/AdministrativosAdministrador');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Administrativos')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/AdministrativosAdministrador', [
+            'modules' => $modules,
+            'canCreateModules' => true // Administrador puede crear/eliminar
+        ]);
     }
 
     /**
@@ -260,7 +284,19 @@ class DashboardController extends Controller
      */
     public function financierosAdministrador()
     {
-        return Inertia::render('Dashboard/FinancierosAdministrador');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Financieros')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/FinancierosAdministrador', [
+            'modules' => $modules,
+            'canCreateModules' => true // Administrador puede crear/eliminar
+        ]);
     }
 
     /**
@@ -288,6 +324,18 @@ class DashboardController extends Controller
      */
     public function calidadAdministrador()
     {
-        return Inertia::render('Dashboard/CalidadAdministrador');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Calidad')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/CalidadAdministrador', [
+            'modules' => $modules,
+            'canCreateModules' => true // Administrador puede crear/eliminar
+        ]);
     }
 }
