@@ -62,7 +62,19 @@ class DashboardController extends Controller
      */
     public function direccionamiento()
     {
-        return Inertia::render('Dashboard/Direccionamiento');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Direccionamiento')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/Direccionamiento', [
+            'modules' => $modules,
+            'canCreateModules' => $user->role === 'Administrador'
+        ]);
     }
 
     /**
@@ -196,7 +208,19 @@ class DashboardController extends Controller
      */
     public function direccionamientoAdministrador()
     {
-        return Inertia::render('Dashboard/DireccionamientoAdministrador');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Direccionamiento')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/DireccionamientoAdministrador', [
+            'modules' => $modules,
+            'canCreateModules' => true
+        ]);
     }
 
     /**

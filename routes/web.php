@@ -211,6 +211,9 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
         Route::patch('admin/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
 
         Route::resource('admin/roles', RoleController::class)->except(['index', 'show', 'create', 'edit']);
+        
+        Route::resource('admin/modules', \App\Http\Controllers\Admin\ModuleController::class);
+        Route::get('api/modules/role', [\App\Http\Controllers\Admin\ModuleController::class, 'getModulesForRole'])->name('api.modules.role');
     });
 });
 

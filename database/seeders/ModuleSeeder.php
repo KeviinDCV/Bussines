@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Module;
-use App\Models\Role;
 use Illuminate\Database\Seeder;
 
 class ModuleSeeder extends Seeder
@@ -13,58 +12,61 @@ class ModuleSeeder extends Seeder
         // Clear existing modules
         Module::truncate();
         
-        $roleMap = Role::pluck('id', 'display_name')->toArray();
-        
         $modules = [
+            // Direccionamiento
+            [
+                'name' => 'plan-desarrollo', 
+                'display_name' => 'Plan de Desarrollo', 
+                'description' => 'Gestión y seguimiento del plan estratégico institucional',
+                'icon' => 'FileText',
+                'route' => '/plan-desarrollo',
+                'role' => 'Direccionamiento', 
+                'order' => 1
+            ],
+
             // Asistenciales
-            ['name' => 'ambulatorio', 'display_name' => 'Ambulatorio', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 1],
-            ['name' => 'banco_sangre', 'display_name' => 'Banco de Sangre', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 2],
-            ['name' => 'cirugia', 'display_name' => 'Cirugía', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 3],
-            ['name' => 'epidemiologia', 'display_name' => 'Epidemiología', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 4],
-            ['name' => 'extension_hospitalaria', 'display_name' => 'Extensión Hospitalaria', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 5],
-            ['name' => 'ginecologia', 'display_name' => 'Ginecología', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 6],
-            ['name' => 'hospitalizacion', 'display_name' => 'Hospitalización', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 7],
-            ['name' => 'imagenes', 'display_name' => 'Imágenes', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 8],
-            ['name' => 'laboratorio', 'display_name' => 'Laboratorio', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 9],
-            ['name' => 'medicina_fisica', 'display_name' => 'Medicina Física', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 10],
-            ['name' => 'mortalidad', 'display_name' => 'Mortalidad', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 11],
-            ['name' => 'uci_adultos', 'display_name' => 'UCI Adultos', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 12],
-            ['name' => 'uci_neonatal', 'display_name' => 'UCI Neonatal', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 13],
-            ['name' => 'uci_pediatrico', 'display_name' => 'UCI Pediátrico', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 14],
-            ['name' => 'urgencias', 'display_name' => 'Urgencias', 'role_id' => $roleMap['Asistenciales'] ?? 1, 'order' => 15],
+            ['name' => 'ambulatorio', 'display_name' => 'Ambulatorio', 'role' => 'Asistenciales', 'icon' => 'Heart', 'order' => 1],
+            ['name' => 'banco-sangre', 'display_name' => 'Banco de Sangre', 'role' => 'Asistenciales', 'icon' => 'Activity', 'order' => 2],
+            ['name' => 'cirugia', 'display_name' => 'Cirugía', 'role' => 'Asistenciales', 'icon' => 'Shield', 'order' => 3],
+            ['name' => 'epidemiologia', 'display_name' => 'Epidemiología', 'role' => 'Asistenciales', 'icon' => 'BarChart3', 'order' => 4],
+            ['name' => 'extension-hospitalaria', 'display_name' => 'Extensión Hospitalaria', 'role' => 'Asistenciales', 'icon' => 'Map', 'order' => 5],
+            ['name' => 'ginecologia', 'display_name' => 'Ginecología', 'role' => 'Asistenciales', 'icon' => 'Heart', 'order' => 6],
+            ['name' => 'hospitalizacion', 'display_name' => 'Hospitalización', 'role' => 'Asistenciales', 'icon' => 'Calendar', 'order' => 7],
+            ['name' => 'imagenes', 'display_name' => 'Imágenes', 'role' => 'Asistenciales', 'icon' => 'PieChart', 'order' => 8],
+            ['name' => 'laboratorio', 'display_name' => 'Laboratorio', 'role' => 'Asistenciales', 'icon' => 'Database', 'order' => 9],
+            ['name' => 'medicina-fisica', 'display_name' => 'Medicina Física', 'role' => 'Asistenciales', 'icon' => 'Activity', 'order' => 10],
+            ['name' => 'mortalidad', 'display_name' => 'Mortalidad', 'role' => 'Asistenciales', 'icon' => 'FileText', 'order' => 11],
+            ['name' => 'uci-adultos', 'display_name' => 'UCI Adultos', 'role' => 'Asistenciales', 'icon' => 'Shield', 'order' => 12],
+            ['name' => 'uci-neonatal', 'display_name' => 'UCI Neonatal', 'role' => 'Asistenciales', 'icon' => 'Heart', 'order' => 13],
+            ['name' => 'uci-pediatrico', 'display_name' => 'UCI Pediátrico', 'role' => 'Asistenciales', 'icon' => 'Heart', 'order' => 14],
+            ['name' => 'urgencias', 'display_name' => 'Urgencias', 'role' => 'Asistenciales', 'icon' => 'Clock', 'order' => 15],
 
             // Administrativos
-            ['name' => 'ciau', 'display_name' => 'CIAU', 'role_id' => $roleMap['Administrativos'] ?? 2, 'order' => 1],
-            ['name' => 'farmacia', 'display_name' => 'Farmacia', 'role_id' => $roleMap['Administrativos'] ?? 2, 'order' => 2],
-            ['name' => 'gestion_tecnica', 'display_name' => 'Gestión Técnica y Logística', 'role_id' => $roleMap['Administrativos'] ?? 2, 'order' => 3],
-            ['name' => 'sistemas_informacion', 'display_name' => 'Sistemas de Información', 'role_id' => $roleMap['Administrativos'] ?? 2, 'order' => 4],
-            ['name' => 'talento_humano', 'display_name' => 'Talento Humano', 'role_id' => $roleMap['Administrativos'] ?? 2, 'order' => 5],
-
-            // Direccionamiento
-            ['name' => 'plan_desarrollo', 'display_name' => 'Plan de Desarrollo', 'role_id' => $roleMap['Direccionamiento'] ?? 3, 'order' => 1],
+            ['name' => 'ciau', 'display_name' => 'CIAU', 'role' => 'Administrativos', 'icon' => 'Users', 'order' => 1],
+            ['name' => 'farmacia', 'display_name' => 'Farmacia', 'role' => 'Administrativos', 'icon' => 'Database', 'order' => 2],
+            ['name' => 'gestion-tecnica', 'display_name' => 'Gestión Técnica y Logística', 'role' => 'Administrativos', 'icon' => 'Settings', 'order' => 3],
+            ['name' => 'sistemas-informacion', 'display_name' => 'Sistemas de Información', 'role' => 'Administrativos', 'icon' => 'Database', 'order' => 4],
+            ['name' => 'talento-humano', 'display_name' => 'Talento Humano', 'role' => 'Administrativos', 'icon' => 'Users', 'order' => 5],
 
             // Financieros
-            ['name' => 'cartera', 'display_name' => 'Cartera', 'role_id' => $roleMap['Financieros'] ?? 4, 'order' => 1],
-            ['name' => 'contabilidad', 'display_name' => 'Contabilidad', 'role_id' => $roleMap['Financieros'] ?? 4, 'order' => 2],
-            ['name' => 'facturacion', 'display_name' => 'Facturación', 'role_id' => $roleMap['Financieros'] ?? 4, 'order' => 3],
-            ['name' => 'glosas', 'display_name' => 'Glosas', 'role_id' => $roleMap['Financieros'] ?? 4, 'order' => 4],
-            ['name' => 'presupuesto', 'display_name' => 'Presupuesto', 'role_id' => $roleMap['Financieros'] ?? 4, 'order' => 5],
-            ['name' => 'recaudo', 'display_name' => 'Recaudo', 'role_id' => $roleMap['Financieros'] ?? 4, 'order' => 6],
+            ['name' => 'cartera', 'display_name' => 'Cartera', 'role' => 'Financieros', 'icon' => 'Briefcase', 'order' => 1],
+            ['name' => 'contabilidad', 'display_name' => 'Contabilidad', 'role' => 'Financieros', 'icon' => 'BarChart3', 'order' => 2],
+            ['name' => 'facturacion', 'display_name' => 'Facturación', 'role' => 'Financieros', 'icon' => 'FileText', 'order' => 3],
+            ['name' => 'glosas', 'display_name' => 'Glosas', 'role' => 'Financieros', 'icon' => 'Target', 'order' => 4],
+            ['name' => 'presupuesto', 'display_name' => 'Presupuesto', 'role' => 'Financieros', 'icon' => 'TrendingUp', 'order' => 5],
+            ['name' => 'recaudo', 'display_name' => 'Recaudo', 'role' => 'Financieros', 'icon' => 'Briefcase', 'order' => 6],
 
             // Calidad
-            ['name' => 'pamec', 'display_name' => 'PAMEC', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 1],
-            ['name' => 'documentos', 'display_name' => 'Documentos', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 2],
-            ['name' => 'habilitacion', 'display_name' => 'Habilitación', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 3],
-            ['name' => 'indicadores', 'display_name' => 'Indicadores', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 4],
-            ['name' => 'auditoria', 'display_name' => 'Auditoría', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 5],
-            ['name' => 'mejoramiento', 'display_name' => 'Mejoramiento', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 6],
-            ['name' => 'humanizacion', 'display_name' => 'Humanización', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 7],
-            ['name' => 'referenciaciones', 'display_name' => 'Referenciaciones', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 8],
-            ['name' => 'tecnovigilancia', 'display_name' => 'Tecnovigilancia', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 9],
-            ['name' => 'centro_escucha', 'display_name' => 'Centro de Escucha', 'role_id' => $roleMap['Calidad'] ?? 5, 'order' => 10],
-
-            // Administrador
-            ['name' => 'gestion_usuarios', 'display_name' => 'Gestión de Usuarios', 'role_id' => $roleMap['Administrador'] ?? 6, 'order' => 1],
+            ['name' => 'pamec', 'display_name' => 'PAMEC', 'role' => 'Calidad', 'icon' => 'Shield', 'order' => 1],
+            ['name' => 'documentos', 'display_name' => 'Documentos', 'role' => 'Calidad', 'icon' => 'FileText', 'order' => 2],
+            ['name' => 'habilitacion', 'display_name' => 'Habilitación', 'role' => 'Calidad', 'icon' => 'Settings', 'order' => 3],
+            ['name' => 'indicadores', 'display_name' => 'Indicadores', 'role' => 'Calidad', 'icon' => 'BarChart3', 'order' => 4],
+            ['name' => 'auditoria', 'display_name' => 'Auditoría', 'role' => 'Calidad', 'icon' => 'Shield', 'order' => 5],
+            ['name' => 'mejoramiento', 'display_name' => 'Mejoramiento', 'role' => 'Calidad', 'icon' => 'TrendingUp', 'order' => 6],
+            ['name' => 'humanizacion', 'display_name' => 'Humanización', 'role' => 'Calidad', 'icon' => 'Heart', 'order' => 7],
+            ['name' => 'referenciaciones', 'display_name' => 'Referenciaciones', 'role' => 'Calidad', 'icon' => 'Map', 'order' => 8],
+            ['name' => 'tecnovigilancia', 'display_name' => 'Tecnovigilancia', 'role' => 'Calidad', 'icon' => 'Activity', 'order' => 9],
+            ['name' => 'centro-escucha', 'display_name' => 'Centro de Escucha', 'role' => 'Calidad', 'icon' => 'Users', 'order' => 10],
         ];
 
         foreach ($modules as $module) {
