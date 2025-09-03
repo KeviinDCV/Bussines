@@ -1,6 +1,6 @@
 import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
-import { TrendingUp, Target, BarChart3, PieChart, FileText, Plus, Users, Settings, Database, Calendar, Clock, Map, Shield, Heart, Activity, Briefcase } from 'lucide-react';
+import { TrendingUp, Target, BarChart3, PieChart, FileText, Plus, Users, Settings, Database, Calendar, Clock, Map, Shield, Heart, Activity, Briefcase, Trash2 } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 // Mapeo de iconos
@@ -67,6 +67,50 @@ export default function DireccionamientoAdministrador() {
             router.get(module.route);
         } else if (module.name === 'plan-desarrollo') {
             router.get('/plan-desarrollo');
+        }
+    };
+
+    const handleDeleteModule = async (module: Module) => {
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas eliminar el módulo "${module.display_name}"? Esta acción no se puede deshacer.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await router.delete(`/admin/modules/${module.id}`, {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: '¡Eliminado!',
+                            text: 'El módulo ha sido eliminado exitosamente',
+                            icon: 'success',
+                            confirmButtonColor: '#2a3d85'
+                        });
+                    },
+                    onError: (errors) => {
+                        const errorMessages = Object.values(errors).flat().join('\n');
+                        Swal.fire({
+                            title: 'Error',
+                            text: errorMessages || 'Ocurrió un error al eliminar el módulo',
+                            icon: 'error',
+                            confirmButtonColor: '#2a3d85'
+                        });
+                    }
+                });
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Ocurrió un error al eliminar el módulo',
+                    icon: 'error',
+                    confirmButtonColor: '#2a3d85'
+                });
+            }
         }
     };
 
@@ -186,8 +230,17 @@ export default function DireccionamientoAdministrador() {
                         return (
                             <div
                                 key={module.id}
-                                className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col"
+                                className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6 border-l-4 border-[#2a3d85] flex flex-col relative"
                             >
+                                {canCreateModules && (
+                                    <button
+                                        onClick={() => handleDeleteModule(module)}
+                                        className="absolute top-2 right-2 p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                                        title="Eliminar módulo"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                )}
                                 <div className="flex items-center mb-3 sm:mb-4">
                                     <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-[#2a3d85]" />
                                 </div>
