@@ -215,6 +215,16 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
         Route::resource('admin/modules', \App\Http\Controllers\Admin\ModuleController::class);
         Route::get('api/modules/role', [\App\Http\Controllers\Admin\ModuleController::class, 'getModulesForRole'])->name('api.modules.role');
     });
+
+    // Ruta generada automáticamente para Plan operativo anual
+    Route::get('/direccionamiento/ejemplo', function () {
+        return Inertia::render('Direccionamiento/Ejemplo');
+    })->name('module.ejemplo');
+
+    // Ruta generada automáticamente para Ejemplo
+    Route::get('/direccionamiento/test-test', function () {
+        return Inertia::render('Direccionamiento/TestTest');
+    })->name('module.test-test');
 });
 
 require __DIR__.'/settings.php';

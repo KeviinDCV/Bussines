@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Module;
 use App\Models\Role;
+use App\Services\ModuleGeneratorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ModuleController extends Controller
 {
+    protected $moduleGenerator;
+
+    public function __construct(ModuleGeneratorService $moduleGenerator)
+    {
+        $this->moduleGenerator = $moduleGenerator;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -32,11 +40,11 @@ class ModuleController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:modules,name',
             'display_name' => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
             'icon' => 'nullable|string|max:255',
-            'route' => 'nullable|string|max:255',
+            'route' => 'nullable|string|max:255|unique:modules,route',
             'role' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:modules,id',
             'order' => 'nullable|integer|min:0'
@@ -46,10 +54,11 @@ class ModuleController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        // Crear el módulo en la base de datos
         $module = Module::create([
             'name' => $request->name,
             'display_name' => $request->display_name,
-            'description' => $request->description,
+            'description' => $request->description ?? 'Módulo del sistema de ' . strtolower($request->role),
             'icon' => $request->icon ?? 'FileText',
             'route' => $request->route,
             'role' => $request->role,
@@ -58,7 +67,16 @@ class ModuleController extends Controller
             'active' => true
         ]);
 
-        return back()->with('success', 'Módulo creado exitosamente');
+        // Generar archivos automáticamente
+        try {
+            $this->moduleGenerator->generateModuleFiles($module);
+            Log::info("Módulo creado exitosamente con archivos generados: {$module->name}");
+        } catch (\Exception $e) {
+            Log::error("Error generando archivos para el módulo {$module->name}: " . $e->getMessage());
+            // No fallar la creación del módulo, solo registrar el error
+        }
+
+        return back()->with('success', 'Módulo creado exitosamente con página y ruta generadas automáticamente');
     }
 
     /**
@@ -102,6 +120,15 @@ class ModuleController extends Controller
      */
     public function destroy(Module $module)
     {
+        // Eliminar archivos generados
+        try {
+            $this->moduleGenerator->deleteModuleFiles($module);
+            Log::info("Archivos eliminados para el módulo: {$module->name}");
+        } catch (\Exception $e) {
+            Log::error("Error eliminando archivos del módulo {$module->name}: " . $e->getMessage());
+            // Continuar con la eliminación del módulo aunque falle la limpieza de archivos
+        }
+
         $module->delete();
         return back()->with('success', 'Módulo eliminado exitosamente');
     }

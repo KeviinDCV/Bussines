@@ -151,7 +151,7 @@ export default function AppLayout({
                         <div className="flex items-center">
                             {showBackButton && (
                                 <button
-                                    onClick={() => window.location.href = backUrl}
+                                    onClick={() => router.get(backUrl)}
                                     className="mr-4 p-2 hover:bg-white/10 rounded-lg transition-colors"
                                 >
                                     <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />

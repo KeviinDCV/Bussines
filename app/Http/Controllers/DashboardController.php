@@ -128,7 +128,7 @@ class DashboardController extends Controller
      */
     public function planDesarrollo()
     {
-        return Inertia::render('Dashboard/PlanDesarrollo');
+        return Inertia::render('Direccionamiento/PlanDesarrollo');
     }
 
     /**
@@ -136,7 +136,19 @@ class DashboardController extends Controller
      */
     public function asistencialesGerencia()
     {
-        return Inertia::render('Dashboard/AsistencialesGerencia');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Asistenciales')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/AsistencialesGerencia', [
+            'modules' => $modules,
+            'canCreateModules' => false // Gerencia solo visualiza, no puede crear/eliminar
+        ]);
     }
 
     /**
@@ -144,7 +156,19 @@ class DashboardController extends Controller
      */
     public function administrativosGerencia()
     {
-        return Inertia::render('Dashboard/AdministrativosGerencia');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Administrativos')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/AdministrativosGerencia', [
+            'modules' => $modules,
+            'canCreateModules' => false // Gerencia solo visualiza, no puede crear/eliminar
+        ]);
     }
 
     /**
@@ -152,7 +176,19 @@ class DashboardController extends Controller
      */
     public function financierosGerencia()
     {
-        return Inertia::render('Dashboard/FinancierosGerencia');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Financieros')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/FinancierosGerencia', [
+            'modules' => $modules,
+            'canCreateModules' => false // Gerencia solo visualiza, no puede crear/eliminar
+        ]);
     }
 
     /**
@@ -160,7 +196,19 @@ class DashboardController extends Controller
      */
     public function direccionamientoGerencia()
     {
-        return Inertia::render('Dashboard/DireccionamientoGerencia');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Direccionamiento')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/DireccionamientoGerencia', [
+            'modules' => $modules,
+            'canCreateModules' => false // Gerencia solo visualiza, no puede crear/eliminar
+        ]);
     }
 
     /**
@@ -176,7 +224,19 @@ class DashboardController extends Controller
      */
     public function calidadGerencia()
     {
-        return Inertia::render('Dashboard/CalidadGerencia');
+        $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Calidad')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
+        return Inertia::render('Dashboard/CalidadGerencia', [
+            'modules' => $modules,
+            'canCreateModules' => false // Gerencia solo visualiza, no puede crear/eliminar
+        ]);
     }
 
     /**

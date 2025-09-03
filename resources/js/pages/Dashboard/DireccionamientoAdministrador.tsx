@@ -123,6 +123,7 @@ export default function DireccionamientoAdministrador() {
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Módulo *</label>
                             <input id="swal-input1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: nuevo-modulo">
+                            <p class="text-xs text-gray-500 mt-1">Solo letras, números y guiones. Se usará para generar la URL.</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nombre a Mostrar *</label>
@@ -145,10 +146,6 @@ export default function DireccionamientoAdministrador() {
                             <input id="swal-input5" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" type="number" value="0" min="0">
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Ruta (Opcional)</label>
-                        <input id="swal-input6" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: /nuevo-modulo">
-                    </div>
                 </div>
             `,
             focusConfirm: false,
@@ -163,12 +160,20 @@ export default function DireccionamientoAdministrador() {
                 const description = (document.getElementById('swal-input3') as HTMLTextAreaElement).value;
                 const icon = (document.getElementById('swal-input4') as HTMLSelectElement).value;
                 const order = parseInt((document.getElementById('swal-input5') as HTMLInputElement).value) || 0;
-                const route = (document.getElementById('swal-input6') as HTMLInputElement).value;
 
                 if (!name || !displayName) {
                     Swal.showValidationMessage('El nombre del módulo y el nombre a mostrar son obligatorios');
                     return false;
                 }
+
+                // Validar formato del nombre (solo letras, números y guiones)
+                if (!/^[a-z0-9-]+$/.test(name)) {
+                    Swal.showValidationMessage('El nombre del módulo solo puede contener letras minúsculas, números y guiones');
+                    return false;
+                }
+
+                // Generar ruta automáticamente basada en el nombre
+                const route = `/direccionamiento/${name}`;
 
                 return {
                     name,
@@ -252,7 +257,7 @@ export default function DireccionamientoAdministrador() {
                                     onClick={() => handleModuleClick(module)}
                                     className="w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-xs sm:text-sm font-medium mt-auto"
                                 >
-                                    {module.route ? 'Acceder al Módulo' : 'Próximamente'}
+                                    Acceder al Módulo
                                 </button>
                             </div>
                         );

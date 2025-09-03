@@ -46,9 +46,14 @@ class UserController extends Controller
                       ->orderBy('created_at', 'desc')
                       ->paginate(10);
 
+        // Obtener roles activos de la tabla roles
         $activeRoles = Role::where('active', true)->orderBy('display_name')->get();
         
-        $modules = \App\Models\Module::with('role')->where('active', true)->orderBy('role_id')->orderBy('display_name')->get();
+        // Obtener módulos sin relación problemática
+        $modules = \App\Models\Module::where('active', true)
+            ->orderBy('role')
+            ->orderBy('display_name')
+            ->get();
         
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
