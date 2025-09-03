@@ -25,6 +25,7 @@ import Swal from 'sweetalert2';
 interface User {
     id: number;
     name: string;
+    username?: string;
     email: string;
     role: string;
     is_active: boolean;
@@ -62,6 +63,14 @@ interface Module {
     icon?: string;
     route?: string;
     role_id: number;
+    role?: {
+        id: number;
+        name: string;
+        display_name: string;
+        description?: string;
+        active: boolean;
+        created_at: string;
+    };
     active: boolean;
     order: number;
 }
@@ -210,6 +219,10 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                         <strong class="text-gray-700">Nombre:</strong>
                         <p class="text-gray-900">${user.name}</p>
                     </div>
+                    ${user.username ? `<div>
+                        <strong class="text-gray-700">Usuario:</strong>
+                        <p class="text-gray-900">${user.username}</p>
+                    </div>` : ''}
                     <div>
                         <strong class="text-gray-700">Email:</strong>
                         <p class="text-gray-900">${user.email}</p>
@@ -250,6 +263,10 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                         <input id="swal-edit-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" value="${user.name}">
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de usuario</label>
+                        <input id="swal-edit-username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" value="${user.username || ''}" placeholder="Nombre de usuario único">
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
                         <input id="swal-edit-email" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" value="${user.email}">
                     </div>
@@ -280,9 +297,9 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                 
                 const allModules = ['Ambulatorio', 'Banco de Sangre', 'Cirugía', 'Epidemiología', 'Extensión Hospitalaria', 'Ginecología', 'Hospitalización', 'Imágenes', 'Laboratorio', 'Medicina Física', 'Mortalidad', 'UCI Adultos', 'UCI Neonatal', 'UCI Pediátrico', 'Urgencias', 'CIAU', 'Farmacia', 'Gestión Técnica y Logística', 'Sistemas de Información', 'Talento Humano', 'Plan de Desarrollo', 'Cartera', 'Contabilidad', 'Facturación', 'Glosas', 'Presupuesto', 'Recaudo', 'PAMEC', 'Documentos', 'Habilitación', 'Indicadores', 'Auditoría', 'Mejoramiento', 'Humanización', 'Referenciaciones', 'Tecnovigilancia', 'Centro de Escucha', 'Gestión de Usuarios'];
                 
-                const renderEditModules = (modulesList) => {
+                const renderEditModules = (modulesList: string[]) => {
                     // Group modules by role
-                    const modulesByRole = {};
+                    const modulesByRole: Record<string, string[]> = {};
                     modules?.forEach(module => {
                         const roleName = module.role?.display_name || 'Sin Rol';
                         if (!modulesByRole[roleName]) {
@@ -314,20 +331,21 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                 };
                 
                 const updateEditModules = () => {
-                    modulesSection.style.display = 'block';
-                    modulesList.innerHTML = renderEditModules(allModules);
+                    if (modulesSection) modulesSection.style.display = 'block';
+                    if (modulesList) modulesList.innerHTML = renderEditModules(allModules);
                 };
                 
                 const filterEditModules = () => {
-                    const searchTerm = searchInput.value.toLowerCase();
+                    if (!searchInput) return;
+                    const searchTerm = (searchInput as HTMLInputElement).value.toLowerCase();
                     const filteredModules = allModules.filter(module => 
                         module.toLowerCase().includes(searchTerm)
                     );
-                    modulesList.innerHTML = renderEditModules(filteredModules);
+                    if (modulesList) modulesList.innerHTML = renderEditModules(filteredModules);
                 };
                 
-                roleSelect.addEventListener('change', updateEditModules);
-                searchInput.addEventListener('input', filterEditModules);
+                if (roleSelect) roleSelect.addEventListener('change', updateEditModules);
+                if (searchInput) searchInput.addEventListener('input', filterEditModules);
                 updateEditModules(); // Initialize on open
             },
             focusConfirm: false,
@@ -338,6 +356,7 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
             width: '600px',
             preConfirm: () => {
                 const name = (document.getElementById('swal-edit-name') as HTMLInputElement).value;
+                const username = (document.getElementById('swal-edit-username') as HTMLInputElement).value;
                 const email = (document.getElementById('swal-edit-email') as HTMLInputElement).value;
                 const password = (document.getElementById('swal-edit-password') as HTMLInputElement).value;
                 const role = (document.getElementById('swal-edit-role') as HTMLSelectElement).value;
@@ -351,6 +370,11 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                     return false;
                 }
                 
+                if (username && !/^[a-zA-Z0-9._-]+$/.test(username)) {
+                    Swal.showValidationMessage('El nombre de usuario solo puede contener letras, números, puntos, guiones y guiones bajos');
+                    return false;
+                }
+                
                 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                     Swal.showValidationMessage('El formato del email no es válido');
                     return false;
@@ -361,7 +385,7 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                     return false;
                 }
                 
-                return { name, email, password: password || undefined, role, module_permissions: selectedModules };
+                return { name, username: username || undefined, email, password: password || undefined, role, module_permissions: selectedModules };
             }
         });
 
@@ -442,6 +466,10 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                         <input id="swal-input1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Nombre completo">
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de usuario</label>
+                        <input id="swal-input6" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="usuario_unico">
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
                         <input id="swal-input2" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="usuario@huv.com">
                     </div>
@@ -477,11 +505,11 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                 
                 const allModules = modules ? modules.map(module => module.display_name) : [];
                 
-                const renderModules = (modulesList, selectedRole) => {
+                const renderModules = (modulesList: string[], selectedRole: string) => {
                     const defaultModules = modules ? modules.filter(m => m.role?.display_name === selectedRole).map(m => m.display_name) : [];
                     
                     // Group modules by role
-                    const modulesByRole = {};
+                    const modulesByRole: Record<string, string[]> = {};
                     modules?.forEach(module => {
                         const roleName = module.role?.display_name || 'Sin Rol';
                         if (!modulesByRole[roleName]) {
@@ -513,37 +541,39 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                 };
                 
                 const updateModules = () => {
-                    const role = roleSelect.value;
+                    if (!roleSelect) return;
+                    const role = (roleSelect as HTMLSelectElement).value;
                     if (role) {
-                        modulesSection.style.display = 'block';
-                        modulesList.innerHTML = renderModules(allModules, role);
+                        if (modulesSection) modulesSection.style.display = 'block';
+                        if (modulesList) modulesList.innerHTML = renderModules(allModules, role);
                         
                         // Auto-check default modules for role
                         const defaultModules = modules ? modules.filter(m => m.role?.display_name === role).map(m => m.display_name) : [];
                         setTimeout(() => {
                             defaultModules.forEach(moduleName => {
-                                const checkbox = document.querySelector(`input[name="modules"][value="${moduleName}"]`);
+                                const checkbox = document.querySelector(`input[name="modules"][value="${moduleName}"]`) as HTMLInputElement;
                                 if (checkbox) checkbox.checked = true;
                             });
                         }, 10);
                     } else {
-                        modulesSection.style.display = 'none';
+                        if (modulesSection) modulesSection.style.display = 'none';
                     }
                 };
                 
                 const filterModules = () => {
-                    const searchTerm = searchInput.value.toLowerCase();
-                    const role = roleSelect.value;
+                    if (!searchInput || !roleSelect) return;
+                    const searchTerm = (searchInput as HTMLInputElement).value.toLowerCase();
+                    const role = (roleSelect as HTMLSelectElement).value;
                     const filteredModules = allModules.filter(module => 
                         module.toLowerCase().includes(searchTerm)
                     );
-                    if (role) {
+                    if (role && modulesList) {
                         modulesList.innerHTML = renderModules(filteredModules, role);
                     }
                 };
                 
-                roleSelect.addEventListener('change', updateModules);
-                searchInput.addEventListener('input', filterModules);
+                if (roleSelect) roleSelect.addEventListener('change', updateModules);
+                if (searchInput) searchInput.addEventListener('input', filterModules);
             },
             focusConfirm: false,
             showCancelButton: true,
@@ -553,6 +583,7 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
             width: '600px',
             preConfirm: () => {
                 const name = (document.getElementById('swal-input1') as HTMLInputElement).value;
+                const username = (document.getElementById('swal-input6') as HTMLInputElement).value;
                 const email = (document.getElementById('swal-input2') as HTMLInputElement).value;
                 const password = (document.getElementById('swal-input3') as HTMLInputElement).value;
                 const passwordConfirmation = (document.getElementById('swal-input5') as HTMLInputElement).value;
@@ -563,7 +594,12 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                 const selectedModules = Array.from(moduleCheckboxes).map((cb: any) => cb.value);
                 
                 if (!name || !email || !password || !passwordConfirmation || !role) {
-                    Swal.showValidationMessage('Todos los campos son obligatorios');
+                    Swal.showValidationMessage('Nombre, email, contraseña y rol son obligatorios');
+                    return false;
+                }
+                
+                if (username && !/^[a-zA-Z0-9._-]+$/.test(username)) {
+                    Swal.showValidationMessage('El nombre de usuario solo puede contener letras, números, puntos, guiones y guiones bajos');
                     return false;
                 }
                 
@@ -582,7 +618,7 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                     return false;
                 }
                 
-                return { name, email, password, password_confirmation: passwordConfirmation, role, module_permissions: selectedModules };
+                return { name, username: username || undefined, email, password, password_confirmation: passwordConfirmation, role, module_permissions: selectedModules };
             }
         });
 

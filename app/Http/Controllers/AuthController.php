@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,45 +25,79 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+        // Log para depuración
+        \Log::info('Login attempt', [
+            'email' => $request->input('email'),
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent()
         ]);
 
-        // Rate limiting
-        $key = 'login.' . $request->ip();
-        $maxAttempts = 5;
-        $decayMinutes = 2;
+        $request->validate([
+            'email' => 'required|string',
+            'password' => 'required',
+            'remember' => 'boolean',
+        ]);
 
-        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
-            $seconds = RateLimiter::availableIn($key);
-            $minutes = ceil($seconds / 60);
-            
-            return back()->withErrors([
-                'email' => "Demasiados intentos de login. Intenta nuevamente en {$minutes} minutos.",
+
+
+        // Determine if input is email or username
+        $login = $request->input('email');
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        
+        \Log::info('Login field determined', [
+            'login' => $login,
+            'field' => $field
+        ]);
+        
+        // Attempt authentication with remember option
+        $credentials = [$field => $login, 'password' => $request->input('password')];
+        $remember = $request->boolean('remember', false);
+        
+        \Log::info('Authentication attempt', [
+            'field' => $field,
+            'login' => $login,
+            'remember' => $remember
+        ]);
+        
+        if (!Auth::attempt($credentials, $remember)) {
+            \Log::warning('Login failed', [
+                'field' => $field,
+                'login' => $login,
+                'ip' => $request->ip()
             ]);
-        }
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            RateLimiter::hit($key, $decayMinutes * 60);
             
-            return back()->withErrors([
+            return redirect()->route('login')->withErrors([
                 'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
-            ]);
+            ])->withInput($request->only('email'));
         }
 
+        // Check if user is active
+        $user = Auth::user();
+        
+        \Log::info('Login successful', [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'user_role' => $user->role,
+            'is_active' => $user->is_active
+        ]);
+        
         if (!$user->is_active) {
-            return back()->withErrors([
+            Auth::logout();
+            
+            \Log::warning('Login blocked - inactive user', [
+                'user_id' => $user->id,
+                'user_name' => $user->name
+            ]);
+            
+            return redirect()->route('login')->withErrors([
                 'email' => 'Su cuenta está desactivada. Contacte al administrador.',
             ]);
         }
 
-        // Clear rate limiter on successful login
-        RateLimiter::clear($key);
+        // Clear rate limiter on successful login (handled by middleware)
         
-        Auth::login($user);
+        // Regenerate session
+        $request->session()->regenerate();
 
         // Redirect based on role
         return $this->redirectBasedOnRole($user->role);

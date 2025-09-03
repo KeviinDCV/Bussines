@@ -5,22 +5,29 @@ import { Building2 } from 'lucide-react';
 export default function Hospitalizacion() {
     return (
         <AppLayout
-            title="Gestión integral de Hospitalización - Business Intelligence HUV"
+            title="Hospitalización - Business Intelligence HUV"
             pageTitle="Gestión integral de Hospitalización"
-            pageDescription="Control de pacientes hospitalizados y servicios de internación"
+            pageDescription="Administración de pacientes hospitalizados"
             icon={Building2}
             showBackButton={true}
             backUrl="/dashboard/asistenciales"
         >
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Módulo en Desarrollo</h2>
-                <div className="text-center py-12">
-                    <Building2 className="w-12 h-12 sm:w-16 sm:h-16 text-[#2a3d85] mx-auto mb-4" />
-                    <p className="text-gray-600">
-                        El módulo de Gestión integral de Hospitalización está siendo desarrollado.
-                        <br />
-                        Pronto estará disponible con todas las funcionalidades.
-                    </p>
+            <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Censo Hospitalario</h2>
+                    <p className="text-gray-600">Control y seguimiento de pacientes hospitalizados</p>
+                </div>
+                
+                <div className="w-full overflow-hidden rounded-lg border border-gray-200">
+                    <iframe 
+                        title="Censo" 
+                        width="100%" 
+                        height="650" 
+                        src="https://app.powerbi.com/view?r=eyJrIjoiMGZlOGU5MGUtNTA5MC00YWE1LWFmNTktZDE4NTIwYTE5ZjQwIiwidCI6ImNmNGFhYjEzLWQwMDQtNDcwOC04MDFjLTQ0YmJiYWUxNmI0MyIsImMiOjR9" 
+                        frameBorder="0" 
+                        allowFullScreen={true}
+                        className="w-full"
+                    />
                 </div>
             </div>
         </AppLayout>

@@ -11,6 +11,7 @@ import { showError, showSuccess } from '@/utils/sweetAlert';
 interface User {
     id: number;
     name: string;
+    username?: string;
     email: string;
     role: string;
     is_active: boolean;
@@ -25,6 +26,7 @@ interface Props {
 
 interface UserFormData {
     name: string;
+    username: string;
     email: string;
     password: string;
     password_confirmation: string;
@@ -39,6 +41,7 @@ export default function EditUser({ user, roles }: Props) {
 
     const { data, setData, patch, processing, errors } = useForm<UserFormData>({
         name: user.name,
+        username: user.username || '',
         email: user.email,
         password: '',
         password_confirmation: '',
@@ -148,6 +151,28 @@ export default function EditUser({ user, roles }: Props) {
                                     )}
                                 </div>
 
+                                <div className="space-y-2">
+                                    <Label htmlFor="username" className="text-gray-700 font-medium">
+                                        Nombre de Usuario
+                                    </Label>
+                                    <Input
+                                        id="username"
+                                        type="text"
+                                        value={data.username}
+                                        onChange={(e) => setData('username', e.target.value)}
+                                        placeholder="Ej: juan.perez (opcional)"
+                                        className={`h-12 ${errors.username ? 'border-red-500' : 'border-gray-300'} focus:border-[#2a3d85] focus:ring-[#2a3d85]`}
+                                    />
+                                    {errors.username && (
+                                        <p className="text-sm text-red-600">{errors.username}</p>
+                                    )}
+                                    <p className="text-xs text-gray-500">
+                                        Solo letras, números, puntos, guiones y guiones bajos
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="email" className="text-gray-700 font-medium">
                                         Correo Electrónico *
@@ -298,6 +323,8 @@ export default function EditUser({ user, roles }: Props) {
                             <ul className="text-sm text-blue-800 space-y-1">
                                 <li>• Deje los campos de contraseña vacíos para mantener la contraseña actual</li>
                                 <li>• Si cambia la contraseña, debe tener al menos 8 caracteres</li>
+                                <li>• El nombre de usuario es opcional y debe ser único</li>
+                                <li>• El usuario puede iniciar sesión con email o nombre de usuario</li>
                                 <li>• Solo los usuarios activos pueden acceder al sistema</li>
                                 <li>• El cambio de rol afectará los permisos y módulos disponibles</li>
                             </ul>

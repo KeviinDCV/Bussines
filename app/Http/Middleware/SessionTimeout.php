@@ -17,22 +17,30 @@ class SessionTimeout
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            $lastActivity = Session::get('last_activity');
-            $timeout = config('session.lifetime') * 60; // Convertir minutos a segundos
+            // Si el usuario tiene cookie "remember me", no aplicar timeout
+            $hasRememberToken = Auth::viaRemember();
             
-            if ($lastActivity && (time() - $lastActivity) > $timeout) {
-                Auth::logout();
-                Session::flush();
+            if (!$hasRememberToken) {
+                $lastActivity = Session::get('last_activity');
+                $timeout = config('session.lifetime') * 60; // Convertir minutos a segundos
                 
-                if ($request->expectsJson() || $request->header('X-Inertia')) {
-                    return response()->json(['message' => 'Sesión expirada por inactividad'], 401);
+                if ($lastActivity && (time() - $lastActivity) > $timeout) {
+                    Auth::logout();
+                    Session::flush();
+                    
+                    if ($request->expectsJson() || $request->header('X-Inertia')) {
+                        return response()->json(['message' => 'Sesión expirada por inactividad'], 401);
+                    }
+                    
+                    return redirect()->route('login')->with('warning', 'Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.');
                 }
                 
-                return redirect()->route('login')->with('warning', 'Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.');
+                // Actualizar última actividad para usuarios sin remember token
+                Session::put('last_activity', time());
+            } else {
+                // Para usuarios con "remember me", actualizar la actividad pero sin timeout
+                Session::put('last_activity', time());
             }
-            
-            // Actualizar última actividad
-            Session::put('last_activity', time());
         }
 
         return $next($request);

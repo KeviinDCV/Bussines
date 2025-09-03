@@ -14,6 +14,7 @@ interface Props {
 
 interface UserFormData {
     name: string;
+    username: string;
     email: string;
     password: string;
     password_confirmation: string;
@@ -28,6 +29,7 @@ export default function CreateUser({ roles }: Props) {
 
     const { data, setData, post, processing, errors } = useForm<UserFormData>({
         name: '',
+        username: '',
         email: '',
         password: '',
         password_confirmation: '',
@@ -137,6 +139,28 @@ export default function CreateUser({ roles }: Props) {
                                     )}
                                 </div>
 
+                                <div className="space-y-2">
+                                    <Label htmlFor="username" className="text-gray-700 font-medium">
+                                        Nombre de Usuario
+                                    </Label>
+                                    <Input
+                                        id="username"
+                                        type="text"
+                                        value={data.username}
+                                        onChange={(e) => setData('username', e.target.value)}
+                                        placeholder="Ej: juan.perez (opcional)"
+                                        className={`h-12 ${errors.username ? 'border-red-500' : 'border-gray-300'} focus:border-[#2a3d85] focus:ring-[#2a3d85]`}
+                                    />
+                                    {errors.username && (
+                                        <p className="text-sm text-red-600">{errors.username}</p>
+                                    )}
+                                    <p className="text-xs text-gray-500">
+                                        Solo letras, números, puntos, guiones y guiones bajos
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="email" className="text-gray-700 font-medium">
                                         Correo Electrónico *
@@ -274,7 +298,8 @@ export default function CreateUser({ roles }: Props) {
                             <h4 className="text-sm font-medium text-blue-900 mb-2">Información Importante:</h4>
                             <ul className="text-sm text-blue-800 space-y-1">
                                 <li>• La contraseña debe tener al menos 8 caracteres</li>
-                                <li>• El usuario recibirá sus credenciales por correo electrónico</li>
+                                <li>• El nombre de usuario es opcional y debe ser único</li>
+                                <li>• El usuario puede iniciar sesión con email o nombre de usuario</li>
                                 <li>• Solo los usuarios activos pueden acceder al sistema</li>
                                 <li>• El rol determina los permisos y módulos disponibles</li>
                             </ul>

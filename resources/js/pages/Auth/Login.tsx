@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { showError, showSuccess } from '@/utils/sweetAlert';
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle, Eye, EyeOff } from 'lucide-react';
@@ -17,12 +18,14 @@ interface LoginProps {
 interface LoginData {
     email: string;
     password: string;
+    remember: boolean;
 }
 
 export default function Login({ errors }: LoginProps) {
     const { data, setData, post, processing } = useForm<LoginData>({
         email: '',
         password: '',
+        remember: false,
     });
     
     const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +40,7 @@ export default function Login({ errors }: LoginProps) {
         e.preventDefault();
         
         if (!data.email || !data.password) {
-            showError('Campos requeridos', 'Por favor ingrese su email y contraseña');
+            showError('Campos requeridos', 'Por favor ingrese su usuario/email y contraseña');
             return;
         }
 
@@ -62,8 +65,11 @@ export default function Login({ errors }: LoginProps) {
         }
 
         post('/login', {
-            onSuccess: () => {
-                showSuccess('¡Bienvenido!', 'Ingreso exitoso al sistema');
+            onSuccess: (page) => {
+                // Solo mostrar éxito si realmente se redirigió a una página diferente al login
+                if (page.url !== '/login') {
+                    showSuccess('¡Bienvenido!', 'Ingreso exitoso al sistema');
+                }
             },
             onError: (errors) => {
                 // If CSRF error (419), force page reload
@@ -114,14 +120,14 @@ export default function Login({ errors }: LoginProps) {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-2">
                             <Label htmlFor="email" className="text-gray-700 font-medium">
-                                Correo Electrónico
+                                Usuario o Correo Electrónico
                             </Label>
                             <Input
                                 id="email"
-                                type="email"
+                                type="text"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
-                                placeholder="usuario@huv.com"
+                                placeholder="usuario@huv.com o nombre_usuario"
                                 className="h-10 sm:h-12 border-gray-300 focus:border-[#2a3d85] focus:ring-[#2a3d85] text-gray-900 bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a3d85]/20 selection:bg-[#2a3d85] selection:text-white text-sm sm:text-base"
                                 style={{
                                     WebkitBoxShadow: '0 0 0 1000px white inset !important',
@@ -164,6 +170,21 @@ export default function Login({ errors }: LoginProps) {
                                     )}
                                 </button>
                             </div>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="remember"
+                                checked={data.remember}
+                                onCheckedChange={(checked) => setData('remember', checked as boolean)}
+                                className="border-gray-300 data-[state=checked]:bg-[#2a3d85] data-[state=checked]:border-[#2a3d85] data-[state=checked]:text-white"
+                            />
+                            <Label 
+                                htmlFor="remember" 
+                                className="text-sm text-gray-600 cursor-pointer select-none"
+                            >
+                                Mantener sesión iniciada
+                            </Label>
                         </div>
 
                         <Button
