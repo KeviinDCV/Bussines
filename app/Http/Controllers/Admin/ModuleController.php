@@ -9,6 +9,8 @@ use App\Services\ModuleGeneratorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 
 class ModuleController extends Controller
@@ -76,6 +78,9 @@ class ModuleController extends Controller
             // No fallar la creación del módulo, solo registrar el error
         }
 
+        // Clear caches to ensure immediate visibility in production
+        $this->clearModuleCaches();
+
         return back()->with('success', 'Módulo creado exitosamente con página y ruta generadas automáticamente');
     }
 
@@ -112,6 +117,9 @@ class ModuleController extends Controller
             'active' => $request->active ?? true
         ]);
 
+        // Clear caches to ensure immediate visibility in production
+        $this->clearModuleCaches();
+
         return back()->with('success', 'Módulo actualizado exitosamente');
     }
 
@@ -130,6 +138,10 @@ class ModuleController extends Controller
         }
 
         $module->delete();
+        
+        // Clear caches to ensure immediate visibility in production
+        $this->clearModuleCaches();
+        
         return back()->with('success', 'Módulo eliminado exitosamente');
     }
 
@@ -152,5 +164,25 @@ class ModuleController extends Controller
             ->get();
 
         return response()->json(['modules' => $modules]);
+    }
+
+    /**
+     * Clear all caches to ensure immediate visibility of module changes in production
+     */
+    private function clearModuleCaches()
+    {
+        try {
+            // Clear Laravel application cache
+            Cache::flush();
+            
+            // Clear specific Laravel caches
+            Artisan::call('cache:clear');
+            Artisan::call('config:clear');
+            Artisan::call('view:clear');
+            
+            Log::info('Module caches cleared successfully');
+        } catch (\Exception $e) {
+            Log::warning('Failed to clear some caches: ' . $e->getMessage());
+        }
     }
 }

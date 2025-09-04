@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Module;
+use App\Observers\ModuleObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register Module Observer for automatic cache clearing
+        Module::observe(ModuleObserver::class);
+        
         // Configure remember token duration
         $this->configureRememberTokenDuration();
     }
