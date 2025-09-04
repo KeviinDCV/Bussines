@@ -198,7 +198,14 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
         });
 
         if (result.isConfirmed) {
+            // Get CSRF token manually for this request
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
             router.patch(`/admin/users/${user.id}/toggle-status`, {}, {
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
                 onSuccess: () => {
                     const status = user.is_active ? 'desactivado' : 'activado';
                     showSuccess(`Usuario ${status}`, `El usuario ha sido ${status} exitosamente.`);

@@ -9,27 +9,57 @@ import { initializeTheme } from './hooks/use-appearance';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 
-// Set up axios defaults for CSRF
+// Set up CSRF token globally for axios
 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 if (token) {
+    // Configure axios defaults
     axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 }
 
-// Configure Inertia router for CSRF with dynamic token refresh
+// Configure Inertia to always include CSRF token in all requests
 router.on('before', (event) => {
     // Always get fresh CSRF token from DOM
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    // Debug logging for PATCH requests and POST logout
+    const urlString = event.detail.visit.url instanceof URL ? event.detail.visit.url.href : event.detail.visit.url;
+    if ((event.detail.visit.method === 'patch' && urlString.includes('/admin/users/')) || 
+        (event.detail.visit.method === 'post' && urlString.includes('/logout'))) {
+        console.log('🔍 CSRF Debug - Request:', {
+            url: urlString,
+            method: event.detail.visit.method,
+            csrfTokenFromDOM: csrfToken ? csrfToken.substring(0, 20) + '...' : 'missing',
+            existingHeaders: event.detail.visit.headers,
+            metaTagExists: !!document.querySelector('meta[name="csrf-token"]'),
+            metaTagContent: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')?.substring(0, 20) + '...'
+        });
+    }
+    
     if (csrfToken) {
-        // Update axios defaults
+        // Update axios defaults with fresh token
         axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
         
-        // Update Inertia headers
-        event.detail.visit.headers = {
-            ...event.detail.visit.headers,
-            'X-CSRF-TOKEN': csrfToken,
-            'X-Requested-With': 'XMLHttpRequest',
-        };
+        // Ensure headers object exists and add CSRF token to Inertia request
+        if (!event.detail.visit.headers) {
+            event.detail.visit.headers = {};
+        }
+        
+        event.detail.visit.headers['X-CSRF-TOKEN'] = csrfToken;
+        event.detail.visit.headers['X-Requested-With'] = 'XMLHttpRequest';
+        
+        // Debug logging after adding headers
+        if ((event.detail.visit.method === 'patch' && urlString.includes('/admin/users/')) || 
+            (event.detail.visit.method === 'post' && urlString.includes('/logout'))) {
+            console.log('✅ CSRF Token Added to Headers:', {
+                'X-CSRF-TOKEN': csrfToken.substring(0, 20) + '...',
+                'X-Requested-With': 'XMLHttpRequest',
+                finalHeaders: event.detail.visit.headers
+            });
+        }
+    } else {
+        const urlForWarning = event.detail.visit.url instanceof URL ? event.detail.visit.url.href : event.detail.visit.url;
+        console.warn('⚠️ No CSRF token found in DOM for request:', urlForWarning);
     }
 });
 

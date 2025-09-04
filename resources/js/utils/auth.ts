@@ -1,20 +1,36 @@
 /**
- * Simplified robust authentication utilities
- * Focuses on reliable logout without race conditions
+ * Simplified authentication utilities
+ * Focuses on reliable logout with proper server communication
  */
 
 import { router } from '@inertiajs/react';
 
 /**
- * EMERGENCY SOLUTION: Client-only logout for immediate presentation needs
- * Bypasses all server issues and forces complete client-side logout
+ * Simple and reliable logout function
+ * Uses Inertia router for proper logout handling
  */
-export const robustLogout = async (): Promise<void> => {
-    console.log('🚨 EMERGENCY LOGOUT - Client-only approach for presentation');
+export const simpleLogout = (): void => {
+    console.log('🔐 Simple logout initiated');
     
-    // Skip server entirely - immediate client logout
-    emergencyClientLogout();
+    // Use Inertia router.post which handles redirects properly
+    router.post('/logout', {}, {
+        onSuccess: () => {
+            console.log('✅ Server logout successful');
+            // Inertia will handle the redirect automatically
+        },
+        onError: (errors) => {
+            console.warn('❌ Server logout failed:', errors);
+            // Fallback: force redirect to login
+            window.location.href = '/login';
+        }
+    });
 };
+
+/**
+ * Legacy function for backward compatibility
+ * @deprecated Use simpleLogout() instead
+ */
+export const robustLogout = simpleLogout;
 
 /**
  * Alternative server logout (for debugging/testing)

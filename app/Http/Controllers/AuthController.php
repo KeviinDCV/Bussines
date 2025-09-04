@@ -99,8 +99,11 @@ class AuthController extends Controller
         // Regenerate session
         $request->session()->regenerate();
 
-        // Redirect based on role
-        return $this->redirectBasedOnRole($user->role);
+        // Force a complete page reload to ensure CSRF token is updated in DOM
+        // This prevents CSRF token mismatch after login
+        $redirectUrl = $this->getRedirectUrlBasedOnRole($user->role);
+        
+        return Inertia::location($redirectUrl);
     }
 
     /**
@@ -114,20 +117,63 @@ class AuthController extends Controller
             'user_id' => $user?->id,
             'user_name' => $user?->name,
             'user_role' => $user?->role,
+            'session_id' => $request->session()->getId(),
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent()
         ]);
         
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        try {
+            // Clear remember token if exists
+            if ($user && $user->remember_token) {
+                $user->remember_token = null;
+                $user->save();
+                \Log::info('Remember token cleared', ['user_id' => $user->id]);
+            }
+            
+            // Clear user authentication
+            Auth::logout();
+            
+            // Invalidate session
+            $request->session()->invalidate();
+            
+            // Regenerate CSRF token
+            $request->session()->regenerateToken();
+            
+            \Log::info('Logout completed successfully', [
+                'user_id' => $user?->id,
+                'ip' => $request->ip()
+            ]);
 
-        \Log::info('Logout completed successfully', [
-            'user_id' => $user?->id,
-            'ip' => $request->ip()
-        ]);
+            // Always redirect for Inertia - never return JSON
+            return redirect()->route('login');
+            
+        } catch (\Exception $e) {
+            \Log::error('Logout failed', [
+                'user_id' => $user?->id,
+                'error' => $e->getMessage(),
+                'ip' => $request->ip()
+            ]);
+            
+            // Even if logout fails, redirect to login
+            return redirect()->route('login');
+        }
+    }
 
-        return redirect()->route('login');
+    /**
+     * Get redirect URL based on user role
+     */
+    private function getRedirectUrlBasedOnRole(string $role): string
+    {
+        return match ($role) {
+            'Asistenciales' => route('dashboard.asistenciales'),
+            'Administrativos' => route('dashboard.administrativos'),
+            'Direccionamiento' => route('dashboard.direccionamiento'),
+            'Financieros' => route('dashboard.financieros'),
+            'Administrador' => route('dashboard.administrador'),
+            'Calidad' => route('dashboard.calidad'),
+            'Gerencia' => route('dashboard.gerencia'),
+            default => route('dashboard.general'),
+        };
     }
 
     /**
@@ -141,7 +187,9 @@ class AuthController extends Controller
             'Direccionamiento' => redirect()->route('dashboard.direccionamiento'),
             'Financieros' => redirect()->route('dashboard.financieros'),
             'Administrador' => redirect()->route('dashboard.administrador'),
-            default => redirect()->route('dashboard'),
+            'Calidad' => redirect()->route('dashboard.calidad'),
+            'Gerencia' => redirect()->route('dashboard.gerencia'),
+            default => redirect()->route('dashboard.general'),
         };
     }
 }
