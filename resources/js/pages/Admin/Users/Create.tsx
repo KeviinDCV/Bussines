@@ -283,7 +283,7 @@ export default function CreateUser({ roles }: Props) {
                                 <li>• El nombre de usuario es opcional y debe ser único</li>
                                 <li>• El usuario puede iniciar sesión con email o nombre de usuario</li>
                                 <li>• Solo los usuarios activos pueden acceder al sistema</li>
-                                <li>• El rol determina los permisos y módulos disponibles</li>
+                                <li>• El rol determina los permisos del usuario en el sistema</li>
                             </ul>
                         </div>
 

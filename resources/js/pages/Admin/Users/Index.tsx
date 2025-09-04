@@ -30,7 +30,6 @@ interface User {
     role: string;
     is_active: boolean;
     created_at: string;
-    module_permissions?: string[];
 }
 
 interface PaginatedUsers {
@@ -55,26 +54,6 @@ interface Role {
     created_at: string;
 }
 
-interface Module {
-    id: number;
-    name: string;
-    display_name: string;
-    description?: string;
-    icon?: string;
-    route?: string;
-    role_id: number;
-    role?: {
-        id: number;
-        name: string;
-        display_name: string;
-        description?: string;
-        active: boolean;
-        created_at: string;
-    };
-    active: boolean;
-    order: number;
-}
-
 interface Props {
     users: PaginatedUsers;
     filters: {
@@ -84,10 +63,9 @@ interface Props {
     };
     roles: string[];
     rolesData: Role[];
-    modules: Module[];
 }
 
-export default function UsersIndex({ users, filters, roles, rolesData, modules }: Props) {
+export default function UsersIndex({ users, filters, roles, rolesData }: Props) {
     const [search, setSearch] = useState(filters.search || '');
     const [selectedRole, setSelectedRole] = useState(filters.role || 'all');
     const [selectedStatus, setSelectedStatus] = useState(filters.status || 'all');
@@ -255,12 +233,6 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
     };
 
     const handleEditUser = async (user: User) => {
-        // Get modules from database
-        const allModules = modules ? modules.map(module => module.display_name) : [];
-
-        // Get current user modules (assuming they're available in user object)
-        const currentModules = (user as any).module_permissions || [];
-
         const { value: formValues } = await Swal.fire({
             title: 'Editar Usuario',
             html: `
@@ -286,11 +258,10 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                         <select id="swal-edit-role" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
                             ${roles.map(role => `<option value="${role}" ${role === user.role ? 'selected' : ''}>${role}</option>`).join('')}
                         </select>
-                        <p class="text-xs text-gray-500 mt-2">Los módulos se asignarán automáticamente según el rol seleccionado</p>
                     </div>
                 </div>
             `,
-                        focusConfirm: false,
+            focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'Actualizar Usuario',
             cancelButtonText: 'Cancelar',
@@ -392,9 +363,6 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
     };
 
     const handleCreateUser = async () => {
-        // Get modules from database
-        const allModules = modules ? modules.map(module => module.display_name) : [];
-
         const { value: formValues } = await Swal.fire({
             title: 'Crear Nuevo Usuario',
             html: `
@@ -425,11 +393,10 @@ export default function UsersIndex({ users, filters, roles, rolesData, modules }
                             <option value="">Seleccionar rol</option>
                             ${roles.map(role => `<option value="${role}">${role}</option>`).join('')}
                         </select>
-                        <p class="text-xs text-gray-500 mt-2">Los módulos se asignarán automáticamente según el rol seleccionado</p>
                     </div>
                 </div>
             `,
-                        focusConfirm: false,
+            focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'Crear Usuario',
             cancelButtonText: 'Cancelar',

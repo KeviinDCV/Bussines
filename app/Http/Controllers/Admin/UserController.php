@@ -42,25 +42,18 @@ class UserController extends Controller
             $query->where('is_active', $isActive);
         }
 
-        $users = $query->select(['id', 'name', 'username', 'email', 'role', 'is_active', 'created_at', 'module_permissions'])
+        $users = $query->select(['id', 'name', 'username', 'email', 'role', 'is_active', 'created_at'])
                       ->orderBy('created_at', 'desc')
                       ->paginate(10);
 
         // Obtener roles activos de la tabla roles
         $activeRoles = Role::where('active', true)->orderBy('display_name')->get();
         
-        // Obtener módulos sin relación problemática
-        $modules = \App\Models\Module::where('active', true)
-            ->orderBy('role')
-            ->orderBy('display_name')
-            ->get();
-        
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
             'filters' => $request->only(['search', 'role', 'status']),
             'roles' => $activeRoles->pluck('display_name')->toArray(),
-            'rolesData' => $activeRoles,
-            'modules' => $modules
+            'rolesData' => $activeRoles
         ]);
     }
 

@@ -307,7 +307,7 @@ export default function EditUser({ user, roles }: Props) {
                                 <li>• El nombre de usuario es opcional y debe ser único</li>
                                 <li>• El usuario puede iniciar sesión con email o nombre de usuario</li>
                                 <li>• Solo los usuarios activos pueden acceder al sistema</li>
-                                <li>• El cambio de rol afectará los permisos y módulos disponibles</li>
+                                <li>• El cambio de rol determinará los permisos del usuario</li>
                             </ul>
                         </div>
 
