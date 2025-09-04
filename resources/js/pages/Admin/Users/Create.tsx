@@ -20,7 +20,6 @@ interface UserFormData {
     password_confirmation: string;
     role: string;
     is_active: boolean;
-    module_permissions: string[];
 }
 
 export default function CreateUser({ roles }: Props) {
@@ -35,27 +34,10 @@ export default function CreateUser({ roles }: Props) {
         password_confirmation: '',
         role: '',
         is_active: true,
-        module_permissions: [],
     });
 
     const handleRoleChange = (newRole: string) => {
         setData('role', newRole);
-        setData('module_permissions', []);
-    };
-
-    const handleModulePermissionChange = (moduleKey: string, checked: boolean) => {
-        const currentPermissions = [...data.module_permissions];
-        if (checked) {
-            if (!currentPermissions.includes(moduleKey)) {
-                currentPermissions.push(moduleKey);
-            }
-        } else {
-            const index = currentPermissions.indexOf(moduleKey);
-            if (index > -1) {
-                currentPermissions.splice(index, 1);
-            }
-        }
-        setData('module_permissions', currentPermissions);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
