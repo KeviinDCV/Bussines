@@ -31,12 +31,8 @@ export default function AppLayout({
     const user = (props as any).auth?.user;
 
     const handleLogout = async () => {
-        // Debug logging to track function calls
-        console.log('🔍 handleLogout called, isLoggingOut:', isLoggingOut);
-        
         // Protección contra doble ejecución
         if (isLoggingOut) {
-            console.log('🚫 Logout already in progress, ignoring duplicate call');
             return;
         }
         
@@ -46,9 +42,6 @@ export default function AppLayout({
             
             // Close user menu immediately for better UX
             setShowUserMenu(false);
-            
-            // Log current user info for debugging
-            console.log('🔐 Logout initiated for user:', user?.name, user?.role);
             
             // Use robust logout utility
             await robustLogout();

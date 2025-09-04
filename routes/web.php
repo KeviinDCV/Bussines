@@ -25,11 +25,6 @@ Route::middleware('guest')->group(function () {
 // Logout route - accesible solo por usuarios autenticados
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth.strict');
 
-// CSRF token route - for debugging CSRF issues
-Route::get('/csrf-token', function () {
-    return response()->json(['token' => csrf_token()]);
-})->middleware('auth.strict');
-
 // Protected routes with role-based access - TODAS las rutas protegidas
 Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

@@ -10,12 +10,9 @@ import { router } from '@inertiajs/react';
  * Uses Inertia router for proper logout handling
  */
 export const simpleLogout = (): void => {
-    console.log('🔐 Simple logout initiated');
-    
     // Use Inertia router.post which handles redirects properly
     router.post('/logout', {}, {
         onSuccess: () => {
-            console.log('✅ Server logout successful');
             // Inertia will handle the redirect automatically
         },
         onError: (errors) => {
@@ -37,8 +34,6 @@ export const robustLogout = simpleLogout;
  * Uses the original server-based approach
  */
 export const serverLogout = async (): Promise<void> => {
-    console.log('🔐 Server logout initiated');
-    
     try {
         // Simple approach with proper timeout cancellation
         await new Promise<void>((resolve, reject) => {
@@ -57,7 +52,6 @@ export const serverLogout = async (): Promise<void> => {
                     if (!isCompleted) {
                         isCompleted = true;
                         clearTimeout(timeoutId);
-                        console.log('✅ Server logout successful');
                         resolve();
                     }
                 },
