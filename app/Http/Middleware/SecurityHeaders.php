@@ -29,11 +29,11 @@ class SecurityHeaders
         if ($isDevelopment) {
             // CSP más permisiva para desarrollo con Vite
             $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://192.168.2.202:5173 ws://192.168.2.202:5173 https://*.google.com https://*.gstatic.com; " .
+                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:5173 http://127.0.0.1:5173 ws://localhost:5173 ws://127.0.0.1:5173 https://*.google.com https://*.gstatic.com; " .
                    "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .
                    "img-src 'self' data: blob: https://*.google.com https://*.gstatic.com; " .
                    "font-src 'self' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .
-                   "connect-src 'self' http://192.168.2.202:5173 ws://192.168.2.202:5173 https://*.google.com https://*.googleapis.com; " .
+                   "connect-src 'self' http://localhost:5173 http://127.0.0.1:5173 ws://localhost:5173 ws://127.0.0.1:5173 https://*.google.com https://*.googleapis.com; " .
                    "frame-src 'self' https://app.powerbi.com https://*.powerbi.com https://lookerstudio.google.com https://*.google.com; " .
                    "frame-ancestors 'none'; " .
                    "base-uri 'self'; " .

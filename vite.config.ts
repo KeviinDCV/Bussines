@@ -21,16 +21,23 @@ export default defineConfig({
         host: '0.0.0.0',
         port: 5173,
         hmr: {
-            host: '192.168.2.202',
+            host: 'localhost',
         },
         cors: {
             origin: [
-                'http://192.168.2.202:8000', 
                 'http://localhost:8000',
+                'http://127.0.0.1:8000',
                 'http://gestionbi.huv.gov.co',
                 'https://gestionbi.huv.gov.co'
             ],
             credentials: true,
+        },
+    },
+    build: {
+        manifest: true,
+        outDir: 'public/build',
+        rollupOptions: {
+            input: ['resources/css/app.css', 'resources/js/app.tsx'],
         },
     },
     esbuild: {
