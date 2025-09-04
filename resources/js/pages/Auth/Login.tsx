@@ -116,7 +116,7 @@ export default function Login({ errors }: LoginProps) {
                         </div>
                         <div className="space-y-1">
                             <h2 className="text-base sm:text-lg font-semibold text-[#2a3d85]">
-                                Innovación y desarrollo
+                                Innovación y Desarrollo
                             </h2>
                         </div>
                     </div>
@@ -249,7 +249,7 @@ export default function Login({ errors }: LoginProps) {
                         </div>
                         <div className="space-y-1">
                             <h2 className="text-base sm:text-lg font-semibold text-[#2a3d85]">
-                                Gestión de calidad y mejoramiento
+                                Gestión de Calidad y Mejoramiento
                             </h2>
                         </div>
                     </div>
@@ -268,7 +268,7 @@ export default function Login({ errors }: LoginProps) {
                         </div>
                         <div className="space-y-2">
                             <h2 className="text-lg xl:text-xl font-semibold text-[#2a3d85]">
-                                Innovación y desarrollo
+                                Innovación y Desarrollo
                             </h2>
                         </div>
                     </div>
@@ -401,7 +401,7 @@ export default function Login({ errors }: LoginProps) {
                         </div>
                         <div className="space-y-2">
                             <h2 className="text-lg xl:text-xl font-semibold text-[#2a3d85]">
-                                Gestión de calidad y mejoramiento
+                                Gestión de Calidad y Mejoramiento
                             </h2>
                         </div>
                     </div>
