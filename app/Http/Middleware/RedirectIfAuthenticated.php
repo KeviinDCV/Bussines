@@ -19,6 +19,16 @@ class RedirectIfAuthenticated
     {
         $guards = empty($guards) ? [null] : $guards;
 
+        // EMERGENCY: Allow forced login access for logout scenarios
+        if ($request->has('force') || $request->has('logout')) {
+            \Log::info('EMERGENCY: Forced login access granted', [
+                'has_force' => $request->has('force'),
+                'has_logout' => $request->has('logout'),
+                'url' => $request->fullUrl()
+            ]);
+            return $next($request);
+        }
+
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 // Redirigir al dashboard correspondiente según el rol del usuario

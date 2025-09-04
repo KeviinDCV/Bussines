@@ -24,7 +24,12 @@ export default defineConfig({
             host: '192.168.2.202',
         },
         cors: {
-            origin: ['http://192.168.2.202:8000', 'http://localhost:8000'],
+            origin: [
+                'http://192.168.2.202:8000', 
+                'http://localhost:8000',
+                'http://gestionbi.huv.gov.co',
+                'https://gestionbi.huv.gov.co'
+            ],
             credentials: true,
         },
     },

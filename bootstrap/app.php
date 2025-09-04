@@ -10,6 +10,7 @@ use App\Http\Middleware\SessionTimeout;
 use App\Http\Middleware\RateLimitLogin;
 use App\Http\Middleware\AuditLogger;
 use App\Http\Middleware\PreventBackHistory;
+use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -23,6 +24,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+
+        // Replace default CSRF middleware with custom one that excludes /logout
+        $middleware->replace(
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+            \App\Http\Middleware\VerifyCsrfToken::class
+        );
 
         $middleware->web(append: [
             SecurityHeaders::class,

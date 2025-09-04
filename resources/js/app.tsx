@@ -34,6 +34,8 @@ router.on('before', (event) => {
 });
 
 // Handle logout to force complete page refresh
+// DISABLED: This handler was causing race conditions with the robust logout utility
+/*
 router.on('success', (event) => {
     // If logout was successful, force hard refresh to clear all state
     if (event.detail.page.url.includes('/login') && document.referrer.includes('logout')) {
@@ -42,6 +44,7 @@ router.on('success', (event) => {
         }, 100);
     }
 });
+*/
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

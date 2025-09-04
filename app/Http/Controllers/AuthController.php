@@ -108,9 +108,24 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $user = Auth::user();
+        
+        \Log::info('Logout initiated', [
+            'user_id' => $user?->id,
+            'user_name' => $user?->name,
+            'user_role' => $user?->role,
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
+        
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        \Log::info('Logout completed successfully', [
+            'user_id' => $user?->id,
+            'ip' => $request->ip()
+        ]);
 
         return redirect()->route('login');
     }

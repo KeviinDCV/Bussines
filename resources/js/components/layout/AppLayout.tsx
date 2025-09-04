@@ -3,6 +3,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { User, LogOut, ChevronDown, Settings, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Swal from 'sweetalert2';
+import { robustLogout, forceLogout, logAuthError } from '@/utils/auth';
 
 interface AppLayoutProps {
     children: ReactNode;
@@ -25,11 +26,45 @@ export default function AppLayout({
 }: AppLayoutProps) {
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const { props } = usePage();
     const user = (props as any).auth?.user;
 
-    const handleLogout = () => {
-        router.post('/logout');
+    const handleLogout = async () => {
+        // Debug logging to track function calls
+        console.log('🔍 handleLogout called, isLoggingOut:', isLoggingOut);
+        
+        // Protección contra doble ejecución
+        if (isLoggingOut) {
+            console.log('🚫 Logout already in progress, ignoring duplicate call');
+            return;
+        }
+        
+        try {
+            // Set flag to prevent duplicate executions
+            setIsLoggingOut(true);
+            
+            // Close user menu immediately for better UX
+            setShowUserMenu(false);
+            
+            // Log current user info for debugging
+            console.log('🔐 Logout initiated for user:', user?.name, user?.role);
+            
+            // Use robust logout utility
+            await robustLogout();
+            
+        } catch (error) {
+            // Log error for debugging
+            logAuthError('AppLayout.handleLogout', error);
+            
+            // This should never happen since robustLogout has its own fallback,
+            // but just in case, force a redirect
+            console.error('🚨 Unexpected logout error:', error);
+            window.location.href = '/login';
+        } finally {
+            // Reset flag (aunque probablemente no se ejecute por redirect)
+            setIsLoggingOut(false);
+        }
     };
 
     const handleChangeEmail = async () => {

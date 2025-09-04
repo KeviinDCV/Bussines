@@ -1,14 +1,36 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { Wallet, ArrowLeft, User, LogOut, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { robustLogout, forceLogout, logAuthError } from '@/utils/auth';
 
 export default function Cartera() {
     const [showUserMenu, setShowUserMenu] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const { props } = usePage();
     const user = (props as any).auth?.user;
 
-    const handleLogout = () => {
-        router.post('/logout');
+    const handleLogout = async () => {
+        // Debug logging to track function calls
+        console.log('🔍 Cartera handleLogout called, isLoggingOut:', isLoggingOut);
+        
+        // Protección contra doble ejecución
+        if (isLoggingOut) {
+            console.log('🚫 Cartera logout already in progress, ignoring duplicate call');
+            return;
+        }
+        
+        try {
+            setIsLoggingOut(true);
+            setShowUserMenu(false);
+            console.log('🔐 Logout initiated from Cartera for user:', user?.name);
+            await robustLogout();
+        } catch (error) {
+            logAuthError('Cartera.handleLogout', error);
+            console.error('🚨 Unexpected logout error in Cartera:', error);
+            window.location.href = '/login';
+        } finally {
+            setIsLoggingOut(false);
+        }
     };
 
     const handleBackToDashboard = () => {
