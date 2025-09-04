@@ -63,17 +63,20 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
-        $modules = \App\Models\Module::with('children')
+        // Force fresh data in production to avoid cache issues
+        $query = \App\Models\Module::with('children')
             ->forRole('Administrativos')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
-            ->get();
+            ->orderBy('order');
+            
+        $modules = app()->environment('production') ? $query->get()->fresh() : $query->get();
 
         return Inertia::render('Dashboard/Administrativos', [
             'modules' => $modules,
             'canCreateModules' => $user->role === 'Administrador',
-            'userPermissions' => $user->module_permissions ?? []
+            'userPermissions' => $user->module_permissions ?? [],
+            'timestamp' => now()->timestamp // Force re-render
         ]);
     }
 

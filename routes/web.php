@@ -214,6 +214,10 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
         
         Route::resource('admin/modules', \App\Http\Controllers\Admin\ModuleController::class);
         Route::get('api/modules/role', [\App\Http\Controllers\Admin\ModuleController::class, 'getModulesForRole'])->name('api.modules.role');
+        
+        // Diagnostic routes for production debugging
+        Route::get('diagnostic/modules', [\App\Http\Controllers\DiagnosticController::class, 'diagnoseModules'])->name('diagnostic.modules');
+        Route::post('diagnostic/refresh-modules', [\App\Http\Controllers\DiagnosticController::class, 'forceRefreshModules'])->name('diagnostic.refresh');
     });
 
     // Ruta generada automáticamente para Plan operativo anual
