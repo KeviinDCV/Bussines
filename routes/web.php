@@ -230,6 +230,16 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/administrativos/test-test', function () {
         return Inertia::render('Administrativos/TestTest');
     })->name('module.test-test');
+
+    // Ruta generada automáticamente para test
+    Route::get('/administrativos/test', function () {
+        return Inertia::render('Administrativos/Test');
+    })->name('module.test');
+
+    // Ruta generada automáticamente para test
+    Route::get('/asistenciales/test', function () {
+        return Inertia::render('Asistenciales/Test');
+    })->name('module.test');
 });
 
 require __DIR__.'/settings.php';

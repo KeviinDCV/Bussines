@@ -89,6 +89,9 @@ export default function AdministrativosAdministrador() {
                             text: 'El módulo ha sido eliminado exitosamente',
                             icon: 'success',
                             confirmButtonColor: '#2a3d85'
+                        }).then(() => {
+                            // Forzar recarga de datos para ocultar el módulo eliminado inmediatamente
+                            router.reload({ only: ['modules'] });
                         });
                     },
                     onError: (errors) => {
@@ -194,6 +197,10 @@ export default function AdministrativosAdministrador() {
                             text: 'Módulo creado exitosamente',
                             icon: 'success',
                             confirmButtonColor: '#2a3d85'
+
+                        }).then(() => {
+                            // Forzar recarga de datos para mostrar el nuevo módulo inmediatamente
+                            router.reload({ only: ['modules'] });
                         });
                     },
                     onError: (errors) => {

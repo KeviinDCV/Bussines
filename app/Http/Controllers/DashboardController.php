@@ -41,7 +41,17 @@ class DashboardController extends Controller
     public function asistenciales()
     {
         $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Asistenciales')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
         return Inertia::render('Dashboard/Asistenciales', [
+            'modules' => $modules,
+            'canCreateModules' => $user->role === 'Administrador',
             'userPermissions' => $user->module_permissions ?? []
         ]);
     }
@@ -52,7 +62,17 @@ class DashboardController extends Controller
     public function administrativos()
     {
         $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Administrativos')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
         return Inertia::render('Dashboard/Administrativos', [
+            'modules' => $modules,
+            'canCreateModules' => $user->role === 'Administrador',
             'userPermissions' => $user->module_permissions ?? []
         ]);
     }
@@ -83,7 +103,17 @@ class DashboardController extends Controller
     public function financieros()
     {
         $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Financieros')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
         return Inertia::render('Dashboard/Financieros', [
+            'modules' => $modules,
+            'canCreateModules' => $user->role === 'Administrador',
             'userPermissions' => $user->module_permissions ?? []
         ]);
     }
@@ -110,7 +140,17 @@ class DashboardController extends Controller
     public function calidad()
     {
         $user = auth()->user();
+        
+        $modules = \App\Models\Module::with('children')
+            ->forRole('Calidad')
+            ->rootModules()
+            ->where('active', true)
+            ->orderBy('order')
+            ->get();
+
         return Inertia::render('Dashboard/Calidad', [
+            'modules' => $modules,
+            'canCreateModules' => $user->role === 'Administrador',
             'userPermissions' => $user->module_permissions ?? []
         ]);
     }
