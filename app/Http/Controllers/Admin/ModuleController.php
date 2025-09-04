@@ -179,8 +179,20 @@ class ModuleController extends Controller
             Artisan::call('cache:clear');
             Artisan::call('config:clear');
             Artisan::call('view:clear');
+            Artisan::call('route:clear');
             
-            Log::info('Module caches cleared successfully');
+            // Clear OPcache if available (important for production)
+            if (function_exists('opcache_reset')) {
+                opcache_reset();
+                Log::info('OPcache cleared successfully');
+            }
+            
+            // Clear any query cache
+            if (method_exists(\DB::class, 'flushQueryLog')) {
+                \DB::flushQueryLog();
+            }
+            
+            Log::info('All module caches cleared successfully');
         } catch (\Exception $e) {
             Log::warning('Failed to clear some caches: ' . $e->getMessage());
         }

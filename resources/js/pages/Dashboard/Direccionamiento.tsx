@@ -150,6 +150,9 @@ export default function Direccionamiento() {
                             text: 'Módulo creado exitosamente',
                             icon: 'success',
                             confirmButtonColor: '#2a3d85'
+                        }).then(() => {
+                            // Forzar recarga de datos para mostrar el nuevo módulo inmediatamente
+                            router.reload({ only: ['modules'] });
                         });
                     },
                     onError: (errors) => {

@@ -63,16 +63,12 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
-        // Force fresh data from database to avoid caching issues in production
-        $modules = \App\Models\Module::with(['children' => function($query) {
-                $query->where('active', true)->orderBy('order');
-            }])
+        $modules = \App\Models\Module::with('children')
             ->forRole('Administrativos')
             ->rootModules()
             ->where('active', true)
             ->orderBy('order')
-            ->get()
-            ->fresh(); // Force fresh data
+            ->get();
 
         return Inertia::render('Dashboard/Administrativos', [
             'modules' => $modules,
@@ -310,16 +306,12 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
-        // Force fresh data from database to avoid caching issues in production
-        $modules = \App\Models\Module::with(['children' => function($query) {
-                $query->where('active', true)->orderBy('order');
-            }])
+        $modules = \App\Models\Module::with('children')
             ->forRole('Administrativos')
             ->rootModules()
             ->where('active', true)
             ->orderBy('order')
-            ->get()
-            ->fresh(); // Force fresh data
+            ->get();
 
         return Inertia::render('Dashboard/AdministrativosAdministrador', [
             'modules' => $modules,
