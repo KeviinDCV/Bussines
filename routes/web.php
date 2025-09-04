@@ -220,30 +220,6 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
         Route::post('diagnostic/refresh-modules', [\App\Http\Controllers\DiagnosticController::class, 'forceRefreshModules'])->name('diagnostic.refresh');
     });
 
-    // Ruta generada automáticamente para Plan operativo anual
-    Route::get('/direccionamiento/ejemplo', function () {
-        return Inertia::render('Direccionamiento/Ejemplo');
-    })->name('module.ejemplo');
-
-    // Ruta generada automáticamente para Ejemplo
-    Route::get('/direccionamiento/test-test', function () {
-        return Inertia::render('Direccionamiento/TestTest');
-    })->name('module.test-test');
-
-    // Ruta generada automáticamente para TEST
-    Route::get('/administrativos/test-test', function () {
-        return Inertia::render('Administrativos/TestTest');
-    })->name('module.test-test');
-
-    // Ruta generada automáticamente para test
-    Route::get('/administrativos/test', function () {
-        return Inertia::render('Administrativos/Test');
-    })->name('module.test');
-
-    // Ruta generada automáticamente para test
-    Route::get('/asistenciales/test', function () {
-        return Inertia::render('Asistenciales/Test');
-    })->name('module.test');
-});
+    });
 
 require __DIR__.'/settings.php';
