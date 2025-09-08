@@ -21,12 +21,14 @@ export default defineConfig({
         host: '0.0.0.0',
         port: 5173,
         hmr: {
-            host: 'localhost',
+            host: '192.168.2.202',
+            port: 5173,
         },
         cors: {
             origin: [
                 'http://localhost:8000',
                 'http://127.0.0.1:8000',
+                'http://192.168.2.202:8000',
                 'http://gestionbi.huv.gov.co',
                 'https://gestionbi.huv.gov.co'
             ],
