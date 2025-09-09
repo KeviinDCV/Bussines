@@ -16,6 +16,13 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->middleware('guest');
 
+// CSRF token refresh endpoint - publicly accessible (CSRF tokens don't require authentication)
+Route::get('/csrf-token', function () {
+    return response()->json([
+        'csrf_token' => csrf_token()
+    ]);
+});
+
 // Authentication routes - solo accesibles por usuarios no autenticados
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

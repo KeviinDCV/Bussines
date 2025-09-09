@@ -29,7 +29,8 @@ class SecurityHeaders
         if ($isDevelopment) {
             // CSP más permisiva para desarrollo con Vite
             $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:5173 http://127.0.0.1:5173 http://192.168.2.202:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://192.168.2.202:5173 https://*.google.com https://*.gstatic.com; " .
+                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: http://localhost:5173 http://127.0.0.1:5173 http://192.168.2.202:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://192.168.2.202:5173 https://*.google.com https://*.gstatic.com; " .
+                   "worker-src 'self' blob: http://localhost:5173 http://127.0.0.1:5173 http://192.168.2.202:5173; " .
                    "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .
                    "img-src 'self' data: blob: https://*.google.com https://*.gstatic.com; " .
                    "font-src 'self' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .
@@ -41,7 +42,8 @@ class SecurityHeaders
         } else {
             // CSP estricta para producción
             $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' https://*.google.com https://*.gstatic.com; " .
+                   "script-src 'self' 'unsafe-inline' blob: https://*.google.com https://*.gstatic.com; " .
+                   "worker-src 'self' blob:; " .
                    "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .
                    "img-src 'self' data: blob: https://*.google.com https://*.gstatic.com; " .
                    "font-src 'self' https://fonts.bunny.net https://*.google.com https://*.gstatic.com; " .

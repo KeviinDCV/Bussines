@@ -4,19 +4,27 @@
  */
 
 import { router } from '@inertiajs/react';
+import { authHistoryManager } from './authHistoryManager';
 
 /**
  * Simple and reliable logout function
  * Uses Inertia router for proper logout handling
  */
 export const simpleLogout = (): void => {
+    // Mark user as unauthenticated in history manager
+    authHistoryManager.setUnauthenticated();
+    
     // Use Inertia router.post which handles redirects properly
     router.post('/logout', {}, {
         onSuccess: () => {
+            // Clear authentication state and allow normal navigation
+            authHistoryManager.setUnauthenticated();
             // Inertia will handle the redirect automatically
         },
         onError: (errors) => {
             console.warn('❌ Server logout failed:', errors);
+            // Clear auth state even on error
+            authHistoryManager.setUnauthenticated();
             // Fallback: force redirect to login
             window.location.href = '/login';
         }

@@ -4,6 +4,7 @@ import { User, LogOut, ChevronDown, Settings, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Swal from 'sweetalert2';
 import { robustLogout, forceLogout, logAuthError } from '@/utils/auth';
+import { useAuthHistory } from '@/hooks/useAuthHistory';
 
 interface AppLayoutProps {
     children: ReactNode;
@@ -29,6 +30,9 @@ export default function AppLayout({
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const { props } = usePage();
     const user = (props as any).auth?.user;
+    
+    // Usar el hook para manejar el historial de autenticación
+    useAuthHistory();
 
     const handleLogout = async () => {
         // Protección contra doble ejecución
@@ -105,41 +109,73 @@ export default function AppLayout({
     };
 
     const handleChangePassword = async () => {
-        const { value: formValues } = await Swal.fire({
+        // Step 1: Current password
+        const { value: currentPassword } = await Swal.fire({
             title: 'Cambiar Contraseña',
-            html: `
-                <input id="current-password" type="password" class="swal2-input" placeholder="Contraseña actual">
-                <input id="new-password" type="password" class="swal2-input" placeholder="Nueva contraseña">
-                <input id="confirm-password" type="password" class="swal2-input" placeholder="Confirmar nueva contraseña">
-            `,
+            text: 'Paso 1 de 3: Ingresa tu contraseña actual',
+            input: 'password',
+            inputLabel: 'Contraseña actual',
+            inputPlaceholder: 'Ingresa tu contraseña actual',
+            showCancelButton: true,
+            confirmButtonText: 'Siguiente',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#2a3d85',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Debes ingresar tu contraseña actual';
+                }
+            }
+        });
+
+        if (!currentPassword) return;
+
+        // Step 2: New password
+        const { value: newPassword } = await Swal.fire({
+            title: 'Cambiar Contraseña',
+            text: 'Paso 2 de 3: Ingresa tu nueva contraseña',
+            input: 'password',
+            inputLabel: 'Nueva contraseña',
+            inputPlaceholder: 'Mínimo 6 caracteres',
+            showCancelButton: true,
+            confirmButtonText: 'Siguiente',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#2a3d85',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Debes ingresar una nueva contraseña';
+                }
+                if (value.length < 6) {
+                    return 'La nueva contraseña debe tener al menos 6 caracteres';
+                }
+            }
+        });
+
+        if (!newPassword) return;
+
+        // Step 3: Confirm password
+        const { value: confirmPassword } = await Swal.fire({
+            title: 'Cambiar Contraseña',
+            text: 'Paso 3 de 3: Confirma tu nueva contraseña',
+            input: 'password',
+            inputLabel: 'Confirmar nueva contraseña',
+            inputPlaceholder: 'Repite tu nueva contraseña',
             showCancelButton: true,
             confirmButtonText: 'Actualizar',
             cancelButtonText: 'Cancelar',
             confirmButtonColor: '#2a3d85',
-            focusConfirm: false,
-            preConfirm: () => {
-                const currentPassword = (document.getElementById('current-password') as HTMLInputElement)?.value;
-                const newPassword = (document.getElementById('new-password') as HTMLInputElement)?.value;
-                const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement)?.value;
-                
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    Swal.showValidationMessage('Todos los campos son obligatorios');
-                    return false;
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Debes confirmar tu nueva contraseña';
                 }
-                
-                if (newPassword.length < 6) {
-                    Swal.showValidationMessage('La nueva contraseña debe tener al menos 6 caracteres');
-                    return false;
+                if (value !== newPassword) {
+                    return 'Las contraseñas no coinciden';
                 }
-                
-                if (newPassword !== confirmPassword) {
-                    Swal.showValidationMessage('Las contraseñas no coinciden');
-                    return false;
-                }
-                
-                return { currentPassword, newPassword };
             }
         });
+
+        if (!confirmPassword) return;
+
+        const formValues = { currentPassword, newPassword };
 
         if (formValues) {
             router.patch('/profile/password', { 

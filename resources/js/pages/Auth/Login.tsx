@@ -7,6 +7,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle, Eye, EyeOff } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
+import { authHistoryManager } from '@/utils/authHistoryManager';
 
 interface LoginProps {
     errors?: {
@@ -44,31 +45,18 @@ export default function Login({ errors }: LoginProps) {
             return;
         }
 
-        try {
-            // Get fresh CSRF token before login attempt
-            const response = await fetch('/login');
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const freshToken = doc.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            
-            if (freshToken) {
-                // Update meta tag and axios headers with fresh token
-                const metaTag = document.querySelector('meta[name="csrf-token"]');
-                if (metaTag) {
-                    metaTag.setAttribute('content', freshToken);
-                }
-                axios.defaults.headers.common['X-CSRF-TOKEN'] = freshToken;
-            }
-        } catch (error) {
-            console.log('Could not refresh CSRF token');
-        }
-
+        // Inertia.js maneja automáticamente el CSRF token desde la meta tag inicial
         post('/login', {
             onSuccess: (page) => {
                 // Solo mostrar éxito si realmente se redirigió a una página diferente al login
                 if (page.url !== '/login') {
                     showSuccess('¡Bienvenido!', 'Ingreso exitoso al sistema');
+                    
+                    // Marcar como autenticado y prevenir navegación hacia atrás al login
+                    authHistoryManager.setAuthenticated(true);
+                    
+                    // Prevenir que el botón atrás regrese al login
+                    authHistoryManager.preventBackNavigation();
                 }
             },
             onError: (errors) => {

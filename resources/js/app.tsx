@@ -4,6 +4,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
+import { AuthMiddleware } from './middleware/AuthMiddleware';
 
 // Configure Inertia to use CSRF token
 import { router } from '@inertiajs/react';
@@ -16,6 +17,61 @@ if (token) {
     axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 }
+
+// Axios interceptor to handle CSRF token refresh on 419 errors
+axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        console.log('🐛 DEBUG: Axios interceptor caught error:', error);
+        
+        // Check if this is a 419 CSRF token error
+        if (error.response && error.response.status === 419) {
+            console.log('🔄 Detected CSRF token error (419). Refreshing token...');
+            
+            try {
+                // Fetch fresh CSRF token from server
+                const response = await fetch('/csrf-token', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const freshToken = data.csrf_token;
+                    
+                    if (freshToken) {
+                        console.log('🔄 Updating CSRF token in DOM and axios...');
+                        
+                        // Update meta tag with fresh token
+                        const metaTag = document.querySelector('meta[name="csrf-token"]');
+                        if (metaTag) {
+                            metaTag.setAttribute('content', freshToken);
+                        }
+                        
+                        // Update axios defaults
+                        axios.defaults.headers.common['X-CSRF-TOKEN'] = freshToken;
+                        
+                        console.log('✅ CSRF token refreshed successfully. Original request will be retried automatically.');
+                        
+                        // Retry the original request with the fresh token
+                        if (error.config) {
+                            error.config.headers['X-CSRF-TOKEN'] = freshToken;
+                            return axios.request(error.config);
+                        }
+                    }
+                }
+            } catch (refreshError) {
+                console.error('❌ Failed to refresh CSRF token:', refreshError);
+            }
+        }
+        
+        // If it's not a 419 error or refresh failed, reject the promise
+        return Promise.reject(error);
+    }
+);
 
 // Configure Inertia to always include CSRF token in all requests
 router.on('before', (event) => {
@@ -33,6 +89,71 @@ router.on('before', (event) => {
         
         event.detail.visit.headers['X-CSRF-TOKEN'] = csrfToken;
         event.detail.visit.headers['X-Requested-With'] = 'XMLHttpRequest';
+    }
+});
+
+// Handle CSRF token refresh on 419 errors (Page Expired)
+router.on('error', async (event) => {
+    console.log('🐛 DEBUG: Error event detected:', event.detail);
+    
+    const errors = event.detail.errors;
+    console.log('🐛 DEBUG: Errors object:', errors);
+    
+    // Check if this is a 419 CSRF token error
+    if (errors && (String(errors.status) === '419' || errors.message?.includes('CSRF') || errors.message?.includes('419'))) {
+        console.log('🔄 Detected CSRF token error (419). Refreshing token and retrying...');
+        
+        try {
+            // Fetch fresh CSRF token from server
+            const response = await fetch('/csrf-token', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const freshToken = data.csrf_token;
+                
+                if (freshToken) {
+                    // Update meta tag with fresh token
+                    const metaTag = document.querySelector('meta[name="csrf-token"]');
+                    if (metaTag) {
+                        metaTag.setAttribute('content', freshToken);
+                    }
+                    
+                    // Update axios defaults
+                    axios.defaults.headers.common['X-CSRF-TOKEN'] = freshToken;
+                    
+                    console.log('✅ CSRF token refreshed successfully. Please retry your action.');
+                }
+            }
+        } catch (error) {
+            console.error('❌ Failed to refresh CSRF token:', error);
+        }
+    } else {
+        console.log('🐛 DEBUG: Not a 419 error or condition not met');
+    }
+});
+
+// Handle successful navigation to prevent back navigation to login after authentication
+router.on('success', (event) => {
+    const currentPage = event.detail.page;
+    
+    // If we successfully navigated away from login and user is authenticated
+    if (currentPage.url !== '/login' && (currentPage.props as any)?.auth?.user) {
+        // Clear login from browser history to prevent going back
+        setTimeout(() => {
+            if (document.referrer.includes('/login') || window.history.length > 1) {
+                window.history.replaceState(
+                    { preventLoginReturn: true }, 
+                    document.title, 
+                    window.location.href
+                );
+            }
+        }, 100);
     }
 });
 

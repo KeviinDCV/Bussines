@@ -99,11 +99,9 @@ class AuthController extends Controller
         // Regenerate session
         $request->session()->regenerate();
 
-        // Force a complete page reload to ensure CSRF token is updated in DOM
-        // This prevents CSRF token mismatch after login
-        $redirectUrl = $this->getRedirectUrlBasedOnRole($user->role);
-        
-        return Inertia::location($redirectUrl);
+        // Use standard Laravel redirect for Inertia v2.0 compatibility
+        // This prevents 409 conflicts with POST requests from frontend
+        return $this->redirectBasedOnRole($user->role);
     }
 
     /**
@@ -130,21 +128,20 @@ class AuthController extends Controller
                 \Log::info('Remember token cleared', ['user_id' => $user->id]);
             }
             
-            // Clear user authentication
+            // Clear user authentication but preserve session for redirect
             Auth::logout();
-            
-            // Invalidate session
-            $request->session()->invalidate();
-            
-            // Regenerate CSRF token
-            $request->session()->regenerateToken();
             
             \Log::info('Logout completed successfully', [
                 'user_id' => $user?->id,
                 'ip' => $request->ip()
             ]);
 
-            // Always redirect for Inertia - never return JSON
+            // Invalidate session and regenerate token
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            
+            // Use standard Laravel redirect to avoid 409 conflicts
+            // CSRF token will be handled by frontend refresh mechanism
             return redirect()->route('login');
             
         } catch (\Exception $e) {
@@ -154,7 +151,7 @@ class AuthController extends Controller
                 'ip' => $request->ip()
             ]);
             
-            // Even if logout fails, redirect to login
+            // Use standard redirect even on error to avoid 409 conflicts
             return redirect()->route('login');
         }
     }
