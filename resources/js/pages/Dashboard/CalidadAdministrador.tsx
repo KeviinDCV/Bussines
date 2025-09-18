@@ -1,7 +1,7 @@
 import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Award, Target, BarChart3, PieChart, FileText, Plus, Users, Settings, Database, Calendar, Clock, Map, Shield, Heart, Activity, Briefcase, Trash2 } from 'lucide-react';
-import Swal from 'sweetalert2';
+import customSwal from '@/utils/sweetAlert';
 
 // Mapeo de iconos
 const iconMap: { [key: string]: any } = {
@@ -69,13 +69,11 @@ export default function CalidadAdministrador() {
     };
 
     const handleDeleteModule = async (module: Module) => {
-        const result = await Swal.fire({
+        const result = await customSwal.fire({
             title: '¿Estás seguro?',
             text: `¿Deseas eliminar el módulo "${module.display_name}"? Esta acción no se puede deshacer.`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#6b7280',
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         });
@@ -84,36 +82,38 @@ export default function CalidadAdministrador() {
             try {
                 await router.delete(`/admin/modules/${module.id}`, {
                     onSuccess: () => {
-                        Swal.fire({
+                        customSwal.fire({
                             title: '¡Eliminado!',
                             text: 'El módulo ha sido eliminado exitosamente',
                             icon: 'success',
-                            confirmButtonColor: '#2a3d85'
+                            confirmButtonText: 'Aceptar'
+                        }).then(() => {
+                            // Add your code here
                         });
                     },
                     onError: (errors) => {
                         const errorMessages = Object.values(errors).flat().join('\n');
-                        Swal.fire({
+                        customSwal.fire({
                             title: 'Error',
                             text: errorMessages || 'Ocurrió un error al eliminar el módulo',
                             icon: 'error',
-                            confirmButtonColor: '#2a3d85'
+                            confirmButtonText: 'Aceptar'
                         });
                     }
                 });
             } catch (error) {
-                Swal.fire({
+                customSwal.fire({
                     title: 'Error',
                     text: 'Ocurrió un error al eliminar el módulo',
                     icon: 'error',
-                    confirmButtonColor: '#2a3d85'
+                    confirmButtonText: 'Aceptar'
                 });
             }
         }
     };
 
     const handleCreateModule = async () => {
-        const { value: formValues } = await Swal.fire({
+        const { value: formValues } = await customSwal.fire({
             title: 'Crear Nuevo Contenido',
             html: `
                 <div class="space-y-4 text-left">
@@ -158,7 +158,7 @@ export default function CalidadAdministrador() {
             showCancelButton: true,
             confirmButtonText: 'Crear',
             cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
+
             width: '600px',
             didOpen: () => {
                 const contentTypeSelect = document.getElementById('swal-content-type') as HTMLSelectElement;
@@ -185,7 +185,7 @@ export default function CalidadAdministrador() {
                 if (contentType === 'powerbi') {
                     // Para Power BI solo validamos la URL
                     if (!powerbiUrl) {
-                        Swal.showValidationMessage('La URL de Power BI es obligatoria');
+                        customSwal.showValidationMessage('La URL de Power BI es obligatoria');
                         return false;
                     }
                     
@@ -212,7 +212,7 @@ export default function CalidadAdministrador() {
                     const icon = (document.getElementById('swal-icon') as HTMLSelectElement).value;
                     
                     if (!displayName) {
-                        Swal.showValidationMessage('El nombre del módulo es obligatorio');
+                        customSwal.showValidationMessage('El nombre del módulo es obligatorio');
                         return false;
                     }
 
@@ -248,29 +248,31 @@ export default function CalidadAdministrador() {
             try {
                 await router.post('/admin/modules', formValues, {
                     onSuccess: () => {
-                        Swal.fire({
+                        customSwal.fire({
                             title: '¡Éxito!',
                             text: 'Módulo creado exitosamente',
                             icon: 'success',
-                            confirmButtonColor: '#2a3d85'
+                            confirmButtonText: 'Aceptar'
+                        }).then(() => {
+                            // Add your code here
                         });
                     },
                     onError: (errors) => {
                         const errorMessages = Object.values(errors).flat().join('\n');
-                        Swal.fire({
-                            title: 'Error',
+                        customSwal.fire({
+                            title: 'Error al crear módulo',
                             text: errorMessages,
                             icon: 'error',
-                            confirmButtonColor: '#2a3d85'
+                            confirmButtonText: 'Aceptar'
                         });
                     }
                 });
             } catch (error) {
-                Swal.fire({
+                customSwal.fire({
                     title: 'Error',
                     text: 'Ocurrió un error al crear el módulo',
                     icon: 'error',
-                    confirmButtonColor: '#2a3d85'
+                    confirmButtonText: 'Aceptar'
                 });
             }
         }

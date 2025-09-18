@@ -1,8 +1,8 @@
 import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
-import { Building, Target, BarChart3, PieChart, FileText, Plus, Users, Settings, Database, Calendar, Clock, Map, Shield, Heart, Activity, Briefcase, Trash2 } from 'lucide-react';
+import { Building2, Target, BarChart3, PieChart, FileText, Plus, Users, Settings, Database, Calendar, Clock, Map, Shield, Heart, Activity, Briefcase, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import Swal from 'sweetalert2';
+import customSwal from '@/utils/sweetAlert';
 
 // Mapeo de iconos
 const iconMap: { [key: string]: any } = {
@@ -10,7 +10,7 @@ const iconMap: { [key: string]: any } = {
     BarChart3,
     PieChart,
     Target,
-    Building,
+    Building2,
     Users,
     Settings,
     Database,
@@ -55,7 +55,7 @@ export default function Administrativos() {
         { value: 'FileText', label: 'Documento' },
         { value: 'BarChart3', label: 'Gráfico de Barras' },
         { value: 'PieChart', label: 'Gráfico Circular' },
-        { value: 'Building', label: 'Edificio' },
+        { value: 'Building2', label: 'Edificio' },
         { value: 'Target', label: 'Objetivo' },
         { value: 'Users', label: 'Usuarios' },
         { value: 'Settings', label: 'Configuración' },
@@ -76,13 +76,11 @@ export default function Administrativos() {
     };
 
     const handleDeleteModule = async (module: Module) => {
-        const result = await Swal.fire({
+        const result = await customSwal.fire({
             title: '¿Estás seguro?',
             text: `¿Deseas eliminar el módulo "${module.display_name}"? Esta acción no se puede deshacer.`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#6b7280',
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         });
@@ -91,11 +89,11 @@ export default function Administrativos() {
             try {
                 await router.delete(`/admin/modules/${module.id}`, {
                     onSuccess: () => {
-                        Swal.fire({
+                        customSwal.fire({
                             title: '¡Eliminado!',
                             text: 'El módulo ha sido eliminado exitosamente',
                             icon: 'success',
-                            confirmButtonColor: '#2a3d85'
+                            confirmButtonText: 'Aceptar'
                         }).then(() => {
                             // Forzar recarga de datos para ocultar el módulo eliminado inmediatamente
                             router.reload({ only: ['modules'] });
@@ -103,20 +101,20 @@ export default function Administrativos() {
                     },
                     onError: (errors) => {
                         const errorMessages = Object.values(errors).flat().join('\n');
-                        Swal.fire({
+                        customSwal.fire({
                             title: 'Error',
                             text: errorMessages || 'Ocurrió un error al eliminar el módulo',
                             icon: 'error',
-                            confirmButtonColor: '#2a3d85'
+                            confirmButtonText: 'Aceptar'
                         });
                     }
                 });
             } catch (error) {
-                Swal.fire({
+                customSwal.fire({
                     title: 'Error',
                     text: 'Ocurrió un error al eliminar el módulo',
                     icon: 'error',
-                    confirmButtonColor: '#2a3d85'
+                    confirmButtonText: 'Aceptar'
                 });
             }
         }
@@ -201,7 +199,7 @@ export default function Administrativos() {
                 if (contentType === 'powerbi') {
                     // Para Power BI solo validamos la URL
                     if (!powerbiUrl) {
-                        Swal.showValidationMessage('La URL de Power BI es obligatoria');
+                        customSwal.showValidationMessage('La URL de Power BI es obligatoria');
                         return false;
                     }
                     
@@ -229,7 +227,7 @@ export default function Administrativos() {
                     const order = parseInt((document.getElementById('swal-order') as HTMLInputElement).value) || 0;
                     
                     if (!displayName) {
-                        Swal.showValidationMessage('El nombre del módulo es obligatorio');
+                        customSwal.showValidationMessage('El nombre del módulo es obligatorio');
                         return false;
                     }
 
@@ -265,11 +263,11 @@ export default function Administrativos() {
             try {
                 await router.post('/admin/modules', formValues, {
                     onSuccess: () => {
-                        Swal.fire({
+                        customSwal.fire({
                             title: '¡Éxito!',
                             text: 'Módulo creado exitosamente',
                             icon: 'success',
-                            confirmButtonColor: '#2a3d85'
+                            confirmButtonText: 'Aceptar'
                         }).then(() => {
                             // Forzar recarga de datos para mostrar el nuevo módulo inmediatamente
                             router.reload({ only: ['modules'] });
@@ -277,20 +275,20 @@ export default function Administrativos() {
                     },
                     onError: (errors) => {
                         const errorMessages = Object.values(errors).flat().join('\n');
-                        Swal.fire({
-                            title: 'Error',
+                        customSwal.fire({
+                            title: 'Error al crear módulo',
                             text: errorMessages,
                             icon: 'error',
-                            confirmButtonColor: '#2a3d85'
+                            confirmButtonText: 'Aceptar'
                         });
                     }
                 });
             } catch (error) {
-                Swal.fire({
+                customSwal.fire({
                     title: 'Error',
                     text: 'Ocurrió un error al crear el módulo',
                     icon: 'error',
-                    confirmButtonColor: '#2a3d85'
+                    confirmButtonText: 'Aceptar'
                 });
             }
         }
@@ -301,7 +299,7 @@ export default function Administrativos() {
     };
 
     const handleChangeEmail = async () => {
-        const { value: newEmail } = await Swal.fire({
+        const { value: newEmail } = await customSwal.fire({
             title: 'Cambiar Email',
             input: 'email',
             inputLabel: 'Nuevo correo electrónico',
@@ -310,8 +308,7 @@ export default function Administrativos() {
             showCancelButton: true,
             confirmButtonText: 'Actualizar',
             cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
-            inputValidator: (value) => {
+            inputValidator: (value: any) => {
                 if (!value) {
                     return 'Debes ingresar un email válido';
                 }
@@ -322,11 +319,11 @@ export default function Administrativos() {
         });
 
         if (newEmail) {
-            Swal.fire({
+            customSwal.fire({
                 title: '¡Email actualizado!',
                 text: `Tu nuevo email es: ${newEmail}`,
                 icon: 'success',
-                confirmButtonColor: '#2a3d85'
+                confirmButtonText: 'Aceptar'
             });
         }
     };
@@ -350,17 +347,17 @@ export default function Administrativos() {
                 const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement)?.value;
                 
                 if (!currentPassword || !newPassword || !confirmPassword) {
-                    Swal.showValidationMessage('Todos los campos son obligatorios');
+                    customSwal.showValidationMessage('Todos los campos son obligatorios');
                     return false;
                 }
                 
                 if (newPassword.length < 6) {
-                    Swal.showValidationMessage('La nueva contraseña debe tener al menos 6 caracteres');
+                    customSwal.showValidationMessage('La nueva contraseña debe tener al menos 6 caracteres');
                     return false;
                 }
                 
                 if (newPassword !== confirmPassword) {
-                    Swal.showValidationMessage('Las contraseñas no coinciden');
+                    customSwal.showValidationMessage('Las contraseñas no coinciden');
                     return false;
                 }
                 
@@ -369,11 +366,11 @@ export default function Administrativos() {
         });
 
         if (formValues) {
-            Swal.fire({
+            customSwal.fire({
                 title: '¡Contraseña actualizada!',
                 text: 'Tu contraseña ha sido cambiada exitosamente',
                 icon: 'success',
-                confirmButtonColor: '#2a3d85'
+                confirmButtonText: 'Aceptar'
             });
         }
     };
@@ -383,7 +380,7 @@ export default function Administrativos() {
             title="Dashboard Administrativos - Tableros de Gestión HUV"
             pageTitle="Administrativos"
             pageDescription="Subgerencia Administrativa y Financiera"
-            icon={Building}
+            icon={Building2}
             showBackButton={isGerencia || isAdministrador}
             backUrl={isGerencia ? "/dashboard/gerencia" : "/dashboard/administrador"}
         >

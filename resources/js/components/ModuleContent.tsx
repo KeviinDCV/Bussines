@@ -1,7 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
-import { Plus, BarChart3, FolderOpen, Edit2, Trash2, ExternalLink, FileText, Settings, Users, Shield, Monitor, Database, Search, TrendingUp, Heart, RefreshCw, Headphones, Award, Wrench, Pill, Activity, Target, Map, Briefcase, Stethoscope } from 'lucide-react';
 import Swal from 'sweetalert2';
+import customSwal from '../utils/sweetAlert';
+import { 
+    Plus, 
+    BarChart3, 
+    FolderOpen, 
+    Edit2, 
+    Trash2, 
+    ExternalLink, 
+    FileText, 
+    Settings, 
+    Users, 
+    Shield, 
+    Monitor, 
+    Database, 
+    Search, 
+    TrendingUp, 
+    Heart, 
+    RefreshCw, 
+    Headphones, 
+    Award, 
+    Wrench, 
+    Pill, 
+    Activity, 
+    Target, 
+    Map, 
+    Briefcase, 
+    Stethoscope,
+    ArrowLeft
+} from 'lucide-react';
 
 interface Module {
     id: number;
@@ -45,60 +73,63 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
         const powerbiOption = hasPowerBI ? '' : '<option value="powerbi">Power BI</option>';
         const warningMessage = hasPowerBI ? '<p class="text-sm text-amber-600 bg-amber-50 p-2 rounded mb-2">⚠️ Ya existe un Power BI en este módulo. Solo puedes agregar submódulos.</p>' : '';
         
-        const { value: formValues } = await Swal.fire({
+        const { value: formValues } = await customSwal.fire({
             title: 'Agregar Contenido',
             html: `
-                <div class="space-y-4">
+                <div class="space-y-6 text-left">
                     ${warningMessage}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Contenido *</label>
-                        <select id="swal-content-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
+                    
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">Tipo de Contenido *</label>
+                        <select id="swal-content-type" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors">
                             <option value="module">Submódulo</option>
                             ${powerbiOption}
                         </select>
                     </div>
                     
                     <!-- Campos para Submódulo -->
-                    <div id="module-fields">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del submódulo *</label>
-                            <input type="text" id="swal-display-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: Nuevo Submódulo">
-                            <small class="text-gray-500 text-xs mt-1 block">El nombre interno se generará automáticamente para la URL.</small>
+                    <div id="module-fields" class="space-y-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-800">Nombre del submódulo *</label>
+                            <input type="text" id="swal-display-name" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors" placeholder="ej: Nuevo Submódulo">
+                            <small class="text-gray-600 text-xs block mt-1 italic">El nombre interno se generará automáticamente para la URL.</small>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                            <textarea id="swal-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Descripción del submódulo..."></textarea>
+                        
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-800">Descripción</label>
+                            <textarea id="swal-description" rows="3" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors resize-none" placeholder="Descripción del submódulo..."></textarea>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Ícono</label>
-                            <select id="swal-icon" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
-                                <option value="FolderOpen">Carpeta (FolderOpen)</option>
-                                <option value="FileText">Documento (FileText)</option>
-                                <option value="Settings">Configuración (Settings)</option>
-                                <option value="BarChart3">Gráfico (BarChart3)</option>
-                                <option value="Users">Usuarios (Users)</option>
-                                <option value="Shield">Escudo (Shield)</option>
-                                <option value="Monitor">Monitor (Monitor)</option>
-                                <option value="Database">Base de Datos (Database)</option>
-                                <option value="Search">Buscar (Search)</option>
-                                <option value="TrendingUp">Tendencia (TrendingUp)</option>
-                                <option value="Heart">Corazón (Heart)</option>
-                                <option value="RefreshCw">Actualizar (RefreshCw)</option>
-                                <option value="Headphones">Audífonos (Headphones)</option>
-                                <option value="Stethoscope">Estetoscopio (Stethoscope)</option>
-                                <option value="Award">Premio (Award)</option>
-                                <option value="Wrench">Herramientas (Wrench)</option>
-                                <option value="Pill">Pastilla (Pill)</option>
+                        
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-800">Ícono</label>
+                            <select id="swal-icon" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors">
+                                <option value="FolderOpen" selected>📁 Carpeta (FolderOpen)</option>
+                                <option value="FileText">📄 Documento (FileText)</option>
+                                <option value="Settings">⚙️ Configuración (Settings)</option>
+                                <option value="BarChart3">📊 Gráfico (BarChart3)</option>
+                                <option value="Users">👥 Usuarios (Users)</option>
+                                <option value="Shield">🛡️ Escudo (Shield)</option>
+                                <option value="Monitor">💻 Monitor (Monitor)</option>
+                                <option value="Database">🗄️ Base de Datos (Database)</option>
+                                <option value="Search">🔍 Buscar (Search)</option>
+                                <option value="TrendingUp">📈 Tendencia (TrendingUp)</option>
+                                <option value="Heart">❤️ Corazón (Heart)</option>
+                                <option value="RefreshCw">🔄 Actualizar (RefreshCw)</option>
+                                <option value="Headphones">🎧 Audífonos (Headphones)</option>
+                                <option value="Stethoscope">🩺 Estetoscopio (Stethoscope)</option>
+                                <option value="Award">🏆 Premio (Award)</option>
+                                <option value="Wrench">🔧 Herramientas (Wrench)</option>
+                                <option value="Pill">💊 Pastilla (Pill)</option>
                             </select>
                         </div>
                     </div>
                     
                     <!-- Campos para Power BI -->
-                    <div id="powerbi-fields" style="display: none;">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">URL de Power BI *</label>
-                            <input id="swal-powerbi-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="https://app.powerbi.com/reportEmbed?reportId=...">
-                            <p class="text-xs text-gray-500 mt-1">Pegue la URL de inserción del informe de Power BI</p>
+                    <div id="powerbi-fields" class="space-y-4" style="display: none;">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-800">URL de Power BI *</label>
+                            <input id="swal-powerbi-url" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors" placeholder="https://app.powerbi.com/reportEmbed?reportId=...">
+                            <small class="text-gray-600 text-xs block mt-1 italic">Pegue la URL de inserción del informe de Power BI</small>
                         </div>
                     </div>
                 </div>
@@ -106,7 +137,7 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
             showCancelButton: true,
             confirmButtonText: 'Agregar',
             cancelButtonText: 'Cancelar',
-            width: '600px',
+            width: '650px',
             didOpen: () => {
                 const contentTypeSelect = document.getElementById('swal-content-type') as HTMLSelectElement;
                 const moduleFields = document.getElementById('module-fields') as HTMLElement;

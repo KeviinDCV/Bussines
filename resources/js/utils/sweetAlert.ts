@@ -2,8 +2,8 @@ import Swal from 'sweetalert2';
 
 const customSwal = Swal.mixin({
   customClass: {
-    confirmButton: 'bg-[#2a3d85] hover:bg-[#1e2d5f] text-white font-medium py-2 px-4 rounded-md transition-colors',
-    cancelButton: 'bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-md transition-colors mr-2',
+    confirmButton: 'bg-[#2a3d85] hover:bg-[#1e2d5f] text-white font-medium py-2 px-4 rounded-md transition-colors mr-2',
+    cancelButton: 'bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-md transition-colors',
     popup: 'rounded-lg shadow-xl',
     title: 'text-[#2a3d85] font-semibold',
   },

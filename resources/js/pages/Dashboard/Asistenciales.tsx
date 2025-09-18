@@ -1,7 +1,7 @@
 import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Stethoscope, Target, BarChart3, PieChart, FileText, Plus, Users, Settings, Database, Calendar, Clock, Map, Shield, Heart, Activity, Briefcase, Trash2 } from 'lucide-react';
-import Swal from 'sweetalert2';
+import customSwal from '../../utils/sweetAlert';
 
 // Mapeo de iconos
 const iconMap: { [key: string]: any } = {
@@ -73,7 +73,7 @@ export default function Asistenciales() {
     };
 
     const handleDeleteModule = async (module: Module) => {
-        const result = await Swal.fire({
+        const result = await customSwal.fire({
             title: '¿Estás seguro?',
             text: `¿Deseas eliminar el módulo "${module.display_name}"? Esta acción no se puede deshacer.`,
             icon: 'warning',
@@ -88,7 +88,7 @@ export default function Asistenciales() {
             try {
                 await router.delete(`/admin/modules/${module.id}`, {
                     onSuccess: () => {
-                        Swal.fire({
+                        customSwal.fire({
                             title: '¡Eliminado!',
                             text: 'El módulo ha sido eliminado exitosamente',
                             icon: 'success',
@@ -100,7 +100,7 @@ export default function Asistenciales() {
                     },
                     onError: (errors) => {
                         const errorMessages = Object.values(errors).flat().join('\n');
-                        Swal.fire({
+                        customSwal.fire({
                             title: 'Error',
                             text: errorMessages || 'Ocurrió un error al eliminar el módulo',
                             icon: 'error',
@@ -120,7 +120,7 @@ export default function Asistenciales() {
     };
 
     const handleCreateModule = async () => {
-        const { value: formValues } = await Swal.fire({
+        const { value: formValues } = await customSwal.fire({
             title: 'Crear Nuevo Contenido',
             html: `
                 <div class="space-y-4 text-left">
@@ -198,7 +198,7 @@ export default function Asistenciales() {
                 if (contentType === 'powerbi') {
                     // Para Power BI solo validamos la URL
                     if (!powerbiUrl) {
-                        Swal.showValidationMessage('La URL de Power BI es obligatoria');
+                        customSwal.showValidationMessage('La URL de Power BI es obligatoria');
                         return false;
                     }
                     
@@ -226,7 +226,7 @@ export default function Asistenciales() {
                     const order = parseInt((document.getElementById('swal-order') as HTMLInputElement).value) || 0;
                     
                     if (!displayName) {
-                        Swal.showValidationMessage('El nombre del módulo es obligatorio');
+                        customSwal.showValidationMessage('El nombre del módulo es obligatorio');
                         return false;
                     }
 
@@ -262,7 +262,7 @@ export default function Asistenciales() {
             try {
                 await router.post('/admin/modules', formValues, {
                     onSuccess: () => {
-                        Swal.fire({
+                        customSwal.fire({
                             title: '¡Éxito!',
                             text: 'Módulo creado exitosamente',
                             icon: 'success',
@@ -274,7 +274,7 @@ export default function Asistenciales() {
                     },
                     onError: (errors) => {
                         const errorMessages = Object.values(errors).flat().join('\n');
-                        Swal.fire({
+                        customSwal.fire({
                             title: 'Error',
                             text: errorMessages,
                             icon: 'error',
