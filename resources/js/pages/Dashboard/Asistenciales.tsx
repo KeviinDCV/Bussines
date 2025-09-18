@@ -109,7 +109,7 @@ export default function Asistenciales() {
                     }
                 });
             } catch (error) {
-                Swal.fire({
+                customSwal.fire({
                     title: 'Error',
                     text: 'Ocurrió un error al eliminar el módulo',
                     icon: 'error',
@@ -283,7 +283,7 @@ export default function Asistenciales() {
                     }
                 });
             } catch (error) {
-                Swal.fire({
+                customSwal.fire({
                     title: 'Error',
                     text: 'Ocurrió un error al crear el módulo',
                     icon: 'error',
