@@ -21,9 +21,9 @@ export default function Prueba() {
 
     return (
         <AppLayout
-            title="test - Tableros de Gestión HUV"
-            pageTitle="test"
-            pageDescription="Prueba2"
+            title="Prueba - Tableros de Gestión HUV"
+            pageTitle="Prueba"
+            pageDescription="esto es una prueba"
             icon={FileText}
             showBackButton={true}
             backUrl={getBackUrl()}
@@ -37,7 +37,7 @@ export default function Prueba() {
                 <ModuleContent 
                     module={module}
                     submodules={submodules}
-                    displayName="test"
+                    displayName="Prueba"
                     icon={FileText}
                 />
             )}

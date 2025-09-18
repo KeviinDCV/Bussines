@@ -110,6 +110,16 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/direccionamiento/modulo/modulo2', function () {
         return Inertia::render('Direccionamiento/Modulo2');
     })->name('module.modulo2');
+
+    // Ruta generada automáticamente para Prueba
+    Route::get('/direccionamiento/prueba', function () {
+        return Inertia::render('Direccionamiento/Prueba');
+    })->name('module.prueba');
+
+    // Ruta generada automáticamente para Submodulo de prueba
+    Route::get('/direccionamiento/prueba/submodulo-de-prueba', function () {
+        return Inertia::render('Direccionamiento/SubmoduloDePrueba');
+    })->name('module.submodulo-de-prueba');
 });
 
 require __DIR__.'/settings.php';

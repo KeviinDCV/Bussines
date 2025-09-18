@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { Plus, BarChart3, FolderOpen, Edit2, Trash2, ExternalLink } from 'lucide-react';
+import { Plus, BarChart3, FolderOpen, Edit2, Trash2, ExternalLink, FileText, Settings, Users, Shield, Monitor, Database, Search, TrendingUp, Heart, RefreshCw, Headphones, Award, Wrench, Pill, Activity, Target, Map, Briefcase, Stethoscope } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 interface Module {
@@ -29,6 +29,17 @@ interface ModuleContentProps {
 export default function ModuleContent({ module, submodules, displayName, icon: Icon, canManageContent = false }: ModuleContentProps) {
     const isAdmin = canManageContent;
 
+    // Verificar si hay Power BI y contenido
+    const hasPowerBI = submodules.some(s => s.content_type === 'powerbi');
+    const hasContent = submodules.length > 0;
+
+    // Mapeo de iconos
+    const iconMap: { [key: string]: any } = {
+        FolderOpen, FileText, Settings, BarChart3, Users, Shield, Monitor, Database,
+        Search, TrendingUp, Heart, RefreshCw, Headphones, Award, Wrench, Pill,
+        Activity, Target, Map, Briefcase, Stethoscope
+    };
+
     const handleAddContent = async () => {
         // Si ya hay Power BI, solo permitir submódulos
         const powerbiOption = hasPowerBI ? '' : '<option value="powerbi">Power BI</option>';
@@ -49,73 +60,71 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                     
                     <!-- Campos para Submódulo -->
                     <div id="module-fields">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
-                                <input id="swal-input1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: nuevo-contenido">
-                                <p class="text-xs text-gray-500 mt-1">Solo letras, números y guiones. Se usará para generar la URL.</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre a Mostrar *</label>
-                                <input id="swal-input2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: Nuevo Contenido">
-                            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del submódulo *</label>
+                            <input type="text" id="swal-display-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: Nuevo Submódulo">
+                            <small class="text-gray-500 text-xs mt-1 block">El nombre interno se generará automáticamente para la URL.</small>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                            <textarea id="swal-input3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Descripción del contenido..." rows="3"></textarea>
+                            <textarea id="swal-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Descripción del submódulo..."></textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
-                            <select id="swal-input4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
-                                <option value="FileText">Documento</option>
-                                <option value="BarChart3">Gráfico de Barras</option>
-                                <option value="PieChart">Gráfico Circular</option>
-                                <option value="Database">Base de Datos</option>
-                                <option value="Settings">Configuración</option>
-                                <option value="Users">Usuarios</option>
-                                <option value="Shield">Escudo</option>
-                                <option value="Heart">Corazón</option>
-                                <option value="Activity">Actividad</option>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Ícono</label>
+                            <select id="swal-icon" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
+                                <option value="FolderOpen">Carpeta (FolderOpen)</option>
+                                <option value="FileText">Documento (FileText)</option>
+                                <option value="Settings">Configuración (Settings)</option>
+                                <option value="BarChart3">Gráfico (BarChart3)</option>
+                                <option value="Users">Usuarios (Users)</option>
+                                <option value="Shield">Escudo (Shield)</option>
+                                <option value="Monitor">Monitor (Monitor)</option>
+                                <option value="Database">Base de Datos (Database)</option>
+                                <option value="Search">Buscar (Search)</option>
+                                <option value="TrendingUp">Tendencia (TrendingUp)</option>
+                                <option value="Heart">Corazón (Heart)</option>
+                                <option value="RefreshCw">Actualizar (RefreshCw)</option>
+                                <option value="Headphones">Audífonos (Headphones)</option>
+                                <option value="Stethoscope">Estetoscopio (Stethoscope)</option>
+                                <option value="Award">Premio (Award)</option>
+                                <option value="Wrench">Herramientas (Wrench)</option>
+                                <option value="Pill">Pastilla (Pill)</option>
                             </select>
                         </div>
                     </div>
                     
-                    <!-- Campo para Power BI (solo URL) -->
-                    <div id="powerbi-fields" class="hidden">
+                    <!-- Campos para Power BI -->
+                    <div id="powerbi-fields" style="display: none;">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">URL de Power BI *</label>
-                            <input id="swal-powerbi-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="https://app.powerbi.com/view?r=...">
-                            <p class="text-xs text-gray-500 mt-1">Pega aquí el enlace de implementación desde Power BI (Archivo → Insertar informe → Sitio web)</p>
+                            <input id="swal-powerbi-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="https://app.powerbi.com/reportEmbed?reportId=...">
+                            <p class="text-xs text-gray-500 mt-1">Pegue la URL de inserción del informe de Power BI</p>
                         </div>
                     </div>
                 </div>
             `,
-            didOpen: () => {
-                // Configurar event listener para cambiar entre tipos de contenido
-                const contentTypeSelect = document.getElementById('swal-content-type') as HTMLSelectElement;
-                const moduleFields = document.getElementById('module-fields');
-                const powerbiFields = document.getElementById('powerbi-fields');
-                
-                if (contentTypeSelect && moduleFields && powerbiFields) {
-                    contentTypeSelect.addEventListener('change', function() {
-                        if (this.value === 'powerbi') {
-                            // Solo mostrar campo de URL para Power BI
-                            moduleFields.classList.add('hidden');
-                            powerbiFields.classList.remove('hidden');
-                        } else {
-                            // Mostrar todos los campos para submódulo
-                            moduleFields.classList.remove('hidden');
-                            powerbiFields.classList.add('hidden');
-                        }
-                    });
-                }
-            },
-            focusConfirm: false,
             showCancelButton: true,
-            confirmButtonText: 'Crear Contenido',
+            confirmButtonText: 'Agregar',
             cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
             width: '600px',
+            didOpen: () => {
+                const contentTypeSelect = document.getElementById('swal-content-type') as HTMLSelectElement;
+                const moduleFields = document.getElementById('module-fields') as HTMLElement;
+                const powerbiFields = document.getElementById('powerbi-fields') as HTMLElement;
+
+                const toggleFields = () => {
+                    if (contentTypeSelect.value === 'powerbi') {
+                        moduleFields.style.display = 'none';
+                        powerbiFields.style.display = 'block';
+                    } else {
+                        moduleFields.style.display = 'block';
+                        powerbiFields.style.display = 'none';
+                    }
+                };
+
+                contentTypeSelect.addEventListener('change', toggleFields);
+                toggleFields();
+            },
             preConfirm: () => {
                 const contentType = (document.getElementById('swal-content-type') as HTMLSelectElement).value;
                 const powerbiUrl = (document.getElementById('swal-powerbi-url') as HTMLInputElement).value;
@@ -145,21 +154,24 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                     };
                 } else {
                     // Para submódulos, validamos los campos requeridos
-                    const name = (document.getElementById('swal-input1') as HTMLInputElement).value;
-                    const displayName = (document.getElementById('swal-input2') as HTMLInputElement).value;
-                    const description = (document.getElementById('swal-input3') as HTMLTextAreaElement).value;
-                    const icon = (document.getElementById('swal-input4') as HTMLSelectElement).value;
+                    const displayName = (document.getElementById('swal-display-name') as HTMLInputElement).value;
+                    const description = (document.getElementById('swal-description') as HTMLTextAreaElement).value;
+                    const icon = (document.getElementById('swal-icon') as HTMLSelectElement).value;
                     
-                    if (!name || !displayName) {
-                        Swal.showValidationMessage('El nombre y el nombre a mostrar son obligatorios para submódulos');
+                    if (!displayName) {
+                        Swal.showValidationMessage('El nombre del submódulo es obligatorio');
                         return false;
                     }
 
-                    // Validar formato del nombre (solo letras, números y guiones)
-                    if (!/^[a-z0-9-]+$/.test(name)) {
-                        Swal.showValidationMessage('El nombre solo puede contener letras minúsculas, números y guiones');
-                        return false;
-                    }
+                    // Generar slug automáticamente a partir del nombre a mostrar
+                    const name = displayName
+                        .toLowerCase()
+                        .normalize('NFD') // Normalizar para manejar acentos
+                        .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+                        .replace(/[^a-z0-9\s-]/g, '') // Solo letras, números, espacios y guiones
+                        .replace(/\s+/g, '-') // Convertir espacios a guiones
+                        .replace(/-+/g, '-') // Eliminar guiones duplicados
+                        .replace(/^-|-$/g, ''); // Eliminar guiones al inicio y final
 
                     // Generar ruta automáticamente
                     const route = `${module?.route || '/dashboard'}/${name}`;
@@ -185,43 +197,32 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                     onSuccess: () => {
                         Swal.fire({
                             title: '¡Éxito!',
-                            text: 'Contenido creado exitosamente',
+                            text: 'Contenido agregado correctamente',
                             icon: 'success',
-                            confirmButtonColor: '#2a3d85'
-                        }).then(() => {
-                            router.reload({ only: ['submodules'] });
+                            timer: 2000,
+                            showConfirmButton: false
                         });
                     },
                     onError: (errors) => {
-                        let errorMessage = 'Ocurrió un error al crear el contenido';
-                        
-                        // Manejar errores específicos de validación
-                        if (errors.name && errors.name.includes('validation.unique')) {
-                            errorMessage = 'Ya existe contenido con ese nombre. Por favor, elige un nombre diferente.';
-                        } else if (errors.route && errors.route.includes('validation.unique')) {
-                            errorMessage = 'Ya existe contenido con esa ruta. Por favor, elige un nombre diferente.';
-                        } else {
-                            // Mostrar todos los errores si no son de unicidad
-                            const errorMessages = Object.values(errors).flat();
-                            if (errorMessages.length > 0) {
-                                errorMessage = errorMessages.join('\n');
+                        let errorMessage = 'Error al agregar el contenido';
+                        if (typeof errors === 'object' && errors !== null) {
+                            const errorKeys = Object.keys(errors);
+                            if (errorKeys.length > 0) {
+                                errorMessage = errors[errorKeys[0]];
                             }
                         }
-                        
                         Swal.fire({
-                            title: 'Error al crear contenido',
+                            title: 'Error',
                             text: errorMessage,
-                            icon: 'error',
-                            confirmButtonColor: '#2a3d85'
+                            icon: 'error'
                         });
                     }
                 });
             } catch (error) {
                 Swal.fire({
                     title: 'Error',
-                    text: 'Ocurrió un error al crear el contenido',
-                    icon: 'error',
-                    confirmButtonColor: '#2a3d85'
+                    text: 'Error al procesar la solicitud',
+                    icon: 'error'
                 });
             }
         }
@@ -233,111 +234,92 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
             html: `
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Contenido *</label>
-                        <select id="swal-content-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
-                            <option value="module" ${submodule.content_type === 'module' ? 'selected' : ''}>Submódulo</option>
-                            <option value="powerbi" ${submodule.content_type === 'powerbi' ? 'selected' : ''}>Power BI</option>
-                        </select>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Contenido</label>
+                        <input type="text" value="${submodule.content_type === 'powerbi' ? 'Power BI' : 'Submódulo'}" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
                     </div>
                     
-                    <!-- Campos para Submódulo -->
-                    <div id="module-fields" class="${submodule.content_type === 'powerbi' ? 'hidden' : ''}">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
-                                <input id="swal-input1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" value="${submodule.name}" placeholder="ej: nuevo-contenido">
-                                <p class="text-xs text-gray-500 mt-1">Solo letras, números y guiones. Se usará para generar la URL.</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre a Mostrar *</label>
-                                <input id="swal-input2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" value="${submodule.display_name}" placeholder="ej: Nuevo Contenido">
-                            </div>
+                    ${submodule.content_type === 'powerbi' ? `
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">URL de Power BI *</label>
+                            <input id="swal-powerbi-url" value="${submodule.powerbi_url || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="https://app.powerbi.com/reportEmbed?reportId=...">
+                        </div>
+                    ` : `
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del submódulo *</label>
+                            <input type="text" id="swal-display-name" value="${submodule.display_name}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
+                            <small class="text-gray-500 text-xs mt-1 block">El nombre interno se generará automáticamente para la URL.</small>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                            <textarea id="swal-input3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Descripción del contenido..." rows="3">${submodule.description || ''}</textarea>
+                            <textarea id="swal-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">${submodule.description || ''}</textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
-                            <select id="swal-input4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
-                                <option value="FileText" ${submodule.icon === 'FileText' ? 'selected' : ''}>Documento</option>
-                                <option value="BarChart3" ${submodule.icon === 'BarChart3' ? 'selected' : ''}>Gráfico de Barras</option>
-                                <option value="PieChart" ${submodule.icon === 'PieChart' ? 'selected' : ''}>Gráfico Circular</option>
-                                <option value="Database" ${submodule.icon === 'Database' ? 'selected' : ''}>Base de Datos</option>
-                                <option value="Settings" ${submodule.icon === 'Settings' ? 'selected' : ''}>Configuración</option>
-                                <option value="Users" ${submodule.icon === 'Users' ? 'selected' : ''}>Usuarios</option>
-                                <option value="Shield" ${submodule.icon === 'Shield' ? 'selected' : ''}>Escudo</option>
-                                <option value="Heart" ${submodule.icon === 'Heart' ? 'selected' : ''}>Corazón</option>
-                                <option value="Activity" ${submodule.icon === 'Activity' ? 'selected' : ''}>Actividad</option>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Ícono</label>
+                            <select id="swal-icon" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
+                                <option value="FolderOpen" ${submodule.icon === 'FolderOpen' ? 'selected' : ''}>Carpeta (FolderOpen)</option>
+                                <option value="FileText" ${submodule.icon === 'FileText' ? 'selected' : ''}>Documento (FileText)</option>
+                                <option value="Settings" ${submodule.icon === 'Settings' ? 'selected' : ''}>Configuración (Settings)</option>
+                                <option value="BarChart3" ${submodule.icon === 'BarChart3' ? 'selected' : ''}>Gráfico (BarChart3)</option>
+                                <option value="Users" ${submodule.icon === 'Users' ? 'selected' : ''}>Usuarios (Users)</option>
+                                <option value="Shield" ${submodule.icon === 'Shield' ? 'selected' : ''}>Escudo (Shield)</option>
+                                <option value="Monitor" ${submodule.icon === 'Monitor' ? 'selected' : ''}>Monitor (Monitor)</option>
+                                <option value="Database" ${submodule.icon === 'Database' ? 'selected' : ''}>Base de Datos (Database)</option>
+                                <option value="Search" ${submodule.icon === 'Search' ? 'selected' : ''}>Buscar (Search)</option>
+                                <option value="TrendingUp" ${submodule.icon === 'TrendingUp' ? 'selected' : ''}>Tendencia (TrendingUp)</option>
+                                <option value="Heart" ${submodule.icon === 'Heart' ? 'selected' : ''}>Corazón (Heart)</option>
+                                <option value="RefreshCw" ${submodule.icon === 'RefreshCw' ? 'selected' : ''}>Actualizar (RefreshCw)</option>
+                                <option value="Headphones" ${submodule.icon === 'Headphones' ? 'selected' : ''}>Audífonos (Headphones)</option>
+                                <option value="Stethoscope" ${submodule.icon === 'Stethoscope' ? 'selected' : ''}>Estetoscopio (Stethoscope)</option>
+                                <option value="Award" ${submodule.icon === 'Award' ? 'selected' : ''}>Premio (Award)</option>
+                                <option value="Wrench" ${submodule.icon === 'Wrench' ? 'selected' : ''}>Herramientas (Wrench)</option>
+                                <option value="Pill" ${submodule.icon === 'Pill' ? 'selected' : ''}>Pastilla (Pill)</option>
                             </select>
                         </div>
-                    </div>
-                    
-                    <!-- Campo para Power BI (solo URL) -->
-                    <div id="powerbi-fields" class="${submodule.content_type === 'powerbi' ? '' : 'hidden'}">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">URL de Power BI *</label>
-                            <input id="swal-powerbi-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" value="${submodule.powerbi_url || ''}" placeholder="https://app.powerbi.com/view?r=...">
-                            <p class="text-xs text-gray-500 mt-1">Pega aquí el enlace de implementación desde Power BI (Archivo → Insertar informe → Sitio web)</p>
-                        </div>
-                    </div>
+                    `}
                 </div>
             `,
-            didOpen: () => {
-                // Configurar event listener para cambiar entre tipos de contenido
-                const contentTypeSelect = document.getElementById('swal-content-type') as HTMLSelectElement;
-                const moduleFields = document.getElementById('module-fields');
-                const powerbiFields = document.getElementById('powerbi-fields');
-                
-                if (contentTypeSelect && moduleFields && powerbiFields) {
-                    contentTypeSelect.addEventListener('change', function() {
-                        if (this.value === 'powerbi') {
-                            // Solo mostrar campo de URL para Power BI
-                            moduleFields.classList.add('hidden');
-                            powerbiFields.classList.remove('hidden');
-                        } else {
-                            // Mostrar todos los campos para submódulo
-                            moduleFields.classList.remove('hidden');
-                            powerbiFields.classList.add('hidden');
-                        }
-                    });
-                }
-            },
-            focusConfirm: false,
             showCancelButton: true,
-            confirmButtonText: 'Actualizar Contenido',
+            confirmButtonText: 'Actualizar',
             cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#2a3d85',
             width: '600px',
             preConfirm: () => {
-                const contentType = (document.getElementById('swal-content-type') as HTMLSelectElement).value;
-                const name = (document.getElementById('swal-input1') as HTMLInputElement).value;
-                const displayName = (document.getElementById('swal-input2') as HTMLInputElement).value;
-                const description = (document.getElementById('swal-input3') as HTMLTextAreaElement).value;
-                const icon = (document.getElementById('swal-input4') as HTMLSelectElement).value;
-                const powerbiUrl = (document.getElementById('swal-powerbi-url') as HTMLInputElement).value;
+                if (submodule.content_type === 'powerbi') {
+                    const powerbiUrl = (document.getElementById('swal-powerbi-url') as HTMLInputElement).value;
+                    if (!powerbiUrl) {
+                        Swal.showValidationMessage('La URL de Power BI es obligatoria');
+                        return false;
+                    }
+                    return { powerbi_url: powerbiUrl };
+                } else {
+                    const displayName = (document.getElementById('swal-display-name') as HTMLInputElement).value;
+                    const description = (document.getElementById('swal-description') as HTMLTextAreaElement).value;
+                    const icon = (document.getElementById('swal-icon') as HTMLSelectElement).value;
+                    
+                    if (!displayName) {
+                        Swal.showValidationMessage('El nombre del submódulo es obligatorio');
+                        return false;
+                    }
 
-                if (!name || !displayName) {
-                    Swal.showValidationMessage('El nombre y el nombre a mostrar son obligatorios');
-                    return false;
+                    // Generar slug automáticamente a partir del nombre a mostrar
+                    const name = displayName
+                        .toLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-')
+                        .replace(/^-|-$/g, '');
+
+                    const route = `${module?.route || '/dashboard'}/${name}`;
+
+                    return {
+                        name,
+                        display_name: displayName,
+                        description,
+                        icon,
+                        route
+                    };
                 }
-
-                if (contentType === 'powerbi' && !powerbiUrl) {
-                    Swal.showValidationMessage('La URL de Power BI es obligatoria para contenido de tipo Power BI');
-                    return false;
-                }
-
-                return {
-                    name,
-                    display_name: displayName,
-                    description,
-                    content_type: contentType,
-                    powerbi_url: contentType === 'powerbi' ? powerbiUrl : '',
-                    icon: contentType === 'module' ? icon : 'BarChart3',
-                    route: submodule.route,
-                    parent_id: submodule.parent_id,
-                    role: submodule.role
-                };
             }
         });
 
@@ -347,42 +329,32 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                     onSuccess: () => {
                         Swal.fire({
                             title: '¡Éxito!',
-                            text: 'Contenido actualizado exitosamente',
+                            text: 'Contenido actualizado correctamente',
                             icon: 'success',
-                            confirmButtonColor: '#2a3d85'
-                        }).then(() => {
-                            router.reload({ only: ['submodules'] });
+                            timer: 2000,
+                            showConfirmButton: false
                         });
                     },
                     onError: (errors) => {
-                        let errorMessage = 'Ocurrió un error al actualizar el contenido';
-                        
-                        // Manejar errores específicos de validación
-                        if (errors.name && errors.name.includes('validation.unique')) {
-                            errorMessage = 'Ya existe contenido con ese nombre. Por favor, elige un nombre diferente.';
-                        } else if (errors.route && errors.route.includes('validation.unique')) {
-                            errorMessage = 'Ya existe contenido con esa ruta. Por favor, elige un nombre diferente.';
-                        } else {
-                            const errorMessages = Object.values(errors).flat();
-                            if (errorMessages.length > 0) {
-                                errorMessage = errorMessages.join('\n');
+                        let errorMessage = 'Error al actualizar el contenido';
+                        if (typeof errors === 'object' && errors !== null) {
+                            const errorKeys = Object.keys(errors);
+                            if (errorKeys.length > 0) {
+                                errorMessage = errors[errorKeys[0]];
                             }
                         }
-                        
                         Swal.fire({
-                            title: 'Error al actualizar contenido',
+                            title: 'Error',
                             text: errorMessage,
-                            icon: 'error',
-                            confirmButtonColor: '#2a3d85'
+                            icon: 'error'
                         });
                     }
                 });
             } catch (error) {
                 Swal.fire({
                     title: 'Error',
-                    text: 'Ocurrió un error al actualizar el contenido',
-                    icon: 'error',
-                    confirmButtonColor: '#2a3d85'
+                    text: 'Error al procesar la solicitud',
+                    icon: 'error'
                 });
             }
         }
@@ -394,8 +366,8 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
             text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#6c757d',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         });
@@ -403,7 +375,7 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
         if (result.isConfirmed) {
             router.delete(`/admin/modules/${submoduleId}`, {
                 onSuccess: () => {
-                    router.reload({ only: ['submodules'] });
+                    Swal.fire('¡Eliminado!', 'El contenido ha sido eliminado.', 'success');
                 }
             });
         }
@@ -412,10 +384,6 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
     const handleNavigateToSubmodule = (submodule: Module) => {
         router.visit(submodule.route);
     };
-
-    // Verificar si hay Power BI
-    const hasPowerBI = submodules.some(s => s.content_type === 'powerbi');
-    const hasContent = submodules.length > 0;
 
     return (
         <>
@@ -456,38 +424,36 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                 {/* Contenido de submódulos y Power BI */}
                 {submodules.length > 0 ? (
                     <div className="space-y-6">
-                        {/* Power BI embebidos directamente */}
+                        {/* Power BI embebido directamente */}
                         {submodules.filter(s => s.content_type === 'powerbi').map((powerbiItem) => (
-                            <div key={powerbiItem.id} className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+                            <div key={powerbiItem.id} className="relative bg-white rounded-lg shadow-lg overflow-hidden">
                                 {isAdmin && (
-                                    <div className="flex justify-end space-x-2 mb-4">
+                                    <div className="absolute top-2 right-2 z-10 flex space-x-1">
                                         <button
                                             onClick={() => handleEditSubmodule(powerbiItem)}
-                                            className="p-2 hover:bg-gray-100 rounded transition-colors"
+                                            className="p-1 bg-white/80 hover:bg-white text-gray-600 hover:text-gray-800 rounded shadow transition-colors"
                                             title="Editar Power BI"
                                         >
-                                            <Edit2 className="w-4 h-4 text-gray-600" />
+                                            <Edit2 className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => handleDeleteSubmodule(powerbiItem.id)}
-                                            className="p-2 hover:bg-red-50 rounded transition-colors"
+                                            className="p-1 bg-white/80 hover:bg-white text-red-600 hover:text-red-800 rounded shadow transition-colors"
                                             title="Eliminar Power BI"
                                         >
-                                            <Trash2 className="w-4 h-4 text-red-600" />
+                                            <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
                                 )}
-                                <div className="w-full h-full">
-                                    <iframe 
-                                        title="Power BI Dashboard" 
-                                        width="100%" 
-                                        height="800" 
-                                        src={powerbiItem.powerbi_url} 
-                                        frameBorder="0" 
-                                        allowFullScreen={true}
-                                        className="rounded-lg"
-                                    />
-                                </div>
+                                <iframe
+                                    src={powerbiItem.powerbi_url}
+                                    width="100%"
+                                    height="800"
+                                    frameBorder="0"
+                                    allowFullScreen
+                                    className="border-0"
+                                    title="Power BI Report"
+                                />
                             </div>
                         ))}
                         

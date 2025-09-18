@@ -117,67 +117,133 @@ export default function AdministrativosAdministrador() {
 
     const handleCreateModule = async () => {
         const { value: formValues } = await Swal.fire({
-            title: 'Crear Nuevo Módulo',
+            title: 'Crear Nuevo Contenido',
             html: `
                 <div class="space-y-4 text-left">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Módulo *</label>
-                            <input id="swal-input1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: nuevo-modulo">
-                            <p class="text-xs text-gray-500 mt-1">Solo letras, números y guiones. Se usará para generar la URL.</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre a Mostrar *</label>
-                            <input id="swal-input2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: Nuevo Módulo">
-                        </div>
-                    </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                        <textarea id="swal-input3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Descripción del módulo..." rows="3"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
-                        <select id="swal-input4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
-                            ${iconOptions.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Contenido *</label>
+                        <select id="swal-content-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
+                            <option value="module">Módulo</option>
+                            <option value="powerbi">Power BI</option>
                         </select>
+                    </div>
+                    
+                    <!-- Campos para Módulo -->
+                    <div id="module-fields">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del módulo *</label>
+                            <input id="swal-display-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: Nuevo Módulo">
+                            <small class="text-gray-500 text-xs mt-1 block">El nombre interno se generará automáticamente para la URL.</small>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                            <textarea id="swal-description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Descripción del módulo..." rows="3"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
+                            <select id="swal-icon" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
+                                ${iconOptions.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Campos para Power BI -->
+                    <div id="powerbi-fields" style="display: none;">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">URL de Power BI *</label>
+                            <input id="swal-powerbi-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="https://app.powerbi.com/reportEmbed?reportId=...">
+                            <p class="text-xs text-gray-500 mt-1">Pegue la URL de inserción del informe de Power BI</p>
+                        </div>
                     </div>
                 </div>
             `,
             focusConfirm: false,
             showCancelButton: true,
-            confirmButtonText: 'Crear Módulo',
+            confirmButtonText: 'Crear',
             cancelButtonText: 'Cancelar',
             confirmButtonColor: '#2a3d85',
             width: '600px',
-            preConfirm: () => {
-                const name = (document.getElementById('swal-input1') as HTMLInputElement).value;
-                const displayName = (document.getElementById('swal-input2') as HTMLInputElement).value;
-                const description = (document.getElementById('swal-input3') as HTMLTextAreaElement).value;
-                const icon = (document.getElementById('swal-input4') as HTMLSelectElement).value;
+            didOpen: () => {
+                const contentTypeSelect = document.getElementById('swal-content-type') as HTMLSelectElement;
+                const moduleFields = document.getElementById('module-fields') as HTMLElement;
+                const powerbiFields = document.getElementById('powerbi-fields') as HTMLElement;
 
-                if (!name || !displayName) {
-                    Swal.showValidationMessage('El nombre del módulo y el nombre a mostrar son obligatorios');
-                    return false;
-                }
-
-                // Validar formato del nombre (solo letras, números y guiones)
-                if (!/^[a-z0-9-]+$/.test(name)) {
-                    Swal.showValidationMessage('El nombre del módulo solo puede contener letras minúsculas, números y guiones');
-                    return false;
-                }
-
-                // Generar ruta automáticamente basada en el nombre
-                const route = `/administrativos/${name}`;
-
-                return {
-                    name,
-                    display_name: displayName,
-                    description,
-                    icon,
-                    route,
-                    role: roleName
-                    // Nota: El orden se manejará automáticamente en el backend de forma alfabética
+                const toggleFields = () => {
+                    if (contentTypeSelect.value === 'powerbi') {
+                        moduleFields.style.display = 'none';
+                        powerbiFields.style.display = 'block';
+                    } else {
+                        moduleFields.style.display = 'block';
+                        powerbiFields.style.display = 'none';
+                    }
                 };
+
+                contentTypeSelect.addEventListener('change', toggleFields);
+                toggleFields();
+            },
+            preConfirm: () => {
+                const contentType = (document.getElementById('swal-content-type') as HTMLSelectElement).value;
+                const powerbiUrl = (document.getElementById('swal-powerbi-url') as HTMLInputElement).value;
+                
+                if (contentType === 'powerbi') {
+                    // Para Power BI solo validamos la URL
+                    if (!powerbiUrl) {
+                        Swal.showValidationMessage('La URL de Power BI es obligatoria');
+                        return false;
+                    }
+                    
+                    // Generar nombre automáticamente para Power BI
+                    const timestamp = Date.now();
+                    const name = `powerbi-${timestamp}`;
+                    const route = `/administrativos/${name}`;
+                    
+                    return {
+                        name,
+                        display_name: 'Power BI Dashboard',
+                        description: 'Dashboard de Power BI integrado',
+                        content_type: contentType,
+                        powerbi_url: powerbiUrl,
+                        icon: 'BarChart3',
+                        order: 0,
+                        route,
+                        role: roleName
+                    };
+                } else {
+                    // Para módulos, validamos los campos requeridos
+                    const displayName = (document.getElementById('swal-display-name') as HTMLInputElement).value;
+                    const description = (document.getElementById('swal-description') as HTMLTextAreaElement).value;
+                    const icon = (document.getElementById('swal-icon') as HTMLSelectElement).value;
+                    
+                    if (!displayName) {
+                        Swal.showValidationMessage('El nombre del módulo es obligatorio');
+                        return false;
+                    }
+
+                    // Generar slug automáticamente a partir del nombre a mostrar
+                    const name = displayName
+                        .toLowerCase()
+                        .normalize('NFD') // Normalizar para manejar acentos
+                        .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+                        .replace(/[^a-z0-9\s-]/g, '') // Solo letras, números, espacios y guiones
+                        .replace(/\s+/g, '-') // Convertir espacios a guiones
+                        .replace(/-+/g, '-') // Eliminar guiones duplicados
+                        .replace(/^-|-$/g, ''); // Eliminar guiones al inicio y final
+
+                    // Generar ruta automáticamente
+                    const route = `/administrativos/${name}`;
+
+                    return {
+                        name,
+                        display_name: displayName,
+                        description,
+                        content_type: contentType,
+                        powerbi_url: '',
+                        icon,
+                        order: 0,
+                        route,
+                        role: roleName
+                    };
+                }
             }
         });
 
