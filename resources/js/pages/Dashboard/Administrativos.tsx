@@ -2,7 +2,7 @@ import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Building2, Target, BarChart3, PieChart, FileText, Plus, Users, Settings, Database, Calendar, Clock, Map, Shield, Heart, Activity, Briefcase, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import customSwal from '@/utils/sweetAlert';
+import customSwal from '../../utils/sweetAlert';
 
 // Mapeo de iconos
 const iconMap: { [key: string]: any } = {
@@ -121,7 +121,7 @@ export default function Administrativos() {
     };
 
     const handleCreateModule = async () => {
-        const { value: formValues } = await Swal.fire({
+        const { value: formValues } = await customSwal.fire({
             title: 'Crear Nuevo Contenido',
             html: `
                 <div class="space-y-4 text-left">
@@ -329,7 +329,7 @@ export default function Administrativos() {
     };
 
     const handleChangePassword = async () => {
-        const { value: formValues } = await Swal.fire({
+        const { value: formValues } = await customSwal.fire({
             title: 'Cambiar Contraseña',
             html: `
                 <input id="current-password" type="password" class="swal2-input" placeholder="Contraseña actual">
