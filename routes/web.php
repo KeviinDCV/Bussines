@@ -3,7 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
-
+use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\RoleMiddleware;
@@ -120,6 +120,23 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/direccionamiento/prueba/submodulo-de-prueba', function () {
         return Inertia::render('Direccionamiento/SubmoduloDePrueba');
     })->name('module.submodulo-de-prueba');
+
+    // Ruta generada automáticamente para Reporte de Indicadores
+    Route::get('/calidad/indicadores/reporte-de-indicadores', function () {
+        return Inertia::render('Calidad/ReporteDeIndicadores');
+    })->name('module.reporte-de-indicadores');
+
+    // Ruta generada automáticamente para Acreditación
+    Route::get('/calidad/indicadores/acreditacion', function () {
+        return Inertia::render('Calidad/Acreditacion');
+    })->name('module.acreditacion');
+
+
+
+    // Rutas dinámicas para submódulos: /{role}/{module}/{submodule}
+    Route::get('/{role}/{moduleName}/{submoduleName}', [ModuleController::class, 'showDynamicSubmodule'])
+        ->where('role', 'calidad|administrativos|asistenciales|direccionamiento|financieros')
+        ->name('module.submodule.show');
 });
 
 require __DIR__.'/settings.php';

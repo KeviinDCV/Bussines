@@ -242,6 +242,77 @@ class ModuleController extends Controller
     }
 
     /**
+     * Show a dynamic submodule with its content (Power BI)
+     */
+    public function showDynamicSubmodule(Request $request, $role, $moduleName, $submoduleName)
+    {
+        $user = auth()->user();
+        
+        // Buscar el módulo padre por nombre y rol
+        $parentModule = Module::where('name', $moduleName)
+            ->forRole(ucfirst($role))
+            ->where('active', true)
+            ->first();
+            
+        if (!$parentModule) {
+            abort(404, 'Módulo padre no encontrado');
+        }
+        
+        // Buscar el submódulo por nombre y parent_id
+        $submodule = Module::where('name', $submoduleName)
+            ->where('parent_id', $parentModule->id)
+            ->where('active', true)
+            ->first();
+            
+        if (!$submodule) {
+            abort(404, 'Submódulo no encontrado');
+        }
+        
+        // Obtener contenido del submódulo (Power BI, etc.)
+        $submoduleContent = Module::where('parent_id', $submodule->id)
+            ->where('active', true)
+            ->orderBy('display_name')
+            ->get();
+        
+        // Verificar permisos para gestionar contenido
+        $canManageContent = $user->role === 'Administrador';
+        
+        // Mapeo de nombres de dashboard
+        $dashboardNames = [
+            'calidad' => 'Dashboard Calidad',
+            'administrativos' => 'Dashboard Administrativos',
+            'asistenciales' => 'Dashboard Asistenciales', 
+            'direccionamiento' => 'Dashboard Direccionamiento',
+            'financieros' => 'Dashboard Financieros'
+        ];
+        
+        // Generar URL del dashboard según el rol del usuario
+        $dashboardUrl = '/dashboard/' . $role;
+        if ($user->role === 'Administrador') {
+            $dashboardUrl .= '-administrador';
+        } elseif ($user->role === 'Gerencia') {
+            $dashboardUrl .= '-gerencia';
+        }
+        
+        $breadcrumb = [
+            'dashboard' => $dashboardNames[$role] ?? 'Dashboard',
+            'dashboardUrl' => $dashboardUrl,
+            'module' => $parentModule->display_name,
+            'moduleUrl' => '/' . $role . '/' . $parentModule->name,
+            'submodule' => $submodule->display_name
+        ];
+        
+        return Inertia::render('Modules/DynamicModule', [
+            'module' => $submodule, // Pasar el submódulo como módulo principal
+            'submodules' => $submoduleContent, // Contenido del submódulo (Power BI)
+            'role' => ucfirst($role),
+            'canManageContent' => $canManageContent,
+            'breadcrumb' => $breadcrumb,
+            'parentModule' => $parentModule // Información del módulo padre
+        ]);
+    }
+
+    /**
      * Clear all caches to ensure immediate visibility of module changes in production
      */
     private function clearModuleCaches()

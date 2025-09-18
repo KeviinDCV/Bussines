@@ -69,21 +69,39 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
     };
 
     const handleAddContent = async () => {
-        // Si ya hay Power BI, solo permitir submódulos
-        const powerbiOption = hasPowerBI ? '' : '<option value="powerbi">Power BI</option>';
-        const warningMessage = hasPowerBI ? '<p class="text-sm text-amber-600 bg-amber-50 p-2 rounded mb-2">⚠️ Ya existe un Power BI en este módulo. Solo puedes agregar submódulos.</p>' : '';
+        // Determinar nivel jerárquico
+        const isSubmodule = module && module.parent_id !== null && module.parent_id !== undefined;
+        
+        // Reglas jerárquicas:
+        // - Módulo principal: solo submódulos
+        // - Submódulo: solo Power BI
+        let contentOptions = '';
+        let hierarchyMessage = '';
+        
+        if (isSubmodule) {
+            // En submódulos solo Power BI
+            contentOptions = '<option value="powerbi">Power BI</option>';
+            hierarchyMessage = '<p class="text-sm text-blue-600 bg-blue-50 p-2 rounded mb-2">📊 En los submódulos solo puedes agregar contenido Power BI.</p>';
+        } else {
+            // En módulos principales solo submódulos
+            contentOptions = '<option value="module">Submódulo</option>';
+            hierarchyMessage = '<p class="text-sm text-green-600 bg-green-50 p-2 rounded mb-2">📁 En los módulos principales solo puedes crear submódulos.</p>';
+        }
+        
+        // Si ya hay Power BI en submódulo, mostrar advertencia
+        const powerbiWarning = (isSubmodule && hasPowerBI) ? '<p class="text-sm text-amber-600 bg-amber-50 p-2 rounded mb-2">⚠️ Ya existe un Power BI en este submódulo. Solo se permite uno por submódulo.</p>' : '';
         
         const { value: formValues } = await customSwal.fire({
             title: 'Agregar Contenido',
             html: `
                 <div class="space-y-6 text-left">
-                    ${warningMessage}
+                    ${hierarchyMessage}
+                    ${powerbiWarning}
                     
                     <div class="space-y-2">
                         <label class="block text-sm font-semibold text-gray-800 mb-2">Tipo de Contenido *</label>
                         <select id="swal-content-type" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors">
-                            <option value="module">Submódulo</option>
-                            ${powerbiOption}
+                            ${contentOptions}
                         </select>
                     </div>
                     
@@ -153,8 +171,23 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                     }
                 };
 
-                contentTypeSelect.addEventListener('change', toggleFields);
+                // Solo agregar listener si hay más de una opción
+                if (contentTypeSelect.options.length > 1) {
+                    contentTypeSelect.addEventListener('change', toggleFields);
+                }
+                
+                // Inicializar campos según la selección
                 toggleFields();
+                
+                // Si estamos en submódulo y hay Power BI, deshabilitar el botón
+                if (isSubmodule && hasPowerBI) {
+                    const confirmButton = document.querySelector('.swal2-confirm') as HTMLButtonElement;
+                    if (confirmButton) {
+                        confirmButton.disabled = true;
+                        confirmButton.style.opacity = '0.5';
+                        confirmButton.style.cursor = 'not-allowed';
+                    }
+                }
             },
             preConfirm: () => {
                 const contentType = (document.getElementById('swal-content-type') as HTMLSelectElement).value;
@@ -260,33 +293,33 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
     };
 
     const handleEditSubmodule = async (submodule: Module) => {
-        const { value: formValues } = await Swal.fire({
+        const { value: formValues } = await customSwal.fire({
             title: 'Editar Contenido',
             html: `
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Contenido</label>
-                        <input type="text" value="${submodule.content_type === 'powerbi' ? 'Power BI' : 'Submódulo'}" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
+                <div class="space-y-6 text-left">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">Tipo de Contenido</label>
+                        <input type="text" value="${submodule.content_type === 'powerbi' ? 'Power BI' : 'Submódulo'}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-100 text-gray-600" readonly>
                     </div>
                     
                     ${submodule.content_type === 'powerbi' ? `
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">URL de Power BI *</label>
-                            <input id="swal-powerbi-url" value="${submodule.powerbi_url || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="https://app.powerbi.com/reportEmbed?reportId=...">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-800">URL de Power BI *</label>
+                            <input id="swal-powerbi-url" value="${submodule.powerbi_url || ''}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors" placeholder="https://app.powerbi.com/reportEmbed?reportId=...">
                         </div>
                     ` : `
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del submódulo *</label>
-                            <input type="text" id="swal-display-name" value="${submodule.display_name}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
-                            <small class="text-gray-500 text-xs mt-1 block">El nombre interno se generará automáticamente para la URL.</small>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-800">Nombre del submódulo *</label>
+                            <input type="text" id="swal-display-name" value="${submodule.display_name}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors" placeholder="ej: Nuevo Submódulo">
+                            <small class="text-gray-600 text-xs block mt-1 italic">El nombre interno se generará automáticamente para la URL.</small>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                            <textarea id="swal-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">${submodule.description || ''}</textarea>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-800">Descripción</label>
+                            <textarea id="swal-description" rows="3" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors resize-none" placeholder="Descripción del submódulo...">${submodule.description || ''}</textarea>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Ícono</label>
-                            <select id="swal-icon" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-800">Ícono</label>
+                            <select id="swal-icon" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors">
                                 <option value="FolderOpen" ${submodule.icon === 'FolderOpen' ? 'selected' : ''}>Carpeta (FolderOpen)</option>
                                 <option value="FileText" ${submodule.icon === 'FileText' ? 'selected' : ''}>Documento (FileText)</option>
                                 <option value="Settings" ${submodule.icon === 'Settings' ? 'selected' : ''}>Configuración (Settings)</option>
@@ -310,6 +343,8 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                 </div>
             `,
             showCancelButton: true,
+            confirmButtonColor: '#2a3d85',
+            cancelButtonColor: '#6b7280',
             confirmButtonText: 'Actualizar',
             cancelButtonText: 'Cancelar',
             width: '600px',
@@ -317,17 +352,20 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                 if (submodule.content_type === 'powerbi') {
                     const powerbiUrl = (document.getElementById('swal-powerbi-url') as HTMLInputElement).value;
                     if (!powerbiUrl) {
-                        Swal.showValidationMessage('La URL de Power BI es obligatoria');
+                        customSwal.showValidationMessage('La URL de Power BI es obligatoria');
                         return false;
                     }
-                    return { powerbi_url: powerbiUrl };
+                    return { 
+                        powerbi_url: powerbiUrl,
+                        role: submodule.role || module?.role
+                    };
                 } else {
                     const displayName = (document.getElementById('swal-display-name') as HTMLInputElement).value;
                     const description = (document.getElementById('swal-description') as HTMLTextAreaElement).value;
                     const icon = (document.getElementById('swal-icon') as HTMLSelectElement).value;
                     
                     if (!displayName) {
-                        Swal.showValidationMessage('El nombre del submódulo es obligatorio');
+                        customSwal.showValidationMessage('El nombre del submódulo es obligatorio');
                         return false;
                     }
 
@@ -348,7 +386,8 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                         display_name: displayName,
                         description,
                         icon,
-                        route
+                        route,
+                        role: submodule.role || module?.role
                     };
                 }
             }
@@ -358,10 +397,11 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
             try {
                 await router.put(`/admin/modules/${submodule.id}`, formValues, {
                     onSuccess: () => {
-                        Swal.fire({
+                        customSwal.fire({
                             title: '¡Éxito!',
                             text: 'Contenido actualizado correctamente',
                             icon: 'success',
+                            confirmButtonColor: '#2a3d85',
                             timer: 2000,
                             showConfirmButton: false
                         });
@@ -374,31 +414,33 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                                 errorMessage = errors[errorKeys[0]];
                             }
                         }
-                        Swal.fire({
+                        customSwal.fire({
                             title: 'Error',
                             text: errorMessage,
-                            icon: 'error'
+                            icon: 'error',
+                            confirmButtonColor: '#2a3d85'
                         });
                     }
                 });
             } catch (error) {
-                Swal.fire({
+                customSwal.fire({
                     title: 'Error',
                     text: 'Error al procesar la solicitud',
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#2a3d85'
                 });
             }
         }
     };
 
     const handleDeleteSubmodule = async (submoduleId: number) => {
-        const result = await Swal.fire({
+        const result = await customSwal.fire({
             title: '¿Estás seguro?',
             text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         });
@@ -406,7 +448,12 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
         if (result.isConfirmed) {
             router.delete(`/admin/modules/${submoduleId}`, {
                 onSuccess: () => {
-                    Swal.fire('¡Eliminado!', 'El contenido ha sido eliminado.', 'success');
+                    customSwal.fire({
+                        title: '¡Eliminado!',
+                        text: 'El contenido ha sido eliminado exitosamente',
+                        icon: 'success',
+                        confirmButtonColor: '#2a3d85'
+                    });
                 }
             });
         }
@@ -427,7 +474,13 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{displayName}</h1>
                         </div>
                         
-                        {isAdmin && (
+                        {isAdmin && (() => {
+                            const isSubmodule = module && module.parent_id !== null && module.parent_id !== undefined;
+                            // Mostrar botón según reglas jerárquicas
+                            // En submódulos: solo si no hay Power BI
+                            // En módulos principales: siempre mostrar
+                            return isSubmodule ? !hasPowerBI : true;
+                        })() && (
                             <button
                                 onClick={handleAddContent}
                                 className="flex items-center space-x-2 bg-[#2a3d85] hover:bg-[#1e2d5f] text-white px-4 py-2 rounded-lg transition-colors"
@@ -439,8 +492,13 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                     </div>
                 )}
 
-                {/* Botón de agregar contenido cuando hay contenido pero no Power BI */}
-                {hasContent && !hasPowerBI && isAdmin && (
+                {/* Botón de agregar contenido según reglas jerárquicas */}
+                {hasContent && isAdmin && (() => {
+                    const isSubmodule = module && module.parent_id !== null && module.parent_id !== undefined;
+                    // En submódulos: mostrar solo si NO hay Power BI
+                    // En módulos principales: siempre mostrar (para agregar más submódulos)
+                    return isSubmodule ? !hasPowerBI : true;
+                })() && (
                     <div className="flex justify-end mb-6">
                         <button
                             onClick={handleAddContent}
@@ -492,7 +550,7 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                         {submodules.filter(s => s.content_type === 'module').length > 0 && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {submodules.filter(s => s.content_type === 'module').map((submodule) => (
-                                    <div key={submodule.id} className="bg-white rounded-lg shadow-md border hover:shadow-lg transition-shadow p-6">
+                                    <div key={submodule.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6">
                                         <div className="flex items-start justify-between mb-3">
                                             <div className="flex items-center space-x-3">
                                                 <FolderOpen className="w-6 h-6 text-[#2a3d85]" />

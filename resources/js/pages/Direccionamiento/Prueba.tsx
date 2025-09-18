@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import PowerBIEmbed from '@/components/PowerBIEmbed';
 import ModuleContent from '@/components/ModuleContent';
-import { FileText } from 'lucide-react';
+import { FolderOpen } from 'lucide-react';
 
 export default function Prueba() {
     const { props } = usePage();
@@ -21,10 +21,10 @@ export default function Prueba() {
 
     return (
         <AppLayout
-            title="Prueba - Tableros de Gestión HUV"
-            pageTitle="Prueba"
-            pageDescription="esto es una prueba"
-            icon={FileText}
+            title="prueba - Tableros de Gestión HUV"
+            pageTitle="prueba"
+            pageDescription="Test"
+            icon={FolderOpen}
             showBackButton={true}
             backUrl={getBackUrl()}
         >
@@ -37,8 +37,8 @@ export default function Prueba() {
                 <ModuleContent 
                     module={module}
                     submodules={submodules}
-                    displayName="Prueba"
-                    icon={FileText}
+                    displayName="prueba"
+                    icon={FolderOpen}
                 />
             )}
         </AppLayout>

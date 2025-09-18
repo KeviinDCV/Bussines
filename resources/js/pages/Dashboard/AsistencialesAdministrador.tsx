@@ -115,15 +115,12 @@ export default function AsistencialesAdministrador() {
 
     const handleCreateModule = async () => {
         const { value: formValues } = await customSwal.fire({
-            title: 'Crear Nuevo Contenido',
+            title: 'Crear Nuevo Módulo',
             html: `
                 <div class="space-y-4 text-left">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Contenido *</label>
-                        <select id="swal-content-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
-                            <option value="module">Módulo</option>
-                            <option value="powerbi">Power BI</option>
-                        </select>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Contenido</label>
+                        <input type="text" value="Módulo" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
                     </div>
                     
                     <!-- Campos para Módulo -->
@@ -162,86 +159,37 @@ export default function AsistencialesAdministrador() {
 
             width: '600px',
             didOpen: () => {
-                const contentTypeSelect = document.getElementById('swal-content-type') as HTMLSelectElement;
-                const moduleFields = document.getElementById('module-fields') as HTMLElement;
-                const powerbiFields = document.getElementById('powerbi-fields') as HTMLElement;
-
-                const toggleFields = () => {
-                    if (contentTypeSelect.value === 'powerbi') {
-                        moduleFields.style.display = 'none';
-                        powerbiFields.style.display = 'block';
-                    } else {
-                        moduleFields.style.display = 'block';
-                        powerbiFields.style.display = 'none';
-                    }
-                };
-
-                contentTypeSelect.addEventListener('change', toggleFields);
-                toggleFields();
+                // Enfocar el campo de nombre del módulo
+                const displayNameInput = document.getElementById('swal-display-name') as HTMLInputElement;
+                if (displayNameInput) {
+                    displayNameInput.focus();
+                }
             },
             preConfirm: () => {
-                const contentType = (document.getElementById('swal-content-type') as HTMLSelectElement).value;
-                const powerbiUrl = (document.getElementById('swal-powerbi-url') as HTMLInputElement).value;
+                // Para módulos, validamos los campos requeridos
+                const displayName = (document.getElementById('swal-display-name') as HTMLInputElement).value;
+                const description = (document.getElementById('swal-description') as HTMLTextAreaElement).value;
+                const icon = (document.getElementById('swal-icon') as HTMLSelectElement).value;
                 
-                if (contentType === 'powerbi') {
-                    // Para Power BI solo validamos la URL
-                    if (!powerbiUrl) {
-                        customSwal.showValidationMessage('La URL de Power BI es obligatoria');
-                        return false;
-                    }
-                    
-                    // Generar nombre automáticamente para Power BI
-                    const timestamp = Date.now();
-                    const name = `powerbi-${timestamp}`;
-                    const route = `/asistenciales/${name}`;
-                    
-                    return {
-                        name,
-                        display_name: 'Power BI Dashboard',
-                        description: 'Dashboard de Power BI integrado',
-                        content_type: contentType,
-                        powerbi_url: powerbiUrl,
-                        icon: 'BarChart3',
-                        order: 0,
-                        route,
-                        role: roleName
-                    };
-                } else {
-                    // Para módulos, validamos los campos requeridos
-                    const displayName = (document.getElementById('swal-display-name') as HTMLInputElement).value;
-                    const description = (document.getElementById('swal-description') as HTMLTextAreaElement).value;
-                    const icon = (document.getElementById('swal-icon') as HTMLSelectElement).value;
-                    
-                    if (!displayName) {
-                        customSwal.showValidationMessage('El nombre del módulo es obligatorio');
-                        return false;
-                    }
-
-                    // Generar slug automáticamente a partir del nombre a mostrar
-                    const name = displayName
-                        .toLowerCase()
-                        .normalize('NFD') // Normalizar para manejar acentos
-                        .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
-                        .replace(/[^a-z0-9\s-]/g, '') // Solo letras, números, espacios y guiones
-                        .replace(/\s+/g, '-') // Convertir espacios a guiones
-                        .replace(/-+/g, '-') // Eliminar guiones duplicados
-                        .replace(/^-|-$/g, ''); // Eliminar guiones al inicio y final
-
-                    // Generar ruta automáticamente
-                    const route = `/asistenciales/${name}`;
-
-                    return {
-                        name,
-                        display_name: displayName,
-                        description,
-                        content_type: contentType,
-                        powerbi_url: '',
-                        icon,
-                        order: 0,
-                        route,
-                        role: roleName
-                    };
+                if (!displayName) {
+                    customSwal.showValidationMessage('El nombre del módulo es obligatorio');
+                    return false;
                 }
+                
+                // Generar slug automáticamente
+                const slug = displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                const route = `/asistenciales/${slug}`;
+                
+                return {
+                    name: slug,
+                    display_name: displayName,
+                    description,
+                    content_type: 'module',
+                    icon,
+                    route,
+                    parent_id: null,
+                    role: roleName
+                };
             }
         });
 
