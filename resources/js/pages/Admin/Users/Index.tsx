@@ -552,7 +552,7 @@ export default function UsersIndex({ users, filters, roles, rolesData }: Props) 
 
     return (
         <AppLayout
-            title="Gestión de Usuarios - Business Intelligence HUV"
+            title="Gestión de Usuarios - Tableros de Gestión HUV"
             pageTitle="Gestión de Usuarios"
             pageDescription="Administrar usuarios del sistema"
             icon={Users}

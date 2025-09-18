@@ -46,7 +46,7 @@ export default function Gerencia() {
 
     return (
         <AppLayout
-            title="Dashboard Gerencia - Business Intelligence HUV"
+            title="Dashboard Gerencia - Tableros de Gestión HUV"
             pageTitle="Gerencia"
             pageDescription="Panel de Control Gerencial"
             icon={Crown}

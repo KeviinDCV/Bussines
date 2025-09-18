@@ -9,7 +9,7 @@ export default function TalentoHumano() {
 
     return (
         <AppLayout
-            title="Talento Humano - Business Intelligence HUV"
+            title="Talento Humano - Tableros de Gestión HUV"
             pageTitle="Talento Humano"
             pageDescription="Gestión del recurso humano y desarrollo organizacional"
             icon={Users}

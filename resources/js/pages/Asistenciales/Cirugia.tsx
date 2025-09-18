@@ -5,7 +5,7 @@ import { Scissors } from 'lucide-react';
 export default function Cirugia() {
     return (
         <AppLayout
-            title="Gestión integral de Cirugía - Business Intelligence HUV"
+            title="Gestión integral de Cirugía - Tableros de Gestión HUV"
             pageTitle="Gestión integral de Cirugía"
             pageDescription="Control de quirófanos y procedimientos quirúrgicos"
             icon={Scissors}

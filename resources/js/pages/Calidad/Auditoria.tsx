@@ -5,7 +5,7 @@ import { Search } from 'lucide-react';
 export default function Auditoria() {
     return (
         <AppLayout
-            title="Auditoría - Business Intelligence HUV"
+            title="Auditoría - Tableros de Gestión HUV"
             pageTitle="Auditoría"
             pageDescription="Auditorías internas y externas"
             icon={Search}

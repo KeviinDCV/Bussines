@@ -65,7 +65,7 @@ export default function CreateUser({ roles }: Props) {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Head title="Crear Usuario - Business Intelligence HUV" />
+            <Head title="Crear Usuario - Tableros de Gestión HUV" />
             
             {/* Header */}
             <div className="bg-[#2a3d85] text-white p-6">

@@ -5,7 +5,7 @@ import { FileText, ArrowLeft } from 'lucide-react';
 export default function Documentos() {
     return (
         <AppLayout
-            title="Documentos - Business Intelligence HUV"
+            title="Documentos - Tableros de Gestión HUV"
             pageTitle="Documentos"
             pageDescription="Gestión documental y control de versiones"
             icon={FileText}

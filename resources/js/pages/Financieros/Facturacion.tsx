@@ -9,7 +9,7 @@ export default function Facturacion() {
 
     return (
         <AppLayout
-            title="Facturación - Business Intelligence HUV"
+            title="Facturación - Tableros de Gestión HUV"
             pageTitle="Facturación"
             pageDescription="Gestión y control de facturación de servicios médicos"
             icon={FileText}

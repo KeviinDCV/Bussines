@@ -9,7 +9,7 @@ export default function Pamec() {
 
     return (
         <AppLayout
-            title="PAMEC - Business Intelligence HUV"
+            title="PAMEC - Tableros de Gestión HUV"
             pageTitle="PAMEC"
             pageDescription="Programa de Auditoría para el Mejoramiento de la Calidad"
             icon={Shield}

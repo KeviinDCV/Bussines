@@ -5,7 +5,7 @@ import { Building } from 'lucide-react';
 export default function ExtensionHospitalaria() {
     return (
         <AppLayout
-            title="Extensión Hospitalaria - Business Intelligence HUV"
+            title="Extensión Hospitalaria - Tableros de Gestión HUV"
             pageTitle="Extensión Hospitalaria"
             pageDescription="Programas de extensión y servicios comunitarios"
             icon={Building}

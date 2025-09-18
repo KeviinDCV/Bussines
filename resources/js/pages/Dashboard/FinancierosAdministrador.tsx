@@ -135,17 +135,11 @@ export default function FinancierosAdministrador() {
                         <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
                         <textarea id="swal-input3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Descripción del módulo..." rows="3"></textarea>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
-                            <select id="swal-input4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
-                                ${iconOptions.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Orden</label>
-                            <input id="swal-input5" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" type="number" value="0" min="0">
-                        </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
+                        <select id="swal-input4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
+                            ${iconOptions.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
+                        </select>
                     </div>
                 </div>
             `,
@@ -160,7 +154,7 @@ export default function FinancierosAdministrador() {
                 const displayName = (document.getElementById('swal-input2') as HTMLInputElement).value;
                 const description = (document.getElementById('swal-input3') as HTMLTextAreaElement).value;
                 const icon = (document.getElementById('swal-input4') as HTMLSelectElement).value;
-                const order = parseInt((document.getElementById('swal-input5') as HTMLInputElement).value) || 0;
+
 
                 if (!name || !displayName) {
                     Swal.showValidationMessage('El nombre del módulo y el nombre a mostrar son obligatorios');
@@ -181,9 +175,9 @@ export default function FinancierosAdministrador() {
                     display_name: displayName,
                     description,
                     icon,
-                    order,
                     route,
                     role: roleName
+                    // Nota: El orden se manejará automáticamente en el backend de forma alfabética
                 };
             }
         });
@@ -203,10 +197,24 @@ export default function FinancierosAdministrador() {
                         });
                     },
                     onError: (errors) => {
-                        const errorMessages = Object.values(errors).flat().join('\n');
+                        let errorMessage = 'Ocurrió un error al crear el módulo';
+                        
+                        // Manejar errores específicos de validación
+                        if (errors.name && errors.name.includes('validation.unique')) {
+                            errorMessage = 'Ya existe un módulo con ese nombre. Por favor, elige un nombre diferente.';
+                        } else if (errors.route && errors.route.includes('validation.unique')) {
+                            errorMessage = 'Ya existe un módulo con esa ruta. Por favor, elige un nombre diferente.';
+                        } else {
+                            // Mostrar todos los errores si no son de unicidad
+                            const errorMessages = Object.values(errors).flat();
+                            if (errorMessages.length > 0) {
+                                errorMessage = errorMessages.join('\n');
+                            }
+                        }
+                        
                         Swal.fire({
-                            title: 'Error',
-                            text: errorMessages,
+                            title: 'Error al crear módulo',
+                            text: errorMessage,
                             icon: 'error',
                             confirmButtonColor: '#2a3d85'
                         });
@@ -225,7 +233,7 @@ export default function FinancierosAdministrador() {
 
     return (
         <AppLayout
-            title="Dashboard Financieros - Business Intelligence HUV"
+            title="Dashboard Financieros - Tableros de Gestión HUV"
             pageTitle="Financieros (Administrador)"
             pageDescription="Subgerencia Financiera"
             icon={DollarSign}

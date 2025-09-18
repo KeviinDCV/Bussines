@@ -229,7 +229,7 @@ export default function Asistenciales() {
 
     return (
         <AppLayout
-            title="Dashboard Asistenciales - Business Intelligence HUV"
+            title="Dashboard Asistenciales - Tableros de Gestión HUV"
             pageTitle="Asistenciales"
             pageDescription="Subgerencia de Servicios de Salud"
             icon={Stethoscope}

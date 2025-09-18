@@ -22,6 +22,12 @@ if (token) {
 axios.interceptors.response.use(
     (response) => response,
     async (error) => {
+        // Ignore CanceledError messages as they are normal (navigation cancellations)
+        if (error.name === 'CanceledError' || error.code === 'ERR_CANCELED') {
+            return Promise.reject(error);
+        }
+        
+        // Only log non-cancellation errors
         console.log('🐛 DEBUG: Axios interceptor caught error:', error);
         
         // Check if this is a 419 CSRF token error

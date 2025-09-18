@@ -5,7 +5,7 @@ import { Headphones } from 'lucide-react';
 export default function CentroEscucha() {
     return (
         <AppLayout
-            title="Centro de Escucha - Business Intelligence HUV"
+            title="Centro de Escucha - Tableros de Gestión HUV"
             pageTitle="Centro de Escucha"
             pageDescription="Atención y seguimiento a usuarios"
             icon={Headphones}

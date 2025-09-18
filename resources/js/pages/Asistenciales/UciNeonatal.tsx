@@ -15,7 +15,7 @@ export default function UciNeonatal() {
 
     return (
         <AppLayout
-            title="UCI Neonatal - Business Intelligence HUV"
+            title="UCI Neonatal - Tableros de Gestión HUV"
             pageTitle="UCI Neonatal"
             pageDescription="Unidad de Cuidados Intensivos para recién nacidos"
             icon={Heart}

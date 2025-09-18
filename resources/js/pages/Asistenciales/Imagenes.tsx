@@ -5,7 +5,7 @@ import { Camera } from 'lucide-react';
 export default function Imagenes() {
     return (
         <AppLayout
-            title="Gestión integral de Imágenes - Business Intelligence HUV"
+            title="Gestión integral de Imágenes - Tableros de Gestión HUV"
             pageTitle="Gestión integral de Imágenes"
             pageDescription="Administración de estudios radiológicos e imágenes"
             icon={Camera}

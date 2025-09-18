@@ -76,7 +76,7 @@ export default function EditUser({ user, roles }: Props) {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Head title={`Editar Usuario: ${user.name} - Business Intelligence HUV`} />
+            <Head title={`Editar Usuario: ${user.name} - Tableros de Gestión HUV`} />
             
             {/* Header */}
             <div className="bg-[#2a3d85] text-white p-6">

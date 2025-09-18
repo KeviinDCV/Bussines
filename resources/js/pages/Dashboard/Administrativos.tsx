@@ -314,7 +314,7 @@ export default function Administrativos() {
 
     return (
         <AppLayout
-            title="Dashboard Administrativos - Business Intelligence HUV"
+            title="Dashboard Administrativos - Tableros de Gestión HUV"
             pageTitle="Administrativos"
             pageDescription="Subgerencia Administrativa y Financiera"
             icon={Building}

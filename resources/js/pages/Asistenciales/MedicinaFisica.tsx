@@ -5,7 +5,7 @@ import { Activity } from 'lucide-react';
 export default function MedicinaFisica() {
     return (
         <AppLayout
-            title="Gestión integral de Medicina Física - Business Intelligence HUV"
+            title="Gestión integral de Medicina Física - Tableros de Gestión HUV"
             pageTitle="Gestión integral de Medicina Física"
             pageDescription="Rehabilitación y terapia física especializada"
             icon={Activity}

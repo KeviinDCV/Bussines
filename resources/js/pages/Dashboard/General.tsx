@@ -10,7 +10,7 @@ export default function General() {
 
     return (
         <AppLayout
-            title="Dashboard General - Business Intelligence HUV"
+            title="Dashboard General - Tableros de Gestión HUV"
             pageTitle="Gerencia"
             pageDescription="Vista General de Todos los Módulos"
             icon={Home}

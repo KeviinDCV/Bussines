@@ -5,7 +5,7 @@ import { Settings } from 'lucide-react';
 export default function Habilitacion() {
     return (
         <AppLayout
-            title="Habilitación - Business Intelligence HUV"
+            title="Habilitación - Tableros de Gestión HUV"
             pageTitle="Habilitación"
             pageDescription="Procesos de habilitación y acreditación"
             icon={Settings}

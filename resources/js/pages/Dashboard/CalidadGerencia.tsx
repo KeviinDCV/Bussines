@@ -48,7 +48,7 @@ export default function CalidadGerencia() {
 
     return (
         <AppLayout
-            title="Dashboard Calidad - Business Intelligence HUV"
+            title="Dashboard Calidad - Tableros de Gestión HUV"
             pageTitle="Calidad (Gerencia)"
             pageDescription="Subgerencia de Calidad"
             icon={Award}

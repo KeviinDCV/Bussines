@@ -9,7 +9,7 @@ export default function SistemasInformacion() {
 
     return (
         <AppLayout
-            title="Sistemas de Información - Business Intelligence HUV"
+            title="Sistemas de Información - Tableros de Gestión HUV"
             pageTitle="Sistemas de Información"
             pageDescription="Gestión de tecnología y sistemas informáticos"
             icon={Monitor}

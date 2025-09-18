@@ -5,7 +5,7 @@ import { Heart } from 'lucide-react';
 export default function Humanizacion() {
     return (
         <AppLayout
-            title="Humanización - Business Intelligence HUV"
+            title="Humanización - Tableros de Gestión HUV"
             pageTitle="Humanización"
             pageDescription="Programa de humanización en salud"
             icon={Heart}

@@ -74,7 +74,7 @@ export default function Login({ errors }: LoginProps) {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4 lg:p-8">
-            <Head title="Business Intelligence HUV - Login" />
+            <Head title="Tableros de Gestión HUV - Login" />
             <style dangerouslySetInnerHTML={{
                 __html: `
                     input:-webkit-autofill,
@@ -125,7 +125,7 @@ export default function Login({ errors }: LoginProps) {
                             
                             <div className="text-center mb-6 sm:mb-8">
                                 <h1 className="text-2xl sm:text-3xl font-bold text-[#2a3d85] mb-2">
-                                    Business Intelligence HUV
+                                    Tableros de Gestión HUV
                                 </h1>
                                 <p className="text-sm sm:text-base text-gray-600 px-2">
                                     Hospital Universitario del Valle "Evaristo Garcia" E.S.E
@@ -277,7 +277,7 @@ export default function Login({ errors }: LoginProps) {
                             
                             <div className="text-center mb-8">
                                 <h1 className="text-3xl font-bold text-[#2a3d85] mb-2">
-                                    Business Intelligence HUV
+                                    Tableros de Gestión HUV
                                 </h1>
                                 <p className="text-base text-gray-600 px-2">
                                     Hospital Universitario del Valle "Evaristo Garcia" E.S.E

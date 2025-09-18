@@ -9,7 +9,7 @@ export default function Ambulatorio() {
 
     return (
         <AppLayout
-            title="Gestión integral de Ambulatorio - Business Intelligence HUV"
+            title="Gestión integral de Ambulatorio - Tableros de Gestión HUV"
             pageTitle="Gestión integral de Ambulatorio"
             pageDescription="Control de consultas externas y atención ambulatoria"
             icon={Stethoscope}

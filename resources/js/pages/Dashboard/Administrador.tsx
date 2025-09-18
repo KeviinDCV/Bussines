@@ -53,7 +53,7 @@ export default function Administrador() {
 
     return (
         <AppLayout
-            title="Dashboard Administrador - Business Intelligence HUV"
+            title="Dashboard Administrador - Tableros de Gestión HUV"
             pageTitle="Administrador"
             pageDescription="Panel de Control Administrativo"
             icon={Shield}

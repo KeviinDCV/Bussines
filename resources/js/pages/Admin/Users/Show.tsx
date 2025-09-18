@@ -31,7 +31,7 @@ export default function ShowUser({ user }: Props) {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Head title={`Usuario: ${user.name} - Business Intelligence HUV`} />
+            <Head title={`Usuario: ${user.name} - Tableros de Gestión HUV`} />
             
             {/* Header */}
             <div className="bg-[#2a3d85] text-white p-6">

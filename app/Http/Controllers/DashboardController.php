@@ -46,7 +46,7 @@ class DashboardController extends Controller
             ->forRole('Asistenciales')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
+            ->orderBy('display_name')
             ->get();
 
         return Inertia::render('Dashboard/Asistenciales', [
@@ -68,7 +68,7 @@ class DashboardController extends Controller
             ->forRole('Administrativos')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order');
+            ->orderBy('display_name');
             
         $modules = app()->environment('production') ? $query->get()->fresh() : $query->get();
 
@@ -91,7 +91,7 @@ class DashboardController extends Controller
             ->forRole('Direccionamiento')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
+            ->orderBy('display_name')
             ->get();
 
         return Inertia::render('Dashboard/Direccionamiento', [
@@ -111,7 +111,7 @@ class DashboardController extends Controller
             ->forRole('Financieros')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
+            ->orderBy('display_name')
             ->get();
 
         return Inertia::render('Dashboard/Financieros', [
@@ -148,7 +148,7 @@ class DashboardController extends Controller
             ->forRole('Calidad')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
+            ->orderBy('display_name')
             ->get();
 
         return Inertia::render('Dashboard/Calidad', [
@@ -293,7 +293,7 @@ class DashboardController extends Controller
             ->forRole('Asistenciales')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
+            ->orderBy('display_name')
             ->get();
 
         return Inertia::render('Dashboard/AsistencialesAdministrador', [
@@ -313,7 +313,7 @@ class DashboardController extends Controller
             ->forRole('Administrativos')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
+            ->orderBy('display_name')
             ->get();
 
         return Inertia::render('Dashboard/AdministrativosAdministrador', [
@@ -333,7 +333,7 @@ class DashboardController extends Controller
             ->forRole('Financieros')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
+            ->orderBy('display_name')
             ->get();
 
         return Inertia::render('Dashboard/FinancierosAdministrador', [
@@ -353,7 +353,7 @@ class DashboardController extends Controller
             ->forRole('Direccionamiento')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
+            ->orderBy('display_name')
             ->get();
 
         return Inertia::render('Dashboard/DireccionamientoAdministrador', [
@@ -373,7 +373,7 @@ class DashboardController extends Controller
             ->forRole('Calidad')
             ->rootModules()
             ->where('active', true)
-            ->orderBy('order')
+            ->orderBy('display_name')
             ->get();
 
         return Inertia::render('Dashboard/CalidadAdministrador', [

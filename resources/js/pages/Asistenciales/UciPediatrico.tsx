@@ -15,7 +15,7 @@ export default function UciPediatrico() {
 
     return (
         <AppLayout
-            title="UCI Pediátrico - Business Intelligence HUV"
+            title="UCI Pediátrico - Tableros de Gestión HUV"
             pageTitle="UCI Pediátrico"
             pageDescription="Unidad de Cuidados Intensivos para pacientes pediátricos"
             icon={Baby}

@@ -9,7 +9,7 @@ export default function Ciau() {
 
     return (
         <AppLayout
-            title="CIAU - Business Intelligence HUV"
+            title="CIAU - Tableros de Gestión HUV"
             pageTitle="CIAU"
             pageDescription="Centro de Información y Atención al Usuario"
             icon={Shield}

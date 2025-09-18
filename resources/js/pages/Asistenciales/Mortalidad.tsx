@@ -5,7 +5,7 @@ import { Heart } from 'lucide-react';
 export default function Mortalidad() {
     return (
         <AppLayout
-            title="Mortalidad - Business Intelligence HUV"
+            title="Mortalidad - Tableros de Gestión HUV"
             pageTitle="Mortalidad"
             pageDescription="Análisis y seguimiento de indicadores de mortalidad"
             icon={Heart}

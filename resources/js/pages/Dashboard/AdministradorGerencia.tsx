@@ -17,7 +17,7 @@ export default function AdministradorGerencia() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Head title="Gerencia - Administrador - Business Intelligence HUV" />
+            <Head title="Gerencia - Administrador - Tableros de Gestión HUV" />
             
             <div className="bg-[#2a3d85] text-white p-6">
                 <div className="max-w-7xl mx-auto">

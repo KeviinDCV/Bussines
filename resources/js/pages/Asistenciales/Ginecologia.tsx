@@ -5,7 +5,7 @@ import { Baby } from 'lucide-react';
 export default function Ginecologia() {
     return (
         <AppLayout
-            title="Gestión integral de Ginecología y Obstetricia - Business Intelligence HUV"
+            title="Gestión integral de Ginecología y Obstetricia - Tableros de Gestión HUV"
             pageTitle="Gestión integral de Ginecología y Obstetricia"
             pageDescription="Atención especializada en salud femenina y materna"
             icon={Baby}

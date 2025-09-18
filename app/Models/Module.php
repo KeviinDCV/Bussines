@@ -17,11 +17,15 @@ class Module extends Model
         'role',
         'parent_id',
         'active',
-        'order'
+        'order',
+        'content_type',
+        'powerbi_url',
+        'powerbi_config'
     ];
 
     protected $casts = [
-        'active' => 'boolean'
+        'active' => 'boolean',
+        'powerbi_config' => 'array'
     ];
 
     public function parent(): BelongsTo

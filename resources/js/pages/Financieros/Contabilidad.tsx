@@ -22,7 +22,7 @@ export default function Contabilidad() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Head title="Contabilidad - Business Intelligence HUV" />
+            <Head title="Contabilidad - Tableros de Gestión HUV" />
             
             <div className="bg-[#2a3d85] text-white p-6">
                 <div className="max-w-7xl mx-auto">

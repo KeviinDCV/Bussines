@@ -5,7 +5,7 @@ import { RefreshCw } from 'lucide-react';
 export default function Referenciaciones() {
     return (
         <AppLayout
-            title="Referenciaciones - Business Intelligence HUV"
+            title="Referenciaciones - Tableros de Gestión HUV"
             pageTitle="Referenciaciones"
             pageDescription="Sistema de referencias y contrarreferencias"
             icon={RefreshCw}

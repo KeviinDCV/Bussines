@@ -17,7 +17,7 @@ export default function PlanDesarrollo() {
 
     return (
         <AppLayout
-            title="Plan de Desarrollo - Business Intelligence HUV"
+            title="Plan de Desarrollo - Tableros de Gestión HUV"
             pageTitle="Plan de Desarrollo"
             pageDescription="Planificación Estratégica Institucional"
             icon={FileText}

@@ -50,7 +50,7 @@ export default function DireccionamientoGerencia() {
 
     return (
         <AppLayout
-            title="Dashboard Direccionamiento - Business Intelligence HUV"
+            title="Dashboard Direccionamiento - Tableros de Gestión HUV"
             pageTitle="Direccionamiento (Gerencia)"
             pageDescription="Planeación Estratégica y Direccionamiento"
             icon={TrendingUp}

@@ -9,7 +9,7 @@ export default function GestionTecnicaLogistica() {
 
     return (
         <AppLayout
-            title="Gestión Técnica y Logística - Business Intelligence HUV"
+            title="Gestión Técnica y Logística - Tableros de Gestión HUV"
             pageTitle="Gestión Técnica y Logística"
             pageDescription="Mantenimiento técnico y gestión logística hospitalaria"
             icon={Wrench}

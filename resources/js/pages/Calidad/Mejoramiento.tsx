@@ -5,7 +5,7 @@ import { TrendingUp } from 'lucide-react';
 export default function Mejoramiento() {
     return (
         <AppLayout
-            title="Mejoramiento - Business Intelligence HUV"
+            title="Mejoramiento - Tableros de Gestión HUV"
             pageTitle="Mejoramiento"
             pageDescription="Planes de mejoramiento continuo"
             icon={TrendingUp}

@@ -9,7 +9,7 @@ export default function Urgencias() {
 
     return (
         <AppLayout
-            title="Gestión integral de Urgencias - Business Intelligence HUV"
+            title="Gestión integral de Urgencias - Tableros de Gestión HUV"
             pageTitle="Gestión integral de Urgencias"
             pageDescription="Monitoreo y gestión de servicios de urgencias médicas"
             icon={AlertTriangle}

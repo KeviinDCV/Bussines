@@ -5,7 +5,7 @@ import { Stethoscope } from 'lucide-react';
 export default function Tecnovigilancia() {
     return (
         <AppLayout
-            title="Tecnovigilancia - Business Intelligence HUV"
+            title="Tecnovigilancia - Tableros de Gestión HUV"
             pageTitle="Tecnovigilancia"
             pageDescription="Vigilancia de dispositivos médicos"
             icon={Stethoscope}

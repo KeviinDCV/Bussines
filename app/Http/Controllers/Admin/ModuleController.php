@@ -49,7 +49,10 @@ class ModuleController extends Controller
             'route' => 'nullable|string|max:255|unique:modules,route',
             'role' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:modules,id',
-            'order' => 'nullable|integer|min:0'
+            'order' => 'nullable|integer|min:0',
+            'content_type' => 'nullable|in:module,powerbi',
+            'powerbi_url' => 'nullable|required_if:content_type,powerbi|url',
+            'powerbi_config' => 'nullable|array'
         ]);
 
         if ($validator->fails()) {
@@ -66,22 +69,29 @@ class ModuleController extends Controller
             'role' => $request->role,
             'parent_id' => $request->parent_id,
             'order' => $request->order ?? 0,
-            'active' => true
+            'active' => true,
+            'content_type' => $request->content_type ?? 'module',
+            'powerbi_url' => $request->powerbi_url,
+            'powerbi_config' => $request->powerbi_config
         ]);
 
-        // Generar archivos automáticamente
-        try {
-            $this->moduleGenerator->generateModuleFiles($module);
-            Log::info("Módulo creado exitosamente con archivos generados: {$module->name}");
-        } catch (\Exception $e) {
-            Log::error("Error generando archivos para el módulo {$module->name}: " . $e->getMessage());
-            // No fallar la creación del módulo, solo registrar el error
+        // Generar archivos automáticamente solo si es un módulo regular
+        if ($module->content_type === 'module') {
+            try {
+                $this->moduleGenerator->generateModuleFiles($module);
+                Log::info("Módulo creado exitosamente con archivos generados: {$module->name}");
+            } catch (\Exception $e) {
+                Log::error("Error generando archivos para el módulo {$module->name}: " . $e->getMessage());
+                // No fallar la creación del módulo, solo registrar el error
+            }
+        } else {
+            Log::info("Módulo Power BI creado exitosamente: {$module->name}");
         }
 
         // Clear caches to ensure immediate visibility in production
         $this->clearModuleCaches();
 
-        return back()->with('success', 'Módulo creado exitosamente con página y ruta generadas automáticamente');
+        return back()->with('success', 'Módulo creado exitosamente');
     }
 
     /**
@@ -98,7 +108,10 @@ class ModuleController extends Controller
             'role' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:modules,id',
             'order' => 'nullable|integer|min:0',
-            'active' => 'boolean'
+            'active' => 'boolean',
+            'content_type' => 'nullable|in:module,powerbi',
+            'powerbi_url' => 'nullable|required_if:content_type,powerbi|url',
+            'powerbi_config' => 'nullable|array'
         ]);
 
         if ($validator->fails()) {
@@ -114,7 +127,10 @@ class ModuleController extends Controller
             'role' => $request->role,
             'parent_id' => $request->parent_id,
             'order' => $request->order ?? 0,
-            'active' => $request->active ?? true
+            'active' => $request->active ?? true,
+            'content_type' => $request->content_type ?? 'module',
+            'powerbi_url' => $request->powerbi_url,
+            'powerbi_config' => $request->powerbi_config
         ]);
 
         // Clear caches to ensure immediate visibility in production
@@ -164,6 +180,65 @@ class ModuleController extends Controller
             ->get();
 
         return response()->json(['modules' => $modules]);
+    }
+
+    /**
+     * Show a dynamic module with its submodules and content
+     */
+    public function showDynamicModule(Request $request, $role, $moduleName)
+    {
+        $user = auth()->user();
+        
+        // Buscar el módulo por nombre y rol
+        $module = Module::with('children')
+            ->where('name', $moduleName)
+            ->forRole(ucfirst($role))
+            ->where('active', true)
+            ->first();
+            
+        if (!$module) {
+            abort(404, 'Módulo no encontrado');
+        }
+        
+        // Obtener submódulos (hijos) del módulo actual
+        $submodules = Module::where('parent_id', $module->id)
+            ->where('active', true)
+            ->orderBy('display_name')
+            ->get();
+        
+        // Verificar permisos para gestionar contenido
+        $canManageContent = $user->role === 'Administrador';
+        
+        // Mapeo de nombres de dashboard
+        $dashboardNames = [
+            'calidad' => 'Dashboard Calidad',
+            'administrativos' => 'Dashboard Administrativos',
+            'asistenciales' => 'Dashboard Asistenciales', 
+            'direccionamiento' => 'Dashboard Direccionamiento',
+            'financieros' => 'Dashboard Financieros'
+        ];
+        
+        // Generar URL del dashboard según el rol del usuario
+        $dashboardUrl = '/dashboard/' . $role;
+        if ($user->role === 'Administrador') {
+            $dashboardUrl .= '-administrador';
+        } elseif ($user->role === 'Gerencia') {
+            $dashboardUrl .= '-gerencia';
+        }
+        
+        $breadcrumb = [
+            'dashboard' => $dashboardNames[$role] ?? 'Dashboard',
+            'dashboardUrl' => $dashboardUrl,
+            'module' => $module->display_name
+        ];
+        
+        return Inertia::render('Modules/DynamicModule', [
+            'module' => $module,
+            'submodules' => $submodules,
+            'role' => ucfirst($role),
+            'canManageContent' => $canManageContent,
+            'breadcrumb' => $breadcrumb
+        ]);
     }
 
     /**

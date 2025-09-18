@@ -9,7 +9,7 @@ export default function BancoSangre() {
 
     return (
         <AppLayout
-            title="Banco de Sangre - Business Intelligence HUV"
+            title="Banco de Sangre - Tableros de Gestión HUV"
             pageTitle="Banco de Sangre"
             pageDescription="Gestión de donaciones y transfusiones sanguíneas"
             icon={Droplets}

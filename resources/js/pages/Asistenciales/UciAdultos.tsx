@@ -15,7 +15,7 @@ export default function UciAdultos() {
 
     return (
         <AppLayout
-            title="UCI Adultos - Business Intelligence HUV"
+            title="UCI Adultos - Tableros de Gestión HUV"
             pageTitle="UCI Adultos"
             pageDescription="Unidad de Cuidados Intensivos para pacientes adultos"
             icon={Activity}

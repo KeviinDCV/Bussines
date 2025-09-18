@@ -5,7 +5,7 @@ import { Building2 } from 'lucide-react';
 export default function Hospitalizacion() {
     return (
         <AppLayout
-            title="Hospitalización - Business Intelligence HUV"
+            title="Hospitalización - Tableros de Gestión HUV"
             pageTitle="Gestión integral de Hospitalización"
             pageDescription="Administración de pacientes hospitalizados"
             icon={Building2}

@@ -5,7 +5,7 @@ import { FlaskConical } from 'lucide-react';
 export default function Laboratorio() {
     return (
         <AppLayout
-            title="Gestión integral de Laboratorio - Business Intelligence HUV"
+            title="Gestión integral de Laboratorio - Tableros de Gestión HUV"
             pageTitle="Gestión integral de Laboratorio"
             pageDescription="Control de análisis clínicos y pruebas de laboratorio"
             icon={FlaskConical}

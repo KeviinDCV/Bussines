@@ -1,0 +1,11 @@
+import{c as o}from"./createLucideIcon-DgFgfN8u.js";import{j as s,r as t}from"./app-DPE0jHgp.js";import{a}from"./button-BLTV56Rg.js";import{S as c}from"./sweetalert2.esm.all-Y6IUEg8t.js";/**
+ * @license lucide-react v0.475.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const u=[["path",{d:"M20 6 9 17l-5-5",key:"1gmf2c"}]],x=o("Check",u);/**
+ * @license lucide-react v0.475.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const d=[["path",{d:"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",key:"1nclc0"}],["circle",{cx:"12",cy:"12",r:"3",key:"1v7zrd"}]],b=o("Eye",d);function g({className:e,type:r,...i}){return s.jsx("input",{type:r,"data-slot":"input",className:a("border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm","focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]","aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",e),...i})}function v(e){const r=t.useRef({value:e,previous:e});return t.useMemo(()=>(r.current.value!==e&&(r.current.previous=r.current.value,r.current.value=e),r.current.previous),[e])}const n=c.mixin({customClass:{confirmButton:"bg-[#2a3d85] hover:bg-[#1e2d5f] text-white font-medium py-2 px-4 rounded-md transition-colors",cancelButton:"bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-md transition-colors mr-2",popup:"rounded-lg shadow-xl",title:"text-[#2a3d85] font-semibold"},buttonsStyling:!1}),y=(e,r)=>n.fire({icon:"success",title:e,text:r,confirmButtonText:"Aceptar"}),h=(e,r)=>n.fire({icon:"error",title:e,text:r,confirmButtonText:"Aceptar"});export{x as C,b as E,g as I,y as a,h as s,v as u};

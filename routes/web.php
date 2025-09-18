@@ -58,153 +58,9 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/dashboard/calidad-administrador', [DashboardController::class, 'calidadAdministrador'])->name('dashboard.calidad-administrador');
     Route::get('/plan-desarrollo', [DashboardController::class, 'planDesarrollo'])->name('dashboard.plan-desarrollo');
 
-    // Asistenciales module routes
-    Route::get('/asistenciales/urgencias', function () {
-        return Inertia::render('Asistenciales/Urgencias');
-    })->name('asistenciales.urgencias');
-    
-    Route::get('/asistenciales/ambulatorio', function () {
-        return Inertia::render('Asistenciales/Ambulatorio');
-    })->name('asistenciales.ambulatorio');
-    
-    Route::get('/asistenciales/hospitalizacion', function () {
-        return Inertia::render('Asistenciales/Hospitalizacion');
-    })->name('asistenciales.hospitalizacion');
-    
-    Route::get('/asistenciales/cirugia', function () {
-        return Inertia::render('Asistenciales/Cirugia');
-    })->name('asistenciales.cirugia');
-    
-    Route::get('/asistenciales/imagenes', function () {
-        return Inertia::render('Asistenciales/Imagenes');
-    })->name('asistenciales.imagenes');
-    
-    Route::get('/asistenciales/laboratorio', function () {
-        return Inertia::render('Asistenciales/Laboratorio');
-    })->name('asistenciales.laboratorio');
-    
-    Route::get('/asistenciales/ginecologia', function () {
-        return Inertia::render('Asistenciales/Ginecologia');
-    })->name('asistenciales.ginecologia');
-    
-    Route::get('/asistenciales/medicina-fisica', function () {
-        return Inertia::render('Asistenciales/MedicinaFisica');
-    })->name('asistenciales.medicina-fisica');
-    
-    Route::get('/asistenciales/mortalidad', function () {
-        return Inertia::render('Asistenciales/Mortalidad');
-    })->name('asistenciales.mortalidad');
-    
-    Route::get('/asistenciales/epidemiologia', function () {
-        return Inertia::render('Asistenciales/Epidemiologia');
-    })->name('asistenciales.epidemiologia');
-    
-    Route::get('/asistenciales/banco-sangre', function () {
-        return Inertia::render('Asistenciales/BancoSangre');
-    })->name('asistenciales.banco-sangre');
-    
-    Route::get('/asistenciales/extension-hospitalaria', function () {
-        return Inertia::render('Asistenciales/ExtensionHospitalaria');
-    })->name('asistenciales.extension-hospitalaria');
-    
-    Route::get('/asistenciales/uci-adultos', function () {
-        return Inertia::render('Asistenciales/UciAdultos');
-    })->name('asistenciales.uci-adultos');
-    
-    Route::get('/asistenciales/uci-pediatrico', function () {
-        return Inertia::render('Asistenciales/UciPediatrico');
-    })->name('asistenciales.uci-pediatrico');
-    
-    Route::get('/asistenciales/uci-neonatal', function () {
-        return Inertia::render('Asistenciales/UciNeonatal');
-    })->name('asistenciales.uci-neonatal');
-
-    // Financieros module routes
-    Route::get('/financieros/facturacion', function () {
-        return Inertia::render('Financieros/Facturacion');
-    })->name('financieros.facturacion');
-    
-    Route::get('/financieros/cartera', function () {
-        return Inertia::render('Financieros/Cartera');
-    })->name('financieros.cartera');
-    
-    Route::get('/financieros/recaudo', function () {
-        return Inertia::render('Financieros/Recaudo');
-    })->name('financieros.recaudo');
-    
-    Route::get('/financieros/glosas', function () {
-        return Inertia::render('Financieros/Glosas');
-    })->name('financieros.glosas');
-    
-    Route::get('/financieros/presupuesto', function () {
-        return Inertia::render('Financieros/Presupuesto');
-    })->name('financieros.presupuesto');
-    
-    Route::get('/financieros/contabilidad', function () {
-        return Inertia::render('Financieros/Contabilidad');
-    })->name('financieros.contabilidad');
-
-    // Administrativos module routes
-    Route::get('/administrativos/talento-humano', function () {
-        return Inertia::render('Administrativos/TalentoHumano');
-    })->name('administrativos.talento-humano');
-    
-    Route::get('/administrativos/ciau', function () {
-        return Inertia::render('Administrativos/Ciau');
-    })->name('administrativos.ciau');
-    
-    Route::get('/administrativos/sistemas-informacion', function () {
-        return Inertia::render('Administrativos/SistemasInformacion');
-    })->name('administrativos.sistemas-informacion');
-    
-    Route::get('/administrativos/gestion-tecnica-logistica', function () {
-        return Inertia::render('Administrativos/GestionTecnicaLogistica');
-    })->name('administrativos.gestion-tecnica-logistica');
-    
-    Route::get('/administrativos/farmacia', function () {
-        return Inertia::render('Administrativos/Farmacia');
-    })->name('administrativos.farmacia');
-
-    // Calidad module routes
-    Route::get('/calidad/pamec', function () {
-        return Inertia::render('Calidad/Pamec');
-    })->name('calidad.pamec');
-    
-    Route::get('/calidad/documentos', function () {
-        return Inertia::render('Calidad/Documentos');
-    })->name('calidad.documentos');
-    
-    Route::get('/calidad/habilitacion', function () {
-        return Inertia::render('Calidad/Habilitacion');
-    })->name('calidad.habilitacion');
-    
-    Route::get('/calidad/indicadores', function () {
-        return Inertia::render('Calidad/Indicadores');
-    })->name('calidad.indicadores');
-    
-    Route::get('/calidad/auditoria', function () {
-        return Inertia::render('Calidad/Auditoria');
-    })->name('calidad.auditoria');
-    
-    Route::get('/calidad/mejoramiento', function () {
-        return Inertia::render('Calidad/Mejoramiento');
-    })->name('calidad.mejoramiento');
-    
-    Route::get('/calidad/humanizacion', function () {
-        return Inertia::render('Calidad/Humanizacion');
-    })->name('calidad.humanizacion');
-    
-    Route::get('/calidad/referenciaciones', function () {
-        return Inertia::render('Calidad/Referenciaciones');
-    })->name('calidad.referenciaciones');
-    
-    Route::get('/calidad/tecnovigilancia', function () {
-        return Inertia::render('Calidad/Tecnovigilancia');
-    })->name('calidad.tecnovigilancia');
-    
-    Route::get('/calidad/centro-escucha', function () {
-        return Inertia::render('Calidad/CentroEscucha');
-    })->name('calidad.centro-escucha');
+    // NOTA: Todas las rutas estáticas de módulos han sido eliminadas.
+    // Ahora todos los módulos usan el sistema dinámico con submódulos y Power BI.
+    // Las rutas dinámicas están definidas al final del archivo.
 
     // Profile routes - only for administrators
     Route::middleware('role:Administrador')->group(function () {
@@ -227,6 +83,33 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
         Route::post('diagnostic/refresh-modules', [\App\Http\Controllers\DiagnosticController::class, 'forceRefreshModules'])->name('diagnostic.refresh');
     });
 
-    });
+    
+    // Ruta generada automáticamente para Prueba
+    Route::get('/calidad/prueba', function () {
+        return Inertia::render('Calidad/Prueba');
+    })->name('module.prueba');
+
+    // Ruta generada automáticamente para Prueba
+    Route::get('/administrativos/prueba', function () {
+        return Inertia::render('Administrativos/Prueba');
+    })->name('module.prueba');
+
+    // Rutas dinámicas para módulos creados por administradores
+    // Estas rutas capturan cualquier módulo dinámico y lo manejan con ModuleContent
+    Route::get('/{role}/{moduleName}', [App\Http\Controllers\Admin\ModuleController::class, 'showDynamicModule'])
+        ->where('role', '(calidad|administrativos|asistenciales|direccionamiento|financieros)')
+        ->where('moduleName', '[a-z0-9-]+')
+        ->name('module.dynamic');
+
+    // Ruta generada automáticamente para Módulo de prueba
+    Route::get('/direccionamiento/modulo', function () {
+        return Inertia::render('Direccionamiento/Modulo');
+    })->name('module.modulo');
+
+    // Ruta generada automáticamente para Módulo de prueba 2
+    Route::get('/direccionamiento/modulo/modulo2', function () {
+        return Inertia::render('Direccionamiento/Modulo2');
+    })->name('module.modulo2');
+});
 
 require __DIR__.'/settings.php';

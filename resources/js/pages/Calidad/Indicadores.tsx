@@ -5,7 +5,7 @@ import { BarChart3 } from 'lucide-react';
 export default function Indicadores() {
     return (
         <AppLayout
-            title="Indicadores - Business Intelligence HUV"
+            title="Indicadores - Tableros de Gestión HUV"
             pageTitle="Indicadores"
             pageDescription="Métricas e indicadores de calidad"
             icon={BarChart3}

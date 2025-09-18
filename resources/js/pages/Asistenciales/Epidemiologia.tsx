@@ -5,7 +5,7 @@ import { TrendingUp } from 'lucide-react';
 export default function Epidemiologia() {
     return (
         <AppLayout
-            title="Epidemiología - Business Intelligence HUV"
+            title="Epidemiología - Tableros de Gestión HUV"
             pageTitle="Epidemiología"
             pageDescription="Vigilancia epidemiológica y control de enfermedades"
             icon={TrendingUp}

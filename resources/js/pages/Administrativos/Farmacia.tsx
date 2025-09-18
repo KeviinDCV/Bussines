@@ -9,7 +9,7 @@ export default function Farmacia() {
 
     return (
         <AppLayout
-            title="Farmacia - Business Intelligence HUV"
+            title="Farmacia - Tableros de Gestión HUV"
             pageTitle="Farmacia"
             pageDescription="Gestión farmacéutica y control de medicamentos"
             icon={Pill}

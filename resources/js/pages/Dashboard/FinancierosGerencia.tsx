@@ -48,7 +48,7 @@ export default function FinancierosGerencia() {
 
     return (
         <AppLayout
-            title="Dashboard Financieros - Business Intelligence HUV"
+            title="Dashboard Financieros - Tableros de Gestión HUV"
             pageTitle="Financieros (Gerencia)"
             pageDescription="Subgerencia Financiera"
             icon={DollarSign}
