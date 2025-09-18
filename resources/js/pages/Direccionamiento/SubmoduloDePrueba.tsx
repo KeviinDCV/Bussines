@@ -37,8 +37,9 @@ export default function SubmoduloDePrueba() {
                 <ModuleContent 
                     module={module}
                     submodules={submodules}
-                    displayName="Submodulo de prueba"
+                    displayName="Submodulo de Prueba"
                     icon={FolderOpen}
+                    canManageContent={user?.role === 'Administrador' || user?.role?.includes('Administrador')}
                 />
             )}
         </AppLayout>

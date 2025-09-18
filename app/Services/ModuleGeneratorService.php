@@ -15,7 +15,15 @@ class ModuleGeneratorService
     {
         try {
             $this->generateReactComponent($module);
-            $this->generateRoute($module);
+            
+            // Solo generar ruta estática para módulos raíz (sin parent_id)
+            // Los submódulos usan el sistema dinámico existente
+            if (is_null($module->parent_id)) {
+                $this->generateRoute($module);
+                Log::info("Ruta estática generada para módulo raíz: {$module->name}");
+            } else {
+                Log::info("Submódulo creado sin ruta estática (usa sistema dinámico): {$module->name}");
+            }
             
             Log::info("Archivos generados exitosamente para el módulo: {$module->name}");
             return true;

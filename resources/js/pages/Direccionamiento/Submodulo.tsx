@@ -39,6 +39,7 @@ export default function Submodulo() {
                     submodules={submodules}
                     displayName="submodulo"
                     icon={FolderOpen}
+                    canManageContent={user?.role === 'Administrador' || user?.role?.includes('Administrador')}
                 />
             )}
         </AppLayout>

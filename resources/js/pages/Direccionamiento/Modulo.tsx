@@ -39,6 +39,7 @@ export default function Modulo() {
                     submodules={submodules}
                     displayName="Módulo de prueba"
                     icon={Shield}
+                    canManageContent={user?.role === 'Administrador' || user?.role?.includes('Administrador')}
                 />
             )}
         </AppLayout>

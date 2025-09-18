@@ -39,6 +39,7 @@ export default function Tes() {
                     submodules={submodules}
                     displayName="tes"
                     icon={FolderOpen}
+                    canManageContent={user?.role === 'Administrador' || user?.role?.includes('Administrador')}
                 />
             )}
         </AppLayout>

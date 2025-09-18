@@ -573,7 +573,10 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                                     <div key={submodule.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6">
                                         <div className="flex items-start justify-between mb-3">
                                             <div className="flex items-center space-x-3">
-                                                <FolderOpen className="w-6 h-6 text-[#2a3d85]" />
+                                                {(() => {
+                                                    const IconComponent = iconMap[submodule.icon || 'FolderOpen'] || FolderOpen;
+                                                    return <IconComponent className="w-6 h-6 text-[#2a3d85]" />;
+                                                })()}
                                                 <h3 className="font-semibold text-gray-900">
                                                     {submodule.display_name}
                                                 </h3>

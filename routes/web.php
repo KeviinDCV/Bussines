@@ -96,6 +96,15 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
 
     // Rutas dinámicas para módulos creados por administradores
     // Estas rutas capturan cualquier módulo dinámico y lo manejan con ModuleContent
+    
+    // Ruta para submódulos (3 segmentos: role/module/submodule)
+    Route::get('/{role}/{moduleName}/{submoduleName}', [App\Http\Controllers\Admin\ModuleController::class, 'showDynamicSubmodule'])
+        ->where('role', '(calidad|administrativos|asistenciales|direccionamiento|financieros)')
+        ->where('moduleName', '[a-z0-9-]+')
+        ->where('submoduleName', '[a-z0-9-]+')
+        ->name('module.dynamic.submodule');
+    
+    // Ruta para módulos principales (2 segmentos: role/module)  
     Route::get('/{role}/{moduleName}', [App\Http\Controllers\Admin\ModuleController::class, 'showDynamicModule'])
         ->where('role', '(calidad|administrativos|asistenciales|direccionamiento|financieros)')
         ->where('moduleName', '[a-z0-9-]+')
@@ -167,6 +176,12 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/administrativos/ciau/tes', function () {
         return Inertia::render('Administrativos/Tes');
     })->name('module.tes');
+
+    // Todas las rutas estáticas de submódulos han sido eliminadas
+    // para evitar conflictos con el sistema dinámico.
+    // Los submódulos ahora usan exclusivamente:
+    // Route::get('/{role}/{moduleName}', [ModuleController::class, 'showDynamicModule'])
+    // que pasa correctamente canManageContent y todas las props necesarias.
 });
 
 require __DIR__.'/settings.php';
