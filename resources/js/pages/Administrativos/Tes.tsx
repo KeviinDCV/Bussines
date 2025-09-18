@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import PowerBIEmbed from '@/components/PowerBIEmbed';
 import ModuleContent from '@/components/ModuleContent';
-import { FileText } from 'lucide-react';
+import { FolderOpen } from 'lucide-react';
 
-export default function ModuloDePrueba() {
+export default function Tes() {
     const { props } = usePage();
     const user = (props as any).auth?.user;
     const module = (props as any).module;
@@ -14,17 +14,17 @@ export default function ModuloDePrueba() {
     // Determinar la URL de regreso basada en el rol del usuario
     const getBackUrl = () => {
         if (user?.role === 'Administrador') {
-            return '/dashboard/direccionamiento-administrador';
+            return '/dashboard/administrativos';
         }
-        return '/dashboard/direccionamiento';
+        return '/dashboard/administrativos';
     };
 
     return (
         <AppLayout
-            title="Modulo de prueba - Tableros de Gestión HUV"
-            pageTitle="Modulo de prueba"
-            pageDescription="Modulo de prueba"
-            icon={FileText}
+            title="tes - Tableros de Gestión HUV"
+            pageTitle="tes"
+            pageDescription="test"
+            icon={FolderOpen}
             showBackButton={true}
             backUrl={getBackUrl()}
         >
@@ -37,8 +37,8 @@ export default function ModuloDePrueba() {
                 <ModuleContent 
                     module={module}
                     submodules={submodules}
-                    displayName="Modulo de prueba"
-                    icon={FileText}
+                    displayName="tes"
+                    icon={FolderOpen}
                 />
             )}
         </AppLayout>

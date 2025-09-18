@@ -162,6 +162,11 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/direccionamiento/modulo-de-prueba/submodulo', function () {
         return Inertia::render('Direccionamiento/Submodulo');
     })->name('module.submodulo');
+
+    // Ruta generada automáticamente para tes
+    Route::get('/administrativos/ciau/tes', function () {
+        return Inertia::render('Administrativos/Tes');
+    })->name('module.tes');
 });
 
 require __DIR__.'/settings.php';
