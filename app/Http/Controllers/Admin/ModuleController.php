@@ -118,6 +118,10 @@ class ModuleController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        // Guardar el nombre anterior para comparar
+        $previousName = $module->name;
+        $isSubmodule = $module->parent_id !== null;
+        
         $module->update([
             'name' => $request->name,
             'display_name' => $request->display_name,
@@ -135,6 +139,16 @@ class ModuleController extends Controller
 
         // Clear caches to ensure immediate visibility in production
         $this->clearModuleCaches();
+
+        // Si es un submódulo, redirigir al módulo padre para mejor UX
+        if ($isSubmodule) {
+            $parent = $module->parent;
+            if ($parent) {
+                $roleSlug = strtolower($module->role);
+                $parentRoute = "/{$roleSlug}/{$parent->name}";
+                return redirect($parentRoute)->with('success', 'Submódulo actualizado exitosamente');
+            }
+        }
 
         return back()->with('success', 'Módulo actualizado exitosamente');
     }

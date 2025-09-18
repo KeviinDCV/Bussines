@@ -81,11 +81,11 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
         if (isSubmodule) {
             // En submódulos solo Power BI
             contentOptions = '<option value="powerbi">Power BI</option>';
-            hierarchyMessage = '<p class="text-sm text-blue-600 bg-blue-50 p-2 rounded mb-2">📊 En los submódulos solo puedes agregar contenido Power BI.</p>';
+            hierarchyMessage = ''; // Sin mensaje para submódulos
         } else {
             // En módulos principales solo submódulos
             contentOptions = '<option value="module">Submódulo</option>';
-            hierarchyMessage = '<p class="text-sm text-green-600 bg-green-50 p-2 rounded mb-2">📁 En los módulos principales solo puedes crear submódulos.</p>';
+            hierarchyMessage = ''; // Sin mensaje para módulos principales
         }
         
         // Si ya hay Power BI en submódulo, mostrar advertencia
@@ -100,9 +100,11 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                     
                     <div class="space-y-2">
                         <label class="block text-sm font-semibold text-gray-800 mb-2">Tipo de Contenido *</label>
-                        <select id="swal-content-type" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors">
-                            ${contentOptions}
-                        </select>
+                        ${isSubmodule ? 
+                            `<select id="swal-content-type" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-[#2a3d85] transition-colors">${contentOptions}</select>` :
+                            `<input type="text" value="Submódulo" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-100 text-gray-600" readonly>
+                            <input type="hidden" id="swal-content-type" value="module">`
+                        }
                     </div>
                     
                     <!-- Campos para Submódulo -->
@@ -157,7 +159,7 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
             cancelButtonText: 'Cancelar',
             width: '650px',
             didOpen: () => {
-                const contentTypeSelect = document.getElementById('swal-content-type') as HTMLSelectElement;
+                const contentTypeSelect = document.getElementById('swal-content-type') as HTMLSelectElement | HTMLInputElement;
                 const moduleFields = document.getElementById('module-fields') as HTMLElement;
                 const powerbiFields = document.getElementById('powerbi-fields') as HTMLElement;
 
@@ -171,9 +173,12 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                     }
                 };
 
-                // Solo agregar listener si hay más de una opción
-                if (contentTypeSelect.options.length > 1) {
-                    contentTypeSelect.addEventListener('change', toggleFields);
+                // Solo agregar listener si es un select y hay más de una opción
+                if (contentTypeSelect.tagName === 'SELECT') {
+                    const selectElement = contentTypeSelect as HTMLSelectElement;
+                    if (selectElement.options.length > 1) {
+                        selectElement.addEventListener('change', toggleFields);
+                    }
                 }
                 
                 // Inicializar campos según la selección
@@ -357,7 +362,14 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                     }
                     return { 
                         powerbi_url: powerbiUrl,
-                        role: submodule.role || module?.role
+                        name: submodule.name,
+                        display_name: submodule.display_name,
+                        description: submodule.description,
+                        icon: submodule.icon,
+                        route: submodule.route,
+                        content_type: 'powerbi',
+                        role: submodule.role || module?.role || 'direccionamiento',
+                        parent_id: submodule.parent_id // ¡CRÍTICO! Mantener como submódulo
                     };
                 } else {
                     const displayName = (document.getElementById('swal-display-name') as HTMLInputElement).value;
@@ -369,17 +381,24 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                         return false;
                     }
 
-                    // Generar slug automáticamente a partir del nombre a mostrar
-                    const name = displayName
-                        .toLowerCase()
-                        .normalize('NFD')
-                        .replace(/[\u0300-\u036f]/g, '')
-                        .replace(/[^a-z0-9\s-]/g, '')
-                        .replace(/\s+/g, '-')
-                        .replace(/-+/g, '-')
-                        .replace(/^-|-$/g, '');
+                    // Solo regenerar slug si el display_name cambió
+                    const nameChanged = displayName !== submodule.display_name;
+                    let name = submodule.name;
+                    let route = submodule.route;
 
-                    const route = `${module?.route || '/dashboard'}/${name}`;
+                    if (nameChanged) {
+                        // Generar nuevo slug solo si el nombre cambió
+                        name = displayName
+                            .toLowerCase()
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/[^a-z0-9\s-]/g, '')
+                            .replace(/\s+/g, '-')
+                            .replace(/-+/g, '-')
+                            .replace(/^-|-$/g, '');
+
+                        route = `${module?.route || '/dashboard'}/${name}`;
+                    }
 
                     return {
                         name,
@@ -387,7 +406,8 @@ export default function ModuleContent({ module, submodules, displayName, icon: I
                         description,
                         icon,
                         route,
-                        role: submodule.role || module?.role
+                        role: submodule.role || module?.role,
+                        parent_id: submodule.parent_id // ¡CRÍTICO! Mantener como submódulo
                     };
                 }
             }

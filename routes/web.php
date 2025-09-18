@@ -137,6 +137,31 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     Route::get('/{role}/{moduleName}/{submoduleName}', [ModuleController::class, 'showDynamicSubmodule'])
         ->where('role', 'calidad|administrativos|asistenciales|direccionamiento|financieros')
         ->name('module.submodule.show');
+
+    // Ruta generada automáticamente para Nombre prueba
+    Route::get('/direccionamiento/nombre-prueba', function () {
+        return Inertia::render('Direccionamiento/NombrePrueba');
+    })->name('module.nombre-prueba');
+
+    // Ruta generada automáticamente para Submódulo prueba
+    Route::get('/direccionamiento/plan-desarrollo/submodulo-prueba', function () {
+        return Inertia::render('Direccionamiento/SubmoduloPrueba');
+    })->name('module.submodulo-prueba');
+
+    // Ruta generada automáticamente para Modulo de prueba
+    Route::get('/direccionamiento/modulo-de-prueba', function () {
+        return Inertia::render('Direccionamiento/ModuloDePrueba');
+    })->name('module.modulo-de-prueba');
+
+    // Ruta generada automáticamente para Submodulo de prueba
+    Route::get('/direccionamiento/modulo-de-prueba/submodulo-de-prueba', function () {
+        return Inertia::render('Direccionamiento/SubmoduloDePrueba');
+    })->name('module.submodulo-de-prueba');
+
+    // Ruta generada automáticamente para submodulo
+    Route::get('/direccionamiento/modulo-de-prueba/submodulo', function () {
+        return Inertia::render('Direccionamiento/Submodulo');
+    })->name('module.submodulo');
 });
 
 require __DIR__.'/settings.php';
