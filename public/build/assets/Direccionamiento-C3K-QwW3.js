@@ -1,0 +1,43 @@
+import{b as B,j as e,a as i}from"./app-BLmmBcay.js";import{A as j}from"./AppLayout-CjCRgkbE.js";import{c as r}from"./sweetAlert-DJK8XZI4.js";import{T as x}from"./trending-up-g5nyCgi1.js";import{B as N,M,D,T as I}from"./target-BYxvTTss.js";import{A as E}from"./activity-6dfR6Uv3.js";import{H as P}from"./heart-Bn_icmXK.js";import{S as T}from"./shield-CFsey6sx.js";import{C as k,a as U}from"./clock-yTwDUzt0.js";import{C as A}from"./calendar-BkbwEcog.js";import{S as L}from"./settings-HkTfF6Vy.js";import{U as S}from"./users-BF_me6sW.js";import{C as _}from"./chart-column-Byit54rK.js";import{F as c}from"./file-text-CvDkYCYR.js";import{P as $}from"./plus-CSlg1bsg.js";/* empty css            */import"./sweetalert2.esm.all-Y6IUEg8t.js";import"./auth-B5bBf_4h.js";import"./authHistoryManager-C0uFoHhB.js";import"./user-PZR8amDH.js";import"./createLucideIcon-CDteFaz_.js";import"./chevron-down-CpcA5Y-T.js";import"./log-out-DXnGX0Ib.js";const O={FileText:c,BarChart3:_,PieChart:U,Target:I,TrendingUp:x,Users:S,Settings:L,Database:D,Calendar:A,Clock:k,Map:M,Shield:T,Heart:P,Activity:E,Briefcase:N};function de(){const{props:n}=B(),m=n.auth?.user,u=n.modules||[],p=n.canCreateModules||!1,b=m?.role==="Gerencia",v=m?.role==="Administrador",f="Direccionamiento",h=[{value:"FileText",label:"Documento"},{value:"BarChart3",label:"Gráfico de Barras"},{value:"PieChart",label:"Gráfico Circular"},{value:"TrendingUp",label:"Tendencia"},{value:"Target",label:"Objetivo"},{value:"Users",label:"Usuarios"},{value:"Settings",label:"Configuración"},{value:"Database",label:"Base de Datos"},{value:"Calendar",label:"Calendario"},{value:"Clock",label:"Reloj"},{value:"Map",label:"Mapa"},{value:"Shield",label:"Escudo"},{value:"Heart",label:"Corazón"},{value:"Activity",label:"Actividad"},{value:"Briefcase",label:"Maletín"}],y=a=>{a.route?i.get(a.route):a.name==="plan-desarrollo"&&i.get("/plan-desarrollo")},w=async()=>{const{value:a}=await r.fire({title:"Crear Nuevo Módulo",html:`
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Contenido</label>
+                        <input type="text" value="Módulo" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
+                    </div>
+                    
+                    <!-- Campos para Módulo -->
+                    <div id="module-fields">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del módulo *</label>
+                            <input id="swal-display-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="ej: Nuevo Módulo">
+                            <small class="text-gray-500 text-xs mt-1 block">El nombre interno se generará automáticamente para la URL.</small>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                            <textarea id="swal-description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="Descripción del módulo..." rows="3"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
+                                <select id="swal-icon" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent">
+                                    ${h.map(o=>`<option value="${o.value}">${o.label}</option>`).join("")}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Orden</label>
+                                <input id="swal-order" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" type="number" value="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Campos para Power BI -->
+                    <div id="powerbi-fields" style="display: none;">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">URL de Power BI *</label>
+                            <input id="swal-powerbi-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2a3d85] focus:border-transparent" placeholder="https://app.powerbi.com/reportEmbed?reportId=...">
+                            <p class="text-xs text-gray-500 mt-1">Pegue la URL de inserción del informe de Power BI</p>
+                        </div>
+                    </div>
+                </div>
+            `,focusConfirm:!1,showCancelButton:!0,confirmButtonText:"Crear",cancelButtonText:"Cancelar",confirmButtonColor:"#2a3d85",width:"600px",didOpen:()=>{const o=document.getElementById("swal-display-name");o&&o.focus()},preConfirm:()=>{const o=document.getElementById("swal-content-type").value,t=document.getElementById("swal-powerbi-url").value;if(o==="powerbi"){if(!t)return r.showValidationMessage("La URL de Power BI es obligatoria"),!1;const s=`powerbi-${Date.now()}`,d=`/direccionamiento/${s}`;return{name:s,display_name:"Power BI Dashboard",description:"Dashboard de Power BI integrado",content_type:o,powerbi_url:t,icon:"BarChart3",order:0,route:d,role:f}}else{const l=document.getElementById("swal-display-name").value,s=document.getElementById("swal-description").value,d=document.getElementById("swal-icon").value;if(!l)return r.showValidationMessage("El nombre del módulo es obligatorio"),!1;const g=l.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""),C=`/direccionamiento/${g}`;return{name:g,display_name:l,description:s,content_type:"module",icon:d,route:C,parent_id:null,role:f}}}});if(a)try{await i.post("/admin/modules",a,{onSuccess:()=>{r.fire({title:"¡Éxito!",text:"Módulo creado exitosamente",icon:"success",confirmButtonColor:"#2a3d85"}).then(()=>{i.reload({only:["modules"]})})},onError:o=>{const t=Object.values(o).flat().join(`
+`);r.fire({title:"Error",text:t,icon:"error",confirmButtonColor:"#2a3d85"})}})}catch{r.fire({title:"Error",text:"Ocurrió un error al crear el módulo",icon:"error",confirmButtonColor:"#2a3d85"})}};return e.jsx(j,{title:"Dashboard Direccionamiento - Tableros de Gestión HUV",pageTitle:"Direccionamiento",pageDescription:"Planeación Estratégica y Direccionamiento",icon:x,showBackButton:b||v,backUrl:b?"/dashboard/gerencia":"/dashboard/administrador",children:e.jsxs("div",{className:"relative",children:[e.jsxs("div",{className:"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",children:[u.map(a=>{const o=O[a.icon]||c;return e.jsxs("div",{className:"bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border-l-4 border-[#2a3d85] flex flex-col",children:[e.jsx("div",{className:"flex items-center mb-4",children:e.jsx(o,{className:"w-10 h-10 text-[#2a3d85]"})}),e.jsx("h3",{className:"text-lg font-semibold text-gray-900 mb-2",children:a.display_name}),e.jsx("p",{className:"text-sm text-gray-600 mb-4 flex-grow",children:a.description||"Módulo del sistema de direccionamiento"}),e.jsx("button",{onClick:()=>y(a),className:"w-full bg-[#2a3d85] hover:bg-[#1e2d5f] text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium mt-auto",children:a.route?"Acceder al Módulo":"Próximamente"})]},a.id)}),u.length===0&&e.jsxs("div",{className:"col-span-full text-center py-12",children:[e.jsx(c,{className:"w-16 h-16 text-gray-400 mx-auto mb-4"}),e.jsx("h3",{className:"text-lg font-semibold text-gray-900 mb-2",children:"No hay módulos disponibles"}),e.jsx("p",{className:"text-gray-600 mb-4",children:p?"Comienza creando el primer módulo para este rol.":"Los módulos serán visibles una vez que sean creados por el administrador."})]})]}),p&&e.jsx("button",{onClick:w,className:"fixed bottom-6 right-6 bg-[#2a3d85] hover:bg-[#1e2d5f] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50",title:"Crear nuevo módulo",children:e.jsx($,{className:"w-6 h-6"})})]})})}export{de as default};
