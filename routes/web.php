@@ -142,6 +142,11 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
 
 
 
+    // Rutas dinámicas para módulos principales: /{role}/{module}
+    Route::get('/{role}/{moduleName}', [ModuleController::class, 'showDynamicModule'])
+        ->where('role', 'calidad|administrativos|asistenciales|direccionamiento|financieros')
+        ->name('module.show');
+
     // Rutas dinámicas para submódulos: /{role}/{module}/{submodule}
     Route::get('/{role}/{moduleName}/{submoduleName}', [ModuleController::class, 'showDynamicSubmodule'])
         ->where('role', 'calidad|administrativos|asistenciales|direccionamiento|financieros')
@@ -182,6 +187,61 @@ Route::middleware(['auth.strict', 'prevent.back'])->group(function () {
     // Los submódulos ahora usan exclusivamente:
     // Route::get('/{role}/{moduleName}', [ModuleController::class, 'showDynamicModule'])
     // que pasa correctamente canManageContent y todas las props necesarias.
+
+    // Ruta generada automáticamente para Ejemplo
+    Route::get('Administrativos/ejemplo', function () {
+        return Inertia::render('Administrativos/Ejemplo');
+    })->name('module.ejemplo');
+
+    // Ruta generada automáticamente para Ejemplo
+    Route::get('Administrativos/ejemplo', function () {
+        return Inertia::render('Administrativos/Ejemplo');
+    })->name('module.ejemplo');
+
+    // Ruta generada automáticamente para Ejemplo
+    Route::get('Administrativos/ejemplo', function () {
+        return Inertia::render('Administrativos/Ejemplo');
+    })->name('module.ejemplo');
+
+    // Ruta generada automáticamente para Ejemplo
+    Route::get('Administrativos/ejemplo', function () {
+        return Inertia::render('Administrativos/Ejemplo');
+    })->name('module.ejemplo');
+
+    // Ruta generada automáticamente para test
+    Route::get('/direccionamiento/test', function () {
+        return Inertia::render('Direccionamiento/Test');
+    })->name('module.test');
+
+    // Ruta generada automáticamente para Ejemplo
+    Route::get('administrativos/ejemplo', function () {
+        return Inertia::render('Administrativos/Ejemplo');
+    })->name('module.ejemplo');
+
+    // Ruta generada automáticamente para Ejemplo
+    Route::get('administrativos/ejemplo', function () {
+        return Inertia::render('Administrativos/Ejemplo');
+    })->name('module.ejemplo');
+
+    // Ruta generada automáticamente para Pruebados
+    Route::get('administrativos/pruebados', function () {
+        return Inertia::render('Administrativos/Pruebados');
+    })->name('module.pruebados');
+
+    // Ruta generada automáticamente para Ejemplotest
+    Route::get('administrativos/ejemplotest', function () {
+        return Inertia::render('Administrativos/Ejemplotest');
+    })->name('module.ejemplotest');
+
+    // Ruta generada automáticamente para Gestión Técnica y Logística
+    Route::get('administrativos/gesti-n-t-cnica-y-log-stica', function () {
+        return Inertia::render('Administrativos/GestiNTCnicaYLogStica');
+    })->name('module.gesti-n-t-cnica-y-log-stica');
+
+    // Ruta generada automáticamente para Gestión Técnica y Logística
+    Route::get('/administrativos/gesti-n-t-cnica-y-log-stica', function () {
+        return Inertia::render('Administrativos/GestiNTCnicaYLogStica');
+    })->name('module.gesti-n-t-cnica-y-log-stica');
 });
 
 require __DIR__.'/settings.php';

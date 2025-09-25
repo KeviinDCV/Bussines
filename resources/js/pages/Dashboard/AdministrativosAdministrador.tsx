@@ -168,7 +168,7 @@ export default function AdministrativosAdministrador() {
                 
                 // Generar slug automáticamente
                 const slug = displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-                const route = `${roleName}/${slug}`;
+                const route = `/${roleName.toLowerCase()}/${slug}`;
                 
                 return {
                     name: slug,
