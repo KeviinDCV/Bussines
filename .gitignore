@@ -23,6 +23,12 @@ yarn-error.log
 /.vscode
 /.zed
 
+# Vite development files (should NOT be in production)
+/public/hot
+vite.config.development.ts
+vite.config.ts.disabled
+
+# Note: public/build is NOT ignored - we commit compiled assets for cPanel deployment
 
 # Ignore kluster.ai Verify Code rules
 .github/instructions/kluster-code-verify.instructions.md
